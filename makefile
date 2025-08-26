@@ -13,7 +13,9 @@ ifeq ($(OS),Windows_NT)
 	ifeq ($(PROCESSOR_ARCHITECTURE),64-bit)
 		OSFLAG = WIN64
 	endif
-	OSFLAG ?= WIN32
+	ifeq ($(OSFLAG),UNKNOWN)
+		OSFLAG = WIN32
+	endif
 else
 	UNAME_S := $(shell uname -s)
 	ifeq ($(UNAME_S),Linux)
@@ -24,7 +26,7 @@ else
 	endif
 endif
 
-.PHONY: all clean config config-file build lib-downloads
+.PHONY: all clean
 
 all: config build
 
@@ -42,7 +44,7 @@ config-file:
 	@echo "Creating file structure..."
 	@mkdir -p $(FILESTRUCTURE)
 
-lib-downloads: lib/glad/build/src/gl.c lib/glfw/bin/libglfw3.a
+lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag
 	@echo "lib downloads complite."
 
 lib/glad/build/src/gl.c: lib/glad/installed.flag
@@ -65,36 +67,47 @@ lib/glad/glad.zip:
 	@mkdir -p lib/glad
 	@wget "https://github.com/Dav1dde/glad/archive/refs/heads/glad2.zip" -O lib/glad/glad.zip
 
-lib/glfw/bin/libglfw3.a: lib/glfw/glfw-3.4.zip $(OSFLAG)
+lib/glfw/build/CMakeCache.txt: lib/glfw/installed.flag
 
-WIN64:
+lib/glfw/installed.flag: lib/glfw/glfw-3.4.zip
+
+ifeq ($(OSFLAG),WIN64)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN64.zip -d lib/glfw
-	@mv lib/glfw/glfw-3.4.bin.WIN32/lib-mingw-64/* lib/glfw/bin
+	@mv lib/glfw/glfw-3.4.bin.WIN32/lib-mingw-64/* lib/glfw/build
 	@echo "glfw build complite."
-WIN32:
+endif
+ifeq ($(OSFLAG),WIN32)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN32.zip -d lib/glfw
-	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-mingw-32/* lib/glfw/bin
+	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-mingw-32/* lib/glfw/build
 	@echo "glfw build complite."
-MACOS:
+endif
+ifeq ($(OSFLAG),MACOS)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN64.zip -d lib/glfw
-	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-arm64/* lib/glfw/bin
+	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-arm64/* lib/glfw/build
 	@echo "glfw build complite."
-LINUX:
+endif
+ifeq ($(OSFLAG),LINUX)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.zip -d lib/glfw
-	@-mv lib/glfw/glfw-3.4/* lib/glfw/
+	@mv lib/glfw/glfw-3.4/* lib/glfw/
 	@rm -rf lib/glfw/glfw-3.4
-	@cd lib/glfw && cmake -B build -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=ON -D GLFW_BUILD_EXAMPLES=OFF
+	@echo "Configuring glfw..."
+	@cd lib/glfw && cmake -B build -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=ON -D GLFW_BUILD_EXAMPLES=OFF -D GLFW_BUILD_TESTS=OFF -D GLFW_BUILD_DOCS=OFF
+	@echo "Compiling glfw..."
+	@cd lib/glfw/build && make
 	@echo "glfw build complite."
-UNKNOWN:
+endif
+ifeq ($(OSFLAG),UNKNOWN)
 	@echo "Unsupported OS:$(OSFLAG)"
 	@echo "OS: $(OS)"
 	@echo "UNAME_S: $(UNAME_S)"
 	@exit 1
-
+endif
+	@touch lib/glfw/installed.flag
+	@echo "glfw already installed."
 
 
 lib/glfw/glfw-3.4.zip:
