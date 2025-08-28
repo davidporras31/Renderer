@@ -6,6 +6,9 @@ CXX = g++
 # select compiler flags
 CXXFLAGS = -std=c++17 -g -Wall
 
+INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm
+LIB_GLFW = lib/glfw/build/src/libglfw.so
+
 OSFLAG = UNKNOWN
 # Detect the operating system
 ifeq ($(OS),Windows_NT)
@@ -30,7 +33,7 @@ endif
 
 all: config build
 
-FILESTRUCTURE = lib bin obj
+FILESTRUCTURE = lib bin obj obj/test
 
 clean:
 	@echo "Cleaning up..."
@@ -44,8 +47,20 @@ config-file:
 	@echo "Creating file structure..."
 	@mkdir -p $(FILESTRUCTURE)
 
-lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag
+lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag
 	@echo "lib downloads complite."
+
+lib/glm/installed.flag: lib/glm/glm-1.0.1-light.zip
+	@echo "Install glm..."
+	@unzip -o lib/glm/glm-1.0.1-light.zip -d lib/glm
+	@echo "glm Install complite."
+	@touch lib/glm/installed.flag
+
+lib/glm/glm-1.0.1-light.zip:
+	@echo "Downloading glm..."
+	@mkdir -p lib/glm
+	@curl -s -L -o lib/glm/assets.json https://api.github.com/repos/g-truc/glm/releases/latest
+	@python download_json.py lib/glm/assets.json
 
 lib/glad/build/src/gl.c: lib/glad/installed.flag
 	@echo "building glad..."
@@ -109,9 +124,24 @@ endif
 	@touch lib/glfw/installed.flag
 	@echo "glfw already installed."
 
-
 lib/glfw/glfw-3.4.zip:
 	@echo "Downloading glfw..."
 	@mkdir -p lib/glfw
 	@curl -s -L -o lib/glfw/assets.json https://api.github.com/repos/glfw/glfw/releases/latest
 	@python download_json.py lib/glfw/assets.json
+
+BUILD_FILES = Renderer Transformable test/TriangleTest
+OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
+
+build: bin/main.exe
+	@echo "Build complite."
+
+bin/main.exe: test/main.cpp bin/libglfw.so $(OBJECTS_FILES)
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.exe test/main.cpp bin/libglfw.so $(OBJECTS_FILES) lib/glad/build/src/gl.c
+
+bin/libglfw.so:
+	@cp $(LIB_GLFW) bin/libglfw.so
+
+$(OBJECTS_FILES): obj/%.o: %.cpp
+	@echo "Compiling $<..."
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -c $< -o $@
