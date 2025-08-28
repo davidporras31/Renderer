@@ -2,6 +2,8 @@
 #include "../Renderer.h"
 #include <GLFW/glfw3.h>
 #include "TriangleTest.h"
+#include "../OrthographicCamera.h"
+
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -39,7 +41,7 @@ int main() {   // glfw: initialize and configure
     renderer->setClearColor(Black);
 
     TriangleTest triangleTest;
-    
+    OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 100.0f);
 
     // render loop
     // -----------

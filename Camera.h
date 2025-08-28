@@ -5,11 +5,13 @@
 
 class Camera : public Transformable
 {
-private:
-    glm::mat4 projection;
+protected:
     float near, far;
+    glm::mat4 projection;
+private:
     bool dirty;
 public:
+    Camera(float near = 0.f, float far = 0.0f);
     virtual void recalculateProjection() = 0;
     glm::mat4* getProjection();
 };
