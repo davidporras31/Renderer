@@ -20,9 +20,8 @@ public:
     void clear();
     void setClearColor(const Color& color);
     void setCamera(Camera* camera);
-    void captureScreenshot();
+    void captureScreenshot(const char* filename);
     void draw();
-    void display();
 };
 
 #endif // RENDERER_H
