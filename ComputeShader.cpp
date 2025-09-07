@@ -16,3 +16,8 @@ ComputeShader::ComputeShader(const std::string &name, const char *computeShaderS
     }
 
 }
+
+void ComputeShader::dispatch(glm::uvec3 num_groupe)
+{
+    glDispatchCompute(num_groupe.x,num_groupe.y,num_groupe.z);
+}

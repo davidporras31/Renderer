@@ -4,9 +4,9 @@ TriangleTest::TriangleTest()
 {
     float vertices[] = {
         // positions
-         0.0f,  0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f
+         0.0f,  0.5f, 0.0f,     0.5f,0.0f,
+        -0.5f, -0.5f, 0.0f,     0.0f,1.0f,
+         0.5f, -0.5f, 0.0f,     1.0f,1.0f
     };
 
     glGenVertexArrays(1, &VAO);
@@ -17,8 +17,12 @@ TriangleTest::TriangleTest()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // texture coord attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 

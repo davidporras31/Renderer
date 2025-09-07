@@ -13,7 +13,7 @@ private:
 public:
     Camera(float near = 0.f, float far = 0.0f);
     virtual void recalculateProjection() = 0;
-    glm::mat4* getProjection();
+    glm::mat4& getProjection();
 };
 
 #endif // CAMERA_H

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "TriangleTest.h"
 #include "../OrthographicCamera.h"
-
+#include "../ShaderProgram.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -13,6 +13,8 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 static Renderer* renderer;
+
+std::string loadShaderSource(const char* path);
 
 int main() {   // glfw: initialize and configure
     // ------------------------------
@@ -24,84 +26,71 @@ int main() {   // glfw: initialize and configure
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
-
-    // glfw window creation
-    // --------------------
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-    if (window == NULL)
     {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-        return -1;
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
-    renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
-    renderer->setClearColor(Black);
-
-    TriangleTest triangleTest;
-    OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 100.0f);
-
-    // render loop
-    // -----------
-    while (!glfwWindowShouldClose(window))
-    {
-        // input
-        // -----
-        processInput(window);
-
-        renderer->clear();
-
-        // --- Triangle setup (static, for demo purposes) ---
-        static unsigned int shaderProgram = 0;
-        if (shaderProgram == 0)
+        // glfw window creation
+        // --------------------
+        GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+        if (window == NULL)
         {
-            const char *vertexShaderSource = "#version 330 core\n"
-            "layout (location = 0) in vec3 aPos;\n"
-            "void main()\n"
-            "{\n"
-            "   gl_Position = vec4(aPos, 1.0);\n"
-            "}\0";
-            const char *fragmentShaderSource = "#version 330 core\n"
-            "out vec4 FragColor;\n"
-            "void main()\n"
-            "{\n"
-            "   FragColor = vec4(1.0, 0.5, 0.2, 1.0);\n"
-            "}\n\0";
-
-            // vertex shader
-            unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-            glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-            glCompileShader(vertexShader);
-
-            // fragment shader
-            unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-            glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-            glCompileShader(fragmentShader);
-
-            // shader program
-            shaderProgram = glCreateProgram();
-            glAttachShader(shaderProgram, vertexShader);
-            glAttachShader(shaderProgram, fragmentShader);
-            glLinkProgram(shaderProgram);
-
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
+            std::cout << "Failed to create GLFW window" << std::endl;
+            glfwTerminate();
+            return -1;
         }
+        glfwMakeContextCurrent(window);
+        glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-        // draw triangle
-        glUseProgram(shaderProgram);
-        triangleTest.draw();
+        renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
+        renderer->setClearColor(ConstColor::Dark_Modern_Gray);
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        TriangleTest triangleTest;
+        triangleTest.setPosition({0.5f,0.5f,-1.f});
+        triangleTest.setScale({SCR_WIDTH/2,SCR_HEIGHT/2,1.f});
+        OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 100.0f);
+        camera.setPosition({0,0,-2});
+
+        
+        
+        std::string vertexShaderSource = loadShaderSource("test/triangle.vs");
+        std::string fragmentShaderSource = loadShaderSource("test/triangle.fs");
+        ShaderProgram shaderProgram("basic_shader",
+            {
+                {vertexShaderSource.c_str(), GL_VERTEX_SHADER},
+                {fragmentShaderSource.c_str(), GL_FRAGMENT_SHADER}
+            },
+            "bin");
+
+            
+        // render loop
+        // -----------
+        while (!glfwWindowShouldClose(window))
+        {
+            // input
+            // -----
+            processInput(window);
+
+            renderer->clear();
+
+            double xpos, ypos;
+            glfwGetCursorPos(window,&xpos, &ypos);
+            ypos = abs(ypos - SCR_HEIGHT); 
+            triangleTest.setPosition(glm::vec3(xpos, ypos,-1));
+
+            shaderProgram.use();
+            shaderProgram.setMat4("projection", camera.getProjection());
+            shaderProgram.setMat4("view", camera.getTransform());
+            shaderProgram.setMat4("model", triangleTest.getTransform());
+            triangleTest.draw();
+
+            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+            // -------------------------------------------------------------------------------
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
+    delete renderer;
     glfwTerminate();
     return 0;
 }
@@ -112,6 +101,8 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS)
+        renderer->captureScreenshot("test.png");
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -122,4 +113,19 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     // height will be significantly larger than specified on retina displays.
     
     renderer->setViewport({0, 0, width, height});
+}
+
+std::string loadShaderSource(const char* path)
+{
+    std::ifstream file(path, std::ios::in);
+    if (!file.is_open())
+        throw std::runtime_error(std::string("Could not open file: ") + path);
+    file.seekg(0, std::ios::end);
+    size_t size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    std::string content;
+    content.resize(size);
+    file.read(&content[0], size);
+    file.close();
+    return content;
 }

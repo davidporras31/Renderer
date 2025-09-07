@@ -19,7 +19,7 @@ public:
     glm::vec3 getRotation() const { return rotation; }
     void setScale(const glm::vec3& scl) { scale = scl; dirty = true; }
     glm::vec3 getScale() const { return scale; }
-    glm::mat4* getTransform();
+    glm::mat4& getTransform();
 };
 
 #endif // TRANSFORMABLE_H

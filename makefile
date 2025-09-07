@@ -66,7 +66,7 @@ lib/glad/build/src/gl.c: lib/glad/installed.flag
 	@echo "building glad..."
 	@python -m venv lib/glad/venv
 	@lib/glad/venv/bin/pip install -r lib/glad/requirements.txt
-	@cd lib/glad && venv/bin/python -m glad --out-path=build --api=gl:core=3.3 c --loader
+	@cd lib/glad && venv/bin/python -m glad --out-path=build --api=gl:core=4.3 c --loader
 	@echo "glad build complite."
 
 lib/glad/installed.flag: lib/glad/glad.zip
@@ -130,7 +130,7 @@ lib/glfw/glfw-3.4.zip:
 	@curl -s -L -o lib/glfw/assets.json https://api.github.com/repos/glfw/glfw/releases/latest
 	@python download_json.py lib/glfw/assets.json
 
-BUILD_FILES = Renderer Transformable test/TriangleTest Camera OrthographicCamera PerspectiveCamera
+BUILD_FILES = Renderer Transformable test/TriangleTest Camera OrthographicCamera PerspectiveCamera ShaderProgram ComputeShader ShaderBase
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
 build: bin/main.exe
