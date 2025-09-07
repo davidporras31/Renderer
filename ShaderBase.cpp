@@ -13,9 +13,24 @@ bool ShaderBase::checkBinaryShaderSupport()
     return *ShaderBase::supportBinaryShaders;
 }
 
+std::string* ShaderBase::loadFile(const char *path)
+{
+    std::ifstream file(path, std::ios::in);
+    if (!file.is_open())
+        throw std::runtime_error(std::string("Could not open file: ") + path);
+    file.seekg(0, std::ios::end);
+    size_t size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    std::string* content = new std::string();
+    content->resize(size);
+    file.read(&content->operator[](0), size);
+    file.close();
+    return content;
+}
+
 bool ShaderBase::neadRebuild(const std::vector<std::pair<const char *, GLenum>> &shaders, const std::string &binaryPath)
 {
-    if (checkBinaryShaderSupport())
+    if (!checkBinaryShaderSupport())
         return true;
     
     std::string binFilePath( binaryPath + '/' + name + ".glbin");
@@ -86,10 +101,12 @@ void ShaderBase::setMat4(const std::string &name, const glm::mat4 &mat)
     glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
-void ShaderBase::addShader(const char *source, GLenum shaderType)
+void ShaderBase::addShader(const char *path, GLenum shaderType)
 {
+    std::string* source = loadFile(path);
     unsigned int shader = glCreateShader(shaderType);
-    glShaderSource(shader, 1, &source, nullptr);
+    const GLchar* src = source->c_str();
+    glShaderSource(shader, 1, &src, nullptr);
     glCompileShader(shader);
     GLint success;
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
@@ -99,6 +116,7 @@ void ShaderBase::addShader(const char *source, GLenum shaderType)
         glGetShaderInfoLog(shader, 512, nullptr, infoLog);
         throw std::runtime_error(std::string("Shader compilation failed: ") + infoLog);
     }
+    delete source;
     glAttachShader(this->ID, shader);
     glDeleteShader(shader);
 }

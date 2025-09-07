@@ -16,10 +16,11 @@ private:
     std::unordered_map<std::string, int> uniformLocations;
 protected:
     static bool checkBinaryShaderSupport();
+    std::string* loadFile(const char* path);
     bool neadRebuild(const std::vector<std::pair<const char*, GLenum>>& shaders, const std::string& binaryPath);
     unsigned int ID;
     std::string name;
-    void addShader(const char* source, GLenum shaderType);
+    void addShader(const char* path, GLenum shaderType);
     void link();
     void saveBinary(const char* filename);
     void loadBinary(const char* filename);

@@ -14,8 +14,6 @@ const unsigned int SCR_HEIGHT = 600;
 
 static Renderer* renderer;
 
-std::string loadShaderSource(const char* path);
-
 int main() {   // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -48,14 +46,10 @@ int main() {   // glfw: initialize and configure
         OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 100.0f);
         camera.setPosition({0,0,-2});
 
-        
-        
-        std::string vertexShaderSource = loadShaderSource("test/triangle.vs");
-        std::string fragmentShaderSource = loadShaderSource("test/triangle.fs");
         ShaderProgram shaderProgram("basic_shader",
             {
-                {vertexShaderSource.c_str(), GL_VERTEX_SHADER},
-                {fragmentShaderSource.c_str(), GL_FRAGMENT_SHADER}
+                {"test/triangle.vs", GL_VERTEX_SHADER},
+                {"test/triangle.fs", GL_FRAGMENT_SHADER}
             },
             "bin");
 
@@ -113,19 +107,4 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
     // height will be significantly larger than specified on retina displays.
     
     renderer->setViewport({0, 0, width, height});
-}
-
-std::string loadShaderSource(const char* path)
-{
-    std::ifstream file(path, std::ios::in);
-    if (!file.is_open())
-        throw std::runtime_error(std::string("Could not open file: ") + path);
-    file.seekg(0, std::ios::end);
-    size_t size = file.tellg();
-    file.seekg(0, std::ios::beg);
-    std::string content;
-    content.resize(size);
-    file.read(&content[0], size);
-    file.close();
-    return content;
 }
