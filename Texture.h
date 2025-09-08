@@ -2,13 +2,20 @@
 #define TEXTURE_H
 
 #include <glad/gl.h>
-#include <string>
+#include <stb/stb_image.h>
+#include <stdexcept>
 class Texture
 {
 private:
-    unsigned int ID;
+    GLuint ID;
 public:
-    Texture(std::string path);
+    Texture();
+    ~Texture();
+
+    static GLint getFromatFromChannels(int chanels);
+
+    void use(const size_t unit = 0);
+    void load(const char* path, bool mipmap = true);
 };
 
 #endif  //TEXTURE_H

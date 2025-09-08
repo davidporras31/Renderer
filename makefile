@@ -6,7 +6,7 @@ CXX = g++
 # select compiler flags
 CXXFLAGS = -std=c++17 -g -Wall
 
-INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm
+INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb
 LIB_GLFW = lib/glfw/build/src/libglfw.so
 
 OSFLAG = UNKNOWN
@@ -47,9 +47,22 @@ config-file:
 	@echo "Creating file structure..."
 	@mkdir -p $(FILESTRUCTURE)
 
-lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag
+lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag lib/stb/installed.flag
 	@echo "lib downloads complite."
 
+lib/stb/installed.flag: lib/stb/stb.zip
+	@echo "Install stb..."
+	@unzip -o lib/stb/stb.zip -d lib/stb
+	@mv -n lib/stb/stb-master/* lib/stb/stb
+	@rm -rf lib/stb/stb-master
+	@echo "stb Install complite."
+	@touch lib/stb/installed.flag
+
+lib/stb/stb.zip:
+	@echo "Downloading stb..."
+	@mkdir -p lib/stb/stb
+	@curl -s -L -o lib/stb/stb.zip https://github.com/nothings/stb/archive/refs/heads/master.zip
+	
 lib/glm/installed.flag: lib/glm/glm-1.0.1-light.zip
 	@echo "Install glm..."
 	@unzip -o lib/glm/glm-1.0.1-light.zip -d lib/glm
@@ -130,7 +143,7 @@ lib/glfw/glfw-3.4.zip:
 	@curl -s -L -o lib/glfw/assets.json https://api.github.com/repos/glfw/glfw/releases/latest
 	@python download_json.py lib/glfw/assets.json
 
-BUILD_FILES = Renderer Transformable test/TriangleTest Camera OrthographicCamera PerspectiveCamera ShaderProgram ComputeShader ShaderBase
+BUILD_FILES = Renderer Transformable test/TriangleTest Camera OrthographicCamera PerspectiveCamera ShaderProgram ComputeShader ShaderBase Texture
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
 build: bin/main.exe
@@ -142,6 +155,6 @@ bin/main.exe: test/main.cpp bin/libglfw.so $(OBJECTS_FILES)
 bin/libglfw.so:
 	@cp $(LIB_GLFW) bin/libglfw.so
 
-$(OBJECTS_FILES): obj/%.o: %.cpp
+$(OBJECTS_FILES): obj/%.o: %.cpp %.h
 	@echo "Compiling $<..."
 	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -c $< -o $@

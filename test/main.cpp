@@ -4,6 +4,7 @@
 #include "TriangleTest.h"
 #include "../OrthographicCamera.h"
 #include "../ShaderProgram.h"
+#include "../Texture.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -53,6 +54,9 @@ int main() {   // glfw: initialize and configure
             },
             "bin");
 
+        Texture texture;
+        texture.load("test/img.png");
+
             
         // render loop
         // -----------
@@ -68,7 +72,11 @@ int main() {   // glfw: initialize and configure
             glfwGetCursorPos(window,&xpos, &ypos);
             ypos = abs(ypos - SCR_HEIGHT); 
             triangleTest.setPosition(glm::vec3(xpos, ypos,-1));
+            glm::vec3 rot = triangleTest.getRotation();
+            rot.z += 0.005f;
+            triangleTest.setRotation(rot);
 
+            texture.use();
             shaderProgram.use();
             shaderProgram.setMat4("projection", camera.getProjection());
             shaderProgram.setMat4("view", camera.getTransform());
