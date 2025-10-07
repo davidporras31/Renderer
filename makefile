@@ -143,7 +143,7 @@ lib/glfw/glfw-3.4.zip:
 	@curl -s -L -o lib/glfw/assets.json https://api.github.com/repos/glfw/glfw/releases/latest
 	@python download_json.py lib/glfw/assets.json
 
-BUILD_FILES = Renderer Transformable test/TriangleTest Camera OrthographicCamera PerspectiveCamera ShaderProgram ComputeShader ShaderBase Texture Sprite
+BUILD_FILES = Renderer Transformable test/TriangleTest Camera OrthographicCamera PerspectiveCamera ShaderProgram ComputeShader ShaderBase Texture Sprite Cube
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
 build: bin/main.exe

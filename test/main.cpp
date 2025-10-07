@@ -6,6 +6,7 @@
 #include "../ShaderProgram.h"
 #include "../Texture.h"
 #include "../Sprite.h"
+#include "../Cube.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -51,7 +52,10 @@ int main() {   // glfw: initialize and configure
         Sprite sprite;
         sprite.setPosition({100,200,-1});
         sprite.setScale({100,100,1});
-        OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 100.0f);
+        Cube cube;
+        cube.setPosition({400,300,-200});
+        cube.setScale({100,100,100});
+        OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 500.0f);
         camera.setPosition({0,0,-2});
 
         ShaderProgram shaderProgram("basic_shader",
@@ -82,6 +86,10 @@ int main() {   // glfw: initialize and configure
             glm::vec3 rot = triangleTest.getRotation();
             rot.z += 0.005f;
             triangleTest.setRotation(rot);
+            rot = cube.getRotation();
+            rot.x += 0.002f;
+            rot.y += 0.003f;
+            cube.setRotation(rot);
 
             texture.use();
             shaderProgram.use();
@@ -92,6 +100,9 @@ int main() {   // glfw: initialize and configure
             
             shaderProgram.setMat4("model", sprite.getTransform());
             sprite.draw();
+            
+            shaderProgram.setMat4("model", cube.getTransform());
+            cube.draw();
 
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
