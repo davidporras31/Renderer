@@ -8,7 +8,7 @@ TriangleTest::TriangleTest()
         -0.5f, -0.5f, 0.0f,     0.0f,1.0f,
          0.5f, -0.5f, 0.0f,     1.0f,1.0f
     };
-
+    GLuint VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -27,12 +27,12 @@ TriangleTest::TriangleTest()
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
 
     glBindVertexArray(0); 
+    glDeleteBuffers(1, &VBO);
 }
 
 TriangleTest::~TriangleTest()
 {
     glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
 }
 
 void TriangleTest::draw()

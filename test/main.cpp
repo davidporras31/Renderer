@@ -5,6 +5,7 @@
 #include "../OrthographicCamera.h"
 #include "../ShaderProgram.h"
 #include "../Texture.h"
+#include "../Sprite.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -41,9 +42,15 @@ int main() {   // glfw: initialize and configure
         renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
         renderer->setClearColor(ConstColor::Dark_Modern_Gray);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         TriangleTest triangleTest;
         triangleTest.setPosition({0.5f,0.5f,-1.f});
         triangleTest.setScale({SCR_WIDTH/2,SCR_HEIGHT/2,1.f});
+        Sprite sprite;
+        sprite.setPosition({100,200,-1});
+        sprite.setScale({100,100,1});
         OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 100.0f);
         camera.setPosition({0,0,-2});
 
@@ -82,6 +89,10 @@ int main() {   // glfw: initialize and configure
             shaderProgram.setMat4("view", camera.getTransform());
             shaderProgram.setMat4("model", triangleTest.getTransform());
             triangleTest.draw();
+            
+            shaderProgram.setMat4("model", sprite.getTransform());
+            sprite.draw();
+
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -104,7 +115,10 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS)
-        renderer->captureScreenshot("test.png");
+    {
+        std::cout << "capture" << std::endl;
+        renderer->captureScreenshot("bin/test.png",GL_RGBA);
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

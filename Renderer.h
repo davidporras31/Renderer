@@ -16,6 +16,7 @@
 #include <glad/gl.h>
 #include <stdexcept>
 #include <glm/glm.hpp>
+#include <stb/stb_image_write.h>
 #include "Color.h"
 #include "Camera.h"
 #include "Drawable.h"
@@ -23,7 +24,7 @@
 class Renderer {
 private:
     Camera* camera;
-
+    static unsigned int getChanelSize(GLuint format);
 public:
     Renderer(GLADloadfunc load);
     ~Renderer();
@@ -33,7 +34,7 @@ public:
     void clear();
     void setClearColor(const Color& color);
     void setCamera(Camera* camera);
-    void captureScreenshot(const char* filename);
+    void captureScreenshot(const char* filename,GLuint format = GL_RGB);
     void draw();
 };
 

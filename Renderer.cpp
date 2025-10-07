@@ -1,11 +1,32 @@
 #include "Renderer.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include <stb/stb_image_write.h>
+
+unsigned int Renderer::getChanelSize(GLuint format)
+{
+    switch (format)
+    {
+    case GL_RGBA:
+        return 4;
+    case GL_RGB:
+        return 3;
+    case GL_RG:
+        return 2;
+    case GL_ALPHA:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 Renderer::Renderer(GLADloadfunc load)
 {
     if (!gladLoadGL(load)) {
         // Handle the error appropriately (e.g., throw an exception, log an error, etc.)
         throw std::runtime_error("Failed to initialize GLAD");
     }
+    glEnable(GL_DEPTH_TEST);
 }
 
 Renderer::~Renderer()
@@ -37,34 +58,23 @@ void Renderer::setCamera(Camera *camera)
     this->camera = camera;
 }
 
-void Renderer::captureScreenshot(const char *filename)
+void Renderer::captureScreenshot(const char *filename,GLuint format)
 {
-    // Get the viewport dimensions
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     int width = viewport[2];
     int height = viewport[3];
 
-    // Allocate memory for the pixel data
-    unsigned char* pixels = new unsigned char[width * height * 3]; // 3 bytes for RGB
+    unsigned int format_size = getChanelSize(format);
 
-    // Read the pixel data from the framebuffer
-    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+    unsigned char* pixels = new unsigned char[width * height * format_size];
 
-    // Write the pixel data to a PPM file
-    FILE* file = fopen(filename, "wb");
-    if (file) {
-        fprintf(file, "P6\n%d %d\n255\n", width, height);
-        // PPM files store pixels from top to bottom, so we need to flip the image vertically
-        for (int y = height - 1; y >= 0; --y) {
-            fwrite(pixels + y * width * 3, 3, width, file);
-        }
-        fclose(file);
-    } else {
-        // Handle file open error
+    glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, pixels);
+
+    int file = stbi_write_png(filename,width,height,format_size,pixels,0);
+    if (!file)
+    {
         throw std::runtime_error("Failed to open file for screenshot");
     }
-
-    // Free the allocated memory
     delete[] pixels;
 }

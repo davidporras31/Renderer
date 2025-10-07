@@ -8,7 +8,7 @@
 class TriangleTest : public Drawable
 {
 private:
-    unsigned int VAO, VBO;
+    unsigned int VAO;
 public:
     TriangleTest();
     ~TriangleTest();
