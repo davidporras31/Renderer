@@ -5,8 +5,9 @@
 #include "../OrthographicCamera.h"
 #include "../ShaderProgram.h"
 #include "../Texture.h"
-#include "../Sprite.h"
+#include "../Square.h"
 #include "../Cube.h"
+#include "../RenderState.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -49,12 +50,17 @@ int main() {   // glfw: initialize and configure
         TriangleTest triangleTest;
         triangleTest.setPosition({0.5f,0.5f,-1.f});
         triangleTest.setScale({SCR_WIDTH/2,SCR_HEIGHT/2,1.f});
-        Sprite sprite;
-        sprite.setPosition({100,200,-1});
-        sprite.setScale({100,100,1});
+
+        Square square;
+        square.setPosition({100,200,-1});
+        square.setScale({100,100,1});
+
         Cube cube;
         cube.setPosition({400,300,-200});
         cube.setScale({100,100,100});
+        
+        std::vector<RenderState> render_state;
+
         OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 500.0f);
         camera.setPosition({0,0,-2});
 
@@ -68,6 +74,15 @@ int main() {   // glfw: initialize and configure
         Texture texture;
         texture.load("test/img.png");
 
+        render_state.push_back(RenderState(&triangleTest));
+        render_state.push_back(RenderState(&square));
+        render_state.push_back(RenderState(&cube));
+
+        for (auto &&i : render_state)
+        {
+            i.addTexture(&texture);
+        }
+        
             
         // render loop
         // -----------
@@ -91,18 +106,28 @@ int main() {   // glfw: initialize and configure
             rot.y += 0.003f;
             cube.setRotation(rot);
 
-            texture.use();
+
             shaderProgram.use();
             shaderProgram.setMat4("projection", camera.getProjection());
             shaderProgram.setMat4("view", camera.getTransform());
-            shaderProgram.setMat4("model", triangleTest.getTransform());
-            triangleTest.draw();
+            for (auto &&i : render_state)
+            {
+                ShaderProgram* tmp = i.getShaderProgram();
+                if(tmp)
+                {
+                    tmp->use();
+                    tmp->setMat4("projection", camera.getProjection());
+                    tmp->setMat4("view", camera.getTransform());
+                    tmp->setMat4("model", i.getDrawable()->getTransform());
+                }
+                else 
+                    shaderProgram.setMat4("model", i.getDrawable()->getTransform());
+                
+                i.draw();
+            }
             
-            shaderProgram.setMat4("model", sprite.getTransform());
-            sprite.draw();
+
             
-            shaderProgram.setMat4("model", cube.getTransform());
-            cube.draw();
 
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

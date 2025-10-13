@@ -1,6 +1,6 @@
-#include "Sprite.h"
+#include "Square.h"
 
-Sprite::Sprite()
+Square::Square()
 {
     float vertices[] = {
         // positions
@@ -37,14 +37,14 @@ Sprite::Sprite()
     //glDeleteBuffers(1,&EBO);
 }
 
-Sprite::~Sprite()
+Square::~Square()
 {
     glDeleteVertexArrays(1,&VAO);
     glDeleteBuffers(1,&EBO);
     glDeleteBuffers(1,&VBO);
 }
 
-void Sprite::draw()
+void Square::draw()
 {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

@@ -1,17 +1,17 @@
-#ifndef SPRITE_H
-#define SPRITE_H
+#ifndef SQUARE_H
+#define SQUARE_H
 
 #include "Drawable.h"
 #include <glad/gl.h>
 
-class Sprite: public Drawable
+class Square: public Drawable
 {
 private:
     GLuint VAO,VBO,EBO;
 public:
-    Sprite();
-    ~Sprite();
+    Square();
+    ~Square();
     void draw() override;
 };
 
-#endif //SPRITE_H
+#endif //SQUARE_H
