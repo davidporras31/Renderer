@@ -6,8 +6,9 @@ CXX = g++
 # select compiler flags
 CXXFLAGS = -std=c++17 -g -Wall
 
-INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb
+INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include
 LIB_GLFW = lib/glfw/build/src/libglfw.so
+LIB_FT2 = lib/ft2/objs/.libs/libfreetype.so
 
 OSFLAG = UNKNOWN
 # Detect the operating system
@@ -47,8 +48,23 @@ config-file:
 	@echo "Creating file structure..."
 	@mkdir -p $(FILESTRUCTURE)
 
-lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag lib/stb/installed.flag
+lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag lib/stb/installed.flag lib/ft2/installed.flag
 	@echo "lib downloads complite."
+
+lib/ft2/installed.flag: lib/ft2/ft2.tar.gz
+	@echo "Install ft2..."
+	@tar -xvzf lib/ft2/ft2.tar.gz -C lib/ft2
+	@mv -n lib/ft2/freetype-2.14.1/* lib/ft2
+	@echo "building ft2..."
+	@cd lib/ft2 && make
+	@cd lib/ft2 && make
+	@echo "ft2 Install complite."
+	@touch lib/ft2/installed.flag
+
+lib/ft2/ft2.tar.gz:
+	@echo "Downloading ft2..."
+	@mkdir -p lib/ft2
+	@curl -s -L -o lib/ft2/ft2.tar.gz https://download.savannah.gnu.org/releases/freetype/freetype-2.14.1.tar.gz
 
 lib/stb/installed.flag: lib/stb/stb.zip
 	@echo "Install stb..."
@@ -63,16 +79,16 @@ lib/stb/stb.zip:
 	@mkdir -p lib/stb/stb
 	@curl -s -L -o lib/stb/stb.zip https://github.com/nothings/stb/archive/refs/heads/master.zip
 	
-lib/glm/installed.flag: lib/glm/glm-1.0.1-light.zip
+lib/glm/installed.flag: lib/glm/glm-1.0.2.zip
 	@echo "Install glm..."
-	@unzip -o lib/glm/glm-1.0.1-light.zip -d lib/glm
+	@unzip -o lib/glm/glm-1.0.2.zip -d lib/glm
 	@echo "glm Install complite."
 	@touch lib/glm/installed.flag
 
-lib/glm/glm-1.0.1-light.zip:
+lib/glm/glm-1.0.2.zip:
 	@echo "Downloading glm..."
 	@mkdir -p lib/glm
-	@curl -s -L -o lib/glm/assets.json https://api.github.com/repos/g-truc/glm/releases/latest
+	@curl -s -L -o lib/glm/assets.json https://api.github.com/repos/g-truc/glm/releases/tags/1.0.2
 	@python download_json.py lib/glm/assets.json
 
 lib/glad/build/src/gl.c: lib/glad/installed.flag
@@ -140,7 +156,7 @@ endif
 lib/glfw/glfw-3.4.zip:
 	@echo "Downloading glfw..."
 	@mkdir -p lib/glfw
-	@curl -s -L -o lib/glfw/assets.json https://api.github.com/repos/glfw/glfw/releases/latest
+	@curl -s -L -o lib/glfw/assets.json https://api.github.com/repos/glfw/glfw/releases/tags/3.4
 	@python download_json.py lib/glfw/assets.json
 
 BUILD_FILES = \
@@ -162,11 +178,13 @@ OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 build: bin/main.exe
 	@echo "Build complite."
 
-bin/main.exe: test/main.cpp bin/libglfw.so $(OBJECTS_FILES)
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.exe test/main.cpp bin/libglfw.so $(OBJECTS_FILES) lib/glad/build/src/gl.c
+bin/main.exe: test/main.cpp bin/libglfw.so bin/libfreetype.so $(OBJECTS_FILES)
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.exe test/main.cpp bin/libglfw.so bin/libfreetype.so $(OBJECTS_FILES) lib/glad/build/src/gl.c
 
 bin/libglfw.so:
 	@cp $(LIB_GLFW) bin/libglfw.so
+bin/libfreetype.so:
+	@cp $(LIB_FT2) bin/libfreetype.so
 
 $(OBJECTS_FILES): obj/%.o: %.cpp %.h
 	@echo "Compiling $<..."
