@@ -4,6 +4,7 @@
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "Drawable.h"
+#include "Camera.h"
 #include <vector>
 
 class RenderState
@@ -16,7 +17,7 @@ public:
     RenderState(Drawable* drawable, ShaderProgram* custom_shader = nullptr);
     //~RenderState();
     void addTexture(Texture* texture);
-    void draw();
+    void draw(Camera * camera, ShaderProgram * global);
     Drawable* getDrawable();
     ShaderProgram* getShaderProgram();
 };

@@ -11,7 +11,7 @@ private:
 public:
     Square();
     ~Square();
-    void draw() override;
+    void draw(ShaderProgram* shader) override;
 };
 
 #endif //SQUARE_H

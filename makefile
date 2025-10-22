@@ -172,7 +172,9 @@ BUILD_FILES = \
 	Texture\
 	Square\
 	Cube\
-	RenderState
+	RenderState\
+	Font\
+	Text
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
 build: bin/main.exe

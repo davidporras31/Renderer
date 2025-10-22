@@ -20,6 +20,7 @@
 #include "Color.h"
 #include "Camera.h"
 #include "Drawable.h"
+#include "Font.h"
 
 class Renderer {
 private:
@@ -35,7 +36,6 @@ public:
     void setClearColor(const Color& color);
     void setCamera(Camera* camera);
     void captureScreenshot(const char* filename,GLuint format = GL_RGB);
-    void draw();
 };
 
 #endif // RENDERER_H

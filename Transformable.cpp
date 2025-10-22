@@ -43,3 +43,8 @@ glm::mat4 &Transformable::getTransform()
     }
     return transform; 
 }
+
+glm::vec3 Transformable::getPositionFromTransform(glm::mat4 &mat)
+{
+    return glm::vec3(mat[3][0],mat[3][1],mat[3][2]);
+}

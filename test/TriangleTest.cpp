@@ -35,7 +35,7 @@ TriangleTest::~TriangleTest()
     glDeleteVertexArrays(1, &VAO);
 }
 
-void TriangleTest::draw()
+void TriangleTest::draw(ShaderProgram* shader) 
 {
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 3);

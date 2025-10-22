@@ -8,6 +8,7 @@
 #include "../Square.h"
 #include "../Cube.h"
 #include "../RenderState.h"
+#include "../Text.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -52,12 +53,21 @@ int main() {   // glfw: initialize and configure
         triangleTest.setScale({SCR_WIDTH/2,SCR_HEIGHT/2,1.f});
 
         Square square;
-        square.setPosition({100,200,-1});
-        square.setScale({100,100,1});
+        square.setPosition({2,2,1});
+        square.setScale({1,1,1});
 
         Cube cube;
         cube.setPosition({400,300,-200});
         cube.setScale({100,100,100});
+        
+        square.setParent(&cube);
+
+        Font font("./test/FreeSans.ttf");
+        Text text(&font,"hello world\nboo");
+        text.setPosition({200,75,-200});
+        text.setScale({50,50,1});
+        text.setColor(ConstColor::Yellow);
+
         
         std::vector<RenderState> render_state;
 
@@ -70,13 +80,21 @@ int main() {   // glfw: initialize and configure
                 {"test/triangle.fs", GL_FRAGMENT_SHADER}
             },
             "bin");
+        ShaderProgram textShaderProgram("text_shader",
+            {
+                {"test/triangle.vs", GL_VERTEX_SHADER},
+                {"test/text.fs", GL_FRAGMENT_SHADER}
+            },
+            "bin");
+
 
         Texture texture;
         texture.load("test/img.png");
 
-        render_state.push_back(RenderState(&triangleTest));
         render_state.push_back(RenderState(&square));
         render_state.push_back(RenderState(&cube));
+        render_state.push_back(RenderState(&triangleTest));
+        render_state.push_back(RenderState(&text,&textShaderProgram));
 
         for (auto &&i : render_state)
         {
@@ -106,26 +124,10 @@ int main() {   // glfw: initialize and configure
             rot.y += 0.003f;
             cube.setRotation(rot);
 
-
-            shaderProgram.use();
-            shaderProgram.setMat4("projection", camera.getProjection());
-            shaderProgram.setMat4("view", camera.getTransform());
             for (auto &&i : render_state)
             {
-                ShaderProgram* tmp = i.getShaderProgram();
-                if(tmp)
-                {
-                    tmp->use();
-                    tmp->setMat4("projection", camera.getProjection());
-                    tmp->setMat4("view", camera.getTransform());
-                    tmp->setMat4("model", i.getDrawable()->getTransform());
-                }
-                else 
-                    shaderProgram.setMat4("model", i.getDrawable()->getTransform());
-                
-                i.draw();
+                i.draw(&camera, &shaderProgram);
             }
-            
 
             
 

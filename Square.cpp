@@ -44,7 +44,7 @@ Square::~Square()
     glDeleteBuffers(1,&VBO);
 }
 
-void Square::draw()
+void Square::draw(ShaderProgram* shader) 
 {
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

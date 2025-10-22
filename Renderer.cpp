@@ -26,6 +26,9 @@ Renderer::Renderer(GLADloadfunc load)
         // Handle the error appropriately (e.g., throw an exception, log an error, etc.)
         throw std::runtime_error("Failed to initialize GLAD");
     }
+    
+    stbi_flip_vertically_on_write(1);
+    Font::init();
     glEnable(GL_DEPTH_TEST);
 }
 

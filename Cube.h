@@ -10,7 +10,7 @@ private:
 public:
     Cube();
     ~Cube();
-    void draw() override;
+    void draw(ShaderProgram* shader) override;
 };
 
 #endif // Cube_h

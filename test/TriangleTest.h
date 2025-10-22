@@ -12,7 +12,7 @@ private:
 public:
     TriangleTest();
     ~TriangleTest();
-    void draw() override;
+    void draw(ShaderProgram* shader) override;
 };
 
 #endif // TRIANGLETEST_H

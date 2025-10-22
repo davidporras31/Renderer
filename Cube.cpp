@@ -48,7 +48,7 @@ Cube::~Cube()
     glDeleteBuffers(1,&EBO);
 }
 
-void Cube::draw()
+void Cube::draw(ShaderProgram* shader) 
 {
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER,VBO);

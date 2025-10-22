@@ -27,6 +27,7 @@ public:
     void setParent(Transformable* par);
     Transformable* getParent() const { return parent; }
     glm::mat4& getTransform();
+    static glm::vec3 getPositionFromTransform(glm::mat4& mat);
 };
 
 #endif // TRANSFORMABLE_H

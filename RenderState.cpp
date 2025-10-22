@@ -11,13 +11,20 @@ void RenderState::addTexture(Texture *texture)
     this->textures.push_back(texture);
 }
 
-void RenderState::draw()
+void RenderState::draw(Camera * camera, ShaderProgram* global)
 {
-    for (auto &&i : this->textures)
+    for (size_t i = 0; i < this->textures.size(); i++)
     {
-        i->use();
+        this->textures[i]->use(i);
     }
-    this->drawable->draw();
+    ShaderProgram * tmp = global;
+    if(this->custom_shader)
+        tmp = this->custom_shader;
+    tmp->use();
+    tmp->setMat4("projection", camera->getProjection());
+    tmp->setMat4("view", camera->getTransform());
+    tmp->setMat4("model", this->drawable->getTransform());
+    this->drawable->draw(tmp);
 }
 
 Drawable *RenderState::getDrawable()
