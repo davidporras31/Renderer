@@ -2,6 +2,7 @@
 
 ## Overview
 This project is a **Renderer** designed to handle graphical rendering tasks for my 2d/3d games.
+This project is inspired by [SFML](https://www.sfml-dev.org/) and the tutorials available on [LearnOpenGL](https://learnopengl.com/).
 
 ## Features
 - Real-time rendering
