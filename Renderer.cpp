@@ -23,7 +23,6 @@ unsigned int Renderer::getChanelSize(GLuint format)
 Renderer::Renderer(GLADloadfunc load)
 {
     if (!gladLoadGL(load)) {
-        // Handle the error appropriately (e.g., throw an exception, log an error, etc.)
         throw std::runtime_error("Failed to initialize GLAD");
     }
     
@@ -34,16 +33,48 @@ Renderer::Renderer(GLADloadfunc load)
 
 Renderer::~Renderer()
 {
-    
+    for (unsigned int i = 0; i < this->stages.getSize(); i++)
+    {
+        delete this->stages[i];
+    }
+}
+
+void Renderer::addStage(RendererStage *stage)
+{
+    this->stages.pushBack(stage);
+}
+
+void Renderer::initialize()
+{
+    for (unsigned int i = 0; i < this->stages.getSize(); i++)
+    {
+        this->stages[i]->initialize(this);
+    }
+}
+
+RendererStage *Renderer::getStage(const std::string &name) const
+{
+    RendererStage* tmp;
+    for (unsigned int i = 0; i < this->stages.getSize(); i++)
+    {
+        tmp = this->stages[i];
+        if (tmp->getName() == name)
+            break;
+    }
+    return tmp;
+}
+
+void Renderer::renderFrame()
+{
+    for (unsigned int i = 0; i < this->stages.getSize(); i++)
+    {
+        this->stages[i]->execute(this);
+    }
 }
 
 void Renderer::setViewport(const glm::i64vec4 viewport)
 {
     glViewport(viewport.x, viewport.y, viewport.z, viewport.w);
-}
-
-void Renderer::render(Drawable *drawable)
-{
 }
 
 void Renderer::clear()
@@ -54,11 +85,6 @@ void Renderer::clear()
 void Renderer::setClearColor(const Color &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
-}
-
-void Renderer::setCamera(Camera *camera)
-{
-    this->camera = camera;
 }
 
 void Renderer::captureScreenshot(const char *filename,GLuint format)

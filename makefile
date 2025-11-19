@@ -34,7 +34,7 @@ endif
 
 all: config build
 
-FILESTRUCTURE = lib bin obj obj/test
+FILESTRUCTURE = lib bin obj obj/test obj/stage
 
 clean:
 	@echo "Cleaning up..."
@@ -172,8 +172,9 @@ BUILD_FILES = \
 	Texture\
 	Square\
 	Cube\
-	RenderState\
+	stage/ForwardGeometry\
 	Font\
+	Vector\
 	Text
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
@@ -181,7 +182,7 @@ build: bin/main.exe
 	@echo "Build complite."
 
 bin/main.exe: test/main.cpp bin/libglfw.so bin/libfreetype.so $(OBJECTS_FILES)
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.exe test/main.cpp bin/libglfw.so bin/libfreetype.so $(OBJECTS_FILES) lib/glad/build/src/gl.c
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.out test/main.cpp bin/libglfw.so bin/libfreetype.so $(OBJECTS_FILES) lib/glad/build/src/gl.c
 
 bin/libglfw.so:
 	@cp $(LIB_GLFW) bin/libglfw.so

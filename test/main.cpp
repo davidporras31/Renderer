@@ -1,5 +1,6 @@
 #include <iostream>
 #include "../Renderer.h"
+#include "../stage/ForwardGeometry.h"
 #include <GLFW/glfw3.h>
 #include "TriangleTest.h"
 #include "../OrthographicCamera.h"
@@ -7,7 +8,6 @@
 #include "../Texture.h"
 #include "../Square.h"
 #include "../Cube.h"
-#include "../RenderState.h"
 #include "../Text.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -45,6 +45,10 @@ int main() {   // glfw: initialize and configure
         renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
         renderer->setClearColor(ConstColor::Dark_Modern_Gray);
 
+        ForwardGeometry* forwardGeometry = new ForwardGeometry();
+        renderer->addStage(forwardGeometry);
+        renderer->initialize();
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -69,20 +73,15 @@ int main() {   // glfw: initialize and configure
         text.setColor(ConstColor::Yellow);
 
         
-        std::vector<RenderState> render_state;
+        std::vector<DrawCall> render_state;
 
         OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 500.0f);
         camera.setPosition({0,0,-2});
+        forwardGeometry->setCamera(&camera);
 
-        ShaderProgram shaderProgram("basic_shader",
-            {
-                {"test/triangle.vs", GL_VERTEX_SHADER},
-                {"test/triangle.fs", GL_FRAGMENT_SHADER}
-            },
-            "bin");
         ShaderProgram textShaderProgram("text_shader",
             {
-                {"test/triangle.vs", GL_VERTEX_SHADER},
+                {"shaders/default_forward_shader.vs", GL_VERTEX_SHADER},
                 {"test/text.fs", GL_FRAGMENT_SHADER}
             },
             "bin");
@@ -91,17 +90,21 @@ int main() {   // glfw: initialize and configure
         Texture texture;
         texture.load("test/img.png");
 
-        render_state.push_back(RenderState(&square));
-        render_state.push_back(RenderState(&cube));
-        render_state.push_back(RenderState(&triangleTest));
-        render_state.push_back(RenderState(&text,&textShaderProgram));
+        render_state.push_back(DrawCall(&square));
+        render_state.push_back(DrawCall(&cube));
+        render_state.push_back(DrawCall(&triangleTest));
+        render_state.push_back(DrawCall(&text,&textShaderProgram));
 
         for (auto &&i : render_state)
         {
-            i.addTexture(&texture);
+            i.textures.push_back(&texture);
         }
         
             
+        for (auto &&i : render_state)
+        {
+            forwardGeometry->pushDrawCall(&i);
+        }
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
@@ -124,11 +127,8 @@ int main() {   // glfw: initialize and configure
             rot.y += 0.003f;
             cube.setRotation(rot);
 
-            for (auto &&i : render_state)
-            {
-                i.draw(&camera, &shaderProgram);
-            }
 
+            renderer->renderFrame();
             
 
 

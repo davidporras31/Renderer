@@ -17,24 +17,27 @@
 #include <stdexcept>
 #include <glm/glm.hpp>
 #include <stb/stb_image_write.h>
+#include "Vector.h"
 #include "Color.h"
-#include "Camera.h"
-#include "Drawable.h"
 #include "Font.h"
+#include "RendererStage.h"
 
 class Renderer {
 private:
-    Camera* camera;
     static unsigned int getChanelSize(GLuint format);
+    Vector<RendererStage*,unsigned int> stages;
 public:
     Renderer(GLADloadfunc load);
     ~Renderer();
 
-    void setViewport(const glm::i64vec4 viewport);
-    void render(Drawable* drawable);
+    void addStage(RendererStage* stage);
+    void initialize();
+    RendererStage* getStage(const std::string& name) const;
+    void renderFrame();
     void clear();
+
+    void setViewport(const glm::i64vec4 viewport);
     void setClearColor(const Color& color);
-    void setCamera(Camera* camera);
     void captureScreenshot(const char* filename,GLuint format = GL_RGB);
 };
 
