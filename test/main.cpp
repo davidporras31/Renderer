@@ -81,10 +81,10 @@ int main() {   // glfw: initialize and configure
 
         ShaderProgram textShaderProgram("text_shader",
             {
-                {"shaders/default_forward_shader.vs", GL_VERTEX_SHADER},
+                {FORWARDGEOMETRY_SHADER_PATH".vs", GL_VERTEX_SHADER},
                 {"test/text.fs", GL_FRAGMENT_SHADER}
             },
-            "bin");
+            "./shaders");
 
 
         Texture texture;
@@ -129,6 +129,10 @@ int main() {   // glfw: initialize and configure
 
 
             renderer->renderFrame();
+            for (auto &&i : render_state)
+            {
+                forwardGeometry->pushDrawCall(&i);
+            }
             
 
 
@@ -155,7 +159,7 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window,GLFW_KEY_ENTER) == GLFW_PRESS)
     {
         std::cout << "capture" << std::endl;
-        renderer->captureScreenshot("bin/test.png",GL_RGBA);
+        renderer->captureScreenshot("./test.png",GL_RGBA);
     }
 }
 

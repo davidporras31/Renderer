@@ -6,9 +6,10 @@ CXX = g++
 # select compiler flags
 CXXFLAGS = -std=c++17 -g -Wall
 
-INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include
+INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include -Ilib/assimp/include
 LIB_GLFW = lib/glfw/build/src/libglfw.so
 LIB_FT2 = lib/ft2/objs/.libs/libfreetype.so
+LIB_ASSIMP = lib/assimp/build/bin/libassimp.so.6.0.2
 
 OSFLAG = UNKNOWN
 # Detect the operating system
@@ -48,8 +49,23 @@ config-file:
 	@echo "Creating file structure..."
 	@mkdir -p $(FILESTRUCTURE)
 
-lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag lib/stb/installed.flag lib/ft2/installed.flag
+lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag lib/stb/installed.flag lib/ft2/installed.flag lib/assimp/installed.flag
 	@echo "lib downloads complite."
+
+lib/assimp/installed.flag: lib/assimp/assimp.zip
+	@echo "Install assimp..."
+	@unzip -o lib/assimp/assimp.zip -d lib/assimp
+	@mv -n lib/assimp/assimp-6.0.2/* lib/assimp
+	@echo "building assimp..."
+	@cd lib/assimp && cmake CMakeLists.txt -B build -D CMAKE_BUILD_TYPE=Release -D ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT=OFF -D ASSIMP_BUILD_OBJ_IMPORTER=ON -D ASSIMP_BUILD_FBX_IMPORTER=ON -D ASSIMP_BUILD_GLTF_IMPORTER=ON -D ASSIMP_BUILD_TESTS=OFF -D ASSIMP_BUILD_SAMPLES=OFF -D ASSIMP_BUILD_DOCS=OFF
+	@cd lib/assimp/build && make
+	@echo "assimp Install complite."
+	@touch lib/assimp/installed.flag	
+
+lib/assimp/assimp.zip:
+	@echo "Downloading assimp..."
+	@mkdir -p lib/assimp
+	@curl -s -L -o lib/assimp/assimp.zip https://github.com/assimp/assimp/archive/refs/tags/v6.0.2.zip
 
 lib/ft2/installed.flag: lib/ft2/ft2.tar.gz
 	@echo "Install ft2..."
@@ -179,15 +195,20 @@ BUILD_FILES = \
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
 build: bin/main.exe
+	@rm -rf bin/test bin/shaders
+	@cp -r test bin/test
+	@cp -r shaders bin/shaders
 	@echo "Build complite."
 
-bin/main.exe: test/main.cpp bin/libglfw.so bin/libfreetype.so $(OBJECTS_FILES)
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.out test/main.cpp bin/libglfw.so bin/libfreetype.so $(OBJECTS_FILES) lib/glad/build/src/gl.c
+bin/main.exe: test/main.cpp bin/libglfw.so bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES)
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) lib/glad/build/src/gl.c
 
 bin/libglfw.so:
 	@cp $(LIB_GLFW) bin/libglfw.so
 bin/libfreetype.so:
 	@cp $(LIB_FT2) bin/libfreetype.so
+bin/libassimp.so.6:
+	@cp $(LIB_ASSIMP) bin/libassimp.so.6
 
 $(OBJECTS_FILES): obj/%.o: %.cpp %.h
 	@echo "Compiling $<..."

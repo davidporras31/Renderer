@@ -1,37 +1,33 @@
-#ifndef FORWARDGEOMETRY_H
-#define FORWARDGEOMETRY_H
+#ifndef UIRENDER_H
+#define UIRENDER_H
 
 #include "../RendererStage.h"
 #include "../Vector.h"
 #include "../Camera.h"
 #include "../ShaderProgram.h"
 
-#ifndef FORWARDGEOMETRY_SHADER_PATH
-#define FORWARDGEOMETRY_SHADER_PATH "./shaders/forward_geometry_shader"
-#endif //FORWARDGEOMETRY_SHADER_PATH
-
-class ForwardGeometry : public RendererStage
+class UIRender : public RendererStage
 {
     private:
         Vector<DrawCall*,unsigned int> drawCalls;
         Camera* camera;
         ShaderProgram* defaultShader;
     public:
-        ~ForwardGeometry() {
+        ~UIRender() {
             delete defaultShader;
         }
 
         std::string getName() override {
-            return "ForwardGeometry";
+            return "UIRender";
         }
 
         void initialize(Renderer* renderer) override {
-            defaultShader = new ShaderProgram("forward_geometry_shader",
+            defaultShader = new ShaderProgram("default_ui_shader",
                 {
-                    {FORWARDGEOMETRY_SHADER_PATH ".vs", GL_VERTEX_SHADER},
-                    {FORWARDGEOMETRY_SHADER_PATH ".fs", GL_FRAGMENT_SHADER}
+                    {"./shaders/ui_shader.vs", GL_VERTEX_SHADER},
+                    {"./shaders/ui_shader.fs", GL_FRAGMENT_SHADER}
                 },
-                "./shaders");
+                "bin");
         }
 
         void execute(Renderer* renderer) override {
@@ -41,20 +37,19 @@ class ForwardGeometry : public RendererStage
                 draw(drawCall);
                 
             }
-            clearDrawCalls();
+
         }
 
         void pushDrawCall(DrawCall* drawCall) override {
             drawCalls.pushBack(drawCall);
         }
+
         void clearDrawCalls() {
             drawCalls.clear();
         }
 
         void draw(DrawCall* drawCall);
-        void setCamera(Camera* camera) {
-            this->camera = camera;
-        }
 };
 
-#endif //FORWARDGEOMETRY_H
+
+#endif //UIRENDER_H

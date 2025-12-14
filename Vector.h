@@ -27,6 +27,9 @@ public:
     void pushBack(T&& val);
     void popBack();
 
+    void clear();
+    void safeClear();
+
     T& operator[](S i) const;
     S getSize() const;
 };
@@ -62,10 +65,33 @@ inline void Vector<T, S>::pushBack(const T &val)
 }
 
 template <typename T, typename S>
+inline void Vector<T, S>::pushBack(T &&val)
+{
+    if (size >= capacity)
+        expand();
+    data[size++] = std::move(val);
+}
+
+template <typename T, typename S>
 inline void Vector<T, S>::popBack()
 {
     if (size != 0)
         --size;
+}
+
+template <typename T, typename S>
+inline void Vector<T, S>::clear()
+{
+    size = 0;
+}
+
+template <typename T, typename S>
+inline void Vector<T, S>::safeClear()
+{
+    delete[] data;
+    data = new T[VECTOR_BASE_CAPACITY];
+    capacity = VECTOR_BASE_CAPACITY;
+    size = 0;
 }
 
 template <typename T, typename S>
