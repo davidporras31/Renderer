@@ -1,6 +1,6 @@
 #include "ShaderBase.h"
 
-bool* ShaderBase::supportBinaryShaders;
+bool *ShaderBase::supportBinaryShaders;
 
 bool ShaderBase::checkBinaryShaderSupport()
 {
@@ -13,7 +13,7 @@ bool ShaderBase::checkBinaryShaderSupport()
     return *ShaderBase::supportBinaryShaders;
 }
 
-std::string* ShaderBase::loadFile(const char *path)
+std::string *ShaderBase::loadFile(const char *path)
 {
     std::ifstream file(path, std::ios::in);
     if (!file.is_open())
@@ -21,7 +21,7 @@ std::string* ShaderBase::loadFile(const char *path)
     file.seekg(0, std::ios::end);
     size_t size = file.tellg();
     file.seekg(0, std::ios::beg);
-    std::string* content = new std::string();
+    std::string *content = new std::string();
     content->resize(size);
     file.read(&content->operator[](0), size);
     file.close();
@@ -32,12 +32,12 @@ bool ShaderBase::neadRebuild(const std::vector<std::pair<const char *, GLenum>> 
 {
     if (!checkBinaryShaderSupport())
         return true;
-    
-    std::string binFilePath( binaryPath + '/' + name + ".glbin");
+
+    std::string binFilePath(binaryPath + '/' + name + ".glbin");
     if (!std::filesystem::exists(binFilePath))
         return true;
     std::filesystem::file_time_type binFileTime = std::filesystem::last_write_time(binFilePath);
-    for (const auto& shader : shaders)
+    for (const auto &shader : shaders)
     {
         std::filesystem::file_time_type shaderFileTime = std::filesystem::last_write_time(shader.first);
         if (shaderFileTime > binFileTime)
@@ -47,7 +47,7 @@ bool ShaderBase::neadRebuild(const std::vector<std::pair<const char *, GLenum>> 
 }
 
 ShaderBase::ShaderBase(const std::string &name)
-: name(name)
+    : name(name)
 {
     this->ID = glCreateProgram();
     if (this->ID == 0)
@@ -96,6 +96,11 @@ void ShaderBase::setVec2(const std::string &name, const glm::vec2 &value)
     glUniform2fv(getUniformLocation(name), 1, &value[0]);
 }
 
+void ShaderBase::setVec3(const std::string &name, const glm::vec3 &value)
+{
+    glUniform3fv(getUniformLocation(name), 1, &value[0]);
+}
+
 void ShaderBase::setVec4(const std::string &name, const glm::vec4 &value)
 {
     glUniform4fv(getUniformLocation(name), 1, &value[0]);
@@ -106,11 +111,74 @@ void ShaderBase::setMat4(const std::string &name, const glm::mat4 &mat)
     glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
+void ShaderBase::setMaterial(const std::string &name, const Material &material)
+{
+    if (std::holds_alternative<glm::vec3>(material.albedo))
+    {
+        setVec3(name + ".albedo", std::get<glm::vec3>(material.albedo));
+    }
+    else
+    {
+        const Texture &tex = std::get<Texture>(material.albedo);
+        tex.use(0);
+        setInt(name + ".albedoMap", 0);
+    }
+    if (std::holds_alternative<float>(material.metallic))
+    {
+        setFloat(name + ".metallic", std::get<float>(material.metallic));
+    }
+    else
+    {
+        const Texture &tex = std::get<Texture>(material.metallic);
+        tex.use(1);
+        setInt(name + ".metallicMap", 1);
+    }
+    if (std::holds_alternative<float>(material.roughness))
+    {
+        setFloat(name + ".roughness", std::get<float>(material.roughness));
+    }
+    else
+    {
+        const Texture &tex = std::get<Texture>(material.roughness);
+        tex.use(2);
+        setInt(name + ".roughnessMap", 2);
+    }
+    if (std::holds_alternative<float>(material.ao))
+    {
+        setFloat(name + ".ao", std::get<float>(material.ao));
+    }
+    else
+    {
+        const Texture &tex = std::get<Texture>(material.ao);
+        tex.use(3);
+        setInt(name + ".aoMap", 3);
+    }
+    if (std::holds_alternative<glm::vec3>(material.emissive))
+    {
+        setVec3(name + ".emissive", std::get<glm::vec3>(material.emissive));
+    }
+    else
+    {
+        const Texture &tex = std::get<Texture>(material.emissive);
+        tex.use(4);
+        setInt(name + ".emissiveMap", 4);
+    }
+    if (material.normalMap.has_value())
+    {
+        material.normalMap->use(5);
+        setInt(name + ".normalMap", 5);
+    }
+    else
+    {
+        setInt(name + ".normalMap", -1); // Indicate no normal map
+    }
+}
+
 void ShaderBase::addShader(const char *path, GLenum shaderType)
 {
-    std::string* source = loadFile(path);
+    std::string *source = loadFile(path);
     unsigned int shader = glCreateShader(shaderType);
-    const GLchar* src = source->c_str();
+    const GLchar *src = source->c_str();
     glShaderSource(shader, 1, &src, nullptr);
     glCompileShader(shader);
     GLint success;
@@ -151,7 +219,7 @@ void ShaderBase::saveBinary(const char *filename)
     std::vector<char> binary(length);
     GLenum format = 0;
     glGetProgramBinary(this->ID, length, nullptr, &format, binary.data());
-    file.write(reinterpret_cast<const char*>(&format), sizeof(GLenum));
+    file.write(reinterpret_cast<const char *>(&format), sizeof(GLenum));
     file.write(binary.data(), length);
     file.close();
 }
@@ -167,7 +235,7 @@ void ShaderBase::loadBinary(const char *filename)
     if ((GLenum)size <= sizeof(GLenum))
         throw std::runtime_error("Invalid binary shader file");
     GLenum format = 0;
-    file.read(reinterpret_cast<char*>(&format), sizeof(GLenum));
+    file.read(reinterpret_cast<char *>(&format), sizeof(GLenum));
     std::vector<char> binary(size - sizeof(GLenum));
     file.read(binary.data(), size - sizeof(GLenum));
     file.close();

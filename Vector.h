@@ -2,6 +2,7 @@
 #define VECTOR_H
 
 #include <cstring>
+#include <utility>
 
 #ifndef VECTOR_BASE_CAPACITY
 #define VECTOR_BASE_CAPACITY 8
