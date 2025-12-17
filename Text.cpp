@@ -16,10 +16,10 @@ void Text::draw(ShaderProgram* shader)
     for (auto &&i : chars)
     {
         i.texture->use();
+        shader->setInt("material.albedoMap", 0);
         shader->setMat4("model", i.square.getTransform());
         i.square.draw(shader);
     }
-    
 }
 
 void Text::setColor(const Color &color)

@@ -1,11 +1,26 @@
 #version 430 core
+
+struct Material {
+    vec3 albedo;
+    sampler2D albedoMap;
+    float metallic;
+    sampler2D metallicMap;
+    float roughness;
+    sampler2D roughnessMap;
+    float ao;
+    sampler2D aoMap;
+    vec3 emissive;
+    sampler2D emissiveMap;
+    sampler2D normalMap;
+};
+
 in vec2 uv;
 
 out vec4 FragColor;
 
-uniform sampler2D texture1;
+uniform Material material;
 
 void main()
 {
-    FragColor = texture(texture1,uv);
+    FragColor = texture(material.albedoMap, uv);
 }

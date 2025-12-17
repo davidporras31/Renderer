@@ -4,15 +4,15 @@
 
 #include "Drawable.h"
 #include "ShaderProgram.h"
-#include "Texture.h"
+#include "Material.h"
 
 struct DrawCall
 {
     Drawable* drawable;
     ShaderProgram* custom_shader;
-    std::vector<Texture*> textures;
-    DrawCall(Drawable* drawable, ShaderProgram* custom_shader = nullptr):
-    drawable(drawable), custom_shader(custom_shader){}
+    Material* material;
+    DrawCall(Drawable* drawable, ShaderProgram* custom_shader = nullptr, Material* material = nullptr):
+    drawable(drawable), custom_shader(custom_shader), material(material){}
 };
 
 

@@ -17,7 +17,7 @@ std::string *ShaderBase::loadFile(const char *path)
 {
     std::ifstream file(path, std::ios::in);
     if (!file.is_open())
-        throw std::runtime_error(std::string("Could not open file: ") + path);
+        throw std::runtime_error("Could not open file: " + std::string(path) + " for shader: " + name);
     file.seekg(0, std::ios::end);
     size_t size = file.tellg();
     file.seekg(0, std::ios::beg);
@@ -51,7 +51,7 @@ ShaderBase::ShaderBase(const std::string &name)
 {
     this->ID = glCreateProgram();
     if (this->ID == 0)
-        throw std::runtime_error("Failed to create shader program");
+        throw std::runtime_error("Failed to create shader program " + name);
 }
 
 ShaderBase::~ShaderBase()
@@ -71,7 +71,7 @@ int ShaderBase::getUniformLocation(const std::string &uniformName)
         return it->second;
     int location = glGetUniformLocation(this->ID, uniformName.c_str());
     if (location == -1)
-        throw std::runtime_error("Could not find uniform: " + uniformName);
+        throw std::runtime_error("Could not find uniform: " + uniformName + " in shader: " + name);
     uniformLocations[uniformName] = location;
     return location;
 }
@@ -187,7 +187,7 @@ void ShaderBase::addShader(const char *path, GLenum shaderType)
     {
         char infoLog[512];
         glGetShaderInfoLog(shader, 512, nullptr, infoLog);
-        throw std::runtime_error(std::string("Shader compilation failed: ") + infoLog);
+        throw std::runtime_error(std::string("Shader compilation failed: ") + infoLog + " in file: " + std::string(path) + " for shader: " + name);
     }
     delete source;
     glAttachShader(this->ID, shader);
@@ -203,7 +203,7 @@ void ShaderBase::link()
     {
         char infoLog[512];
         glGetProgramInfoLog(this->ID, 512, nullptr, infoLog);
-        throw std::runtime_error(std::string("Shader linking failed: ") + infoLog);
+        throw std::runtime_error(std::string("Shader linking failed: ") + infoLog + " in shader: " + name);
     }
 }
 
@@ -211,11 +211,11 @@ void ShaderBase::saveBinary(const char *filename)
 {
     std::ofstream file(std::string(filename) + '/' + name + ".glbin", std::ios::binary);
     if (!file.is_open())
-        throw std::runtime_error("Could not open file to save binary shader");
+        throw std::runtime_error("Could not open file to save binary shader: " + name);
     GLint length = 0;
     glGetProgramiv(this->ID, GL_PROGRAM_BINARY_LENGTH, &length);
     if (length <= 0)
-        throw std::runtime_error("Could not get binary shader length");
+        throw std::runtime_error("Could not get binary shader length: " + name);
     std::vector<char> binary(length);
     GLenum format = 0;
     glGetProgramBinary(this->ID, length, nullptr, &format, binary.data());
@@ -228,12 +228,12 @@ void ShaderBase::loadBinary(const char *filename)
 {
     std::ifstream file(std::string(filename) + '/' + name + ".glbin", std::ios::binary);
     if (!file.is_open())
-        throw std::runtime_error("Could not open file to load binary shader");
+        throw std::runtime_error("Could not open file to load binary shader: " + name);
     file.seekg(0, std::ios::end);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
     if ((GLenum)size <= sizeof(GLenum))
-        throw std::runtime_error("Invalid binary shader file");
+        throw std::runtime_error("Invalid binary shader file: " + name);
     GLenum format = 0;
     file.read(reinterpret_cast<char *>(&format), sizeof(GLenum));
     std::vector<char> binary(size - sizeof(GLenum));
@@ -246,6 +246,6 @@ void ShaderBase::loadBinary(const char *filename)
     {
         char infoLog[512];
         glGetProgramInfoLog(this->ID, 512, nullptr, infoLog);
-        throw std::runtime_error(std::string("Failed to load binary shader: ") + infoLog);
+        throw std::runtime_error(std::string("Failed to load binary shader: ") + infoLog + " in shader: " + name);
     }
 }

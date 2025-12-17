@@ -87,22 +87,21 @@ int main() {   // glfw: initialize and configure
             "./shaders");
 
 
+        Material material = Material();
         Texture texture;
         texture.load("test/img.png");
+        material.albedo = std::move(texture);
+
 
         render_state.push_back(DrawCall(&square));
         render_state.push_back(DrawCall(&cube));
         render_state.push_back(DrawCall(&triangleTest));
         render_state.push_back(DrawCall(&text,&textShaderProgram));
 
-        for (auto &&i : render_state)
-        {
-            i.textures.push_back(&texture);
-        }
         
-            
         for (auto &&i : render_state)
         {
+            i.material = &material;
             forwardGeometry->pushDrawCall(&i);
         }
         // render loop

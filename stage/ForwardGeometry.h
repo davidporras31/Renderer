@@ -5,6 +5,7 @@
 #include "../Vector.h"
 #include "../Camera.h"
 #include "../ShaderProgram.h"
+#include "../Material.h"
 
 #ifndef FORWARDGEOMETRY_SHADER_PATH
 #define FORWARDGEOMETRY_SHADER_PATH "./shaders/forward_geometry_shader"
@@ -16,6 +17,7 @@ class ForwardGeometry : public RendererStage
         Vector<DrawCall*,unsigned int> drawCalls;
         Camera* camera;
         ShaderProgram* defaultShader;
+        Material defaultMaterial;
     public:
         ~ForwardGeometry() {
             delete defaultShader;
@@ -32,6 +34,8 @@ class ForwardGeometry : public RendererStage
                     {FORWARDGEOMETRY_SHADER_PATH ".fs", GL_FRAGMENT_SHADER}
                 },
                 "./shaders");
+
+            defaultMaterial = Material();
         }
 
         void execute(Renderer* renderer) override {

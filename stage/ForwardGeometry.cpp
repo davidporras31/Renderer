@@ -11,8 +11,11 @@ void ForwardGeometry::draw(DrawCall *drawCall)
     shader->setMat4("view", camera->getTransform());
     shader->setMat4("model", drawCall->drawable->getTransform());
 
-    for(size_t i = 0; i < drawCall->textures.size(); ++i) {
-        drawCall->textures[i]->use(i);
+    if(drawCall->material) {
+        shader->setMaterial("material", *drawCall->material);
+    }
+    else {
+        shader->setMaterial("material", defaultMaterial);
     }
 
     drawCall->drawable->draw(shader);
