@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <utility>
+#include <assert.h>
 
 #ifndef VECTOR_BASE_CAPACITY
 #define VECTOR_BASE_CAPACITY 8
@@ -10,6 +11,9 @@
 #ifndef VECTOR_GROW_FACTOR
 #define VECTOR_GROW_FACTOR capacity * 3/4
 #endif
+
+#define VECTOR_SLIM_TYPE unsigned long
+#define VECTOR_HEAVY_TYPE unsigned long long
 
 template <typename T, typename S = size_t>
 class Vector
@@ -19,7 +23,7 @@ private:
     S capacity;
     S size;
     void expand();
-
+    void growTo(const S newSize);
 public:
     Vector();
     ~Vector();
@@ -28,6 +32,7 @@ public:
     void pushBack(T&& val);
     void popBack();
 
+    void reserve(const S newCapacity);
     void clear();
     void safeClear();
 
@@ -38,9 +43,26 @@ public:
 template <typename T, typename S>
 inline void Vector<T, S>::expand()
 {
-    capacity += VECTOR_GROW_FACTOR;
+    growTo(capacity + VECTOR_GROW_FACTOR);
+}
+
+template <typename T, typename S>
+inline void Vector<T, S>::growTo(S newSize)
+{
+    capacity = newSize;
     T *tmp = new T[capacity];
-    memcpy(tmp, data, size * sizeof(T));
+    if constexpr (std::is_trivially_copyable<T>::value)
+    {
+        std::memcpy(tmp, data, sizeof(T) * size);
+    }
+    else
+    {
+        for (S i = 0; i < size; ++i)
+        {
+            tmp[i] = std::move(data[i]);
+        }
+    }
+    
     delete[] data;
     data = tmp;
 }
@@ -78,6 +100,15 @@ inline void Vector<T, S>::popBack()
 {
     if (size != 0)
         --size;
+}
+
+template <typename T, typename S>
+inline void Vector<T, S>::reserve(S newCapacity)
+{
+    if (newCapacity > capacity)
+    {
+        growTo(newCapacity);
+    }
 }
 
 template <typename T, typename S>

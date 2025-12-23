@@ -5,6 +5,7 @@
 #include "Vector.h"
 #include <glad/gl.h>
 #include <glm/glm.hpp>
+#include <assimp/mesh.h>
 
 class Mesh : public Drawable
 {
@@ -17,11 +18,14 @@ private:
     };
     Vector<Vertex, unsigned int> vertices;
     Vector<unsigned int, unsigned int> indices;
-    unsigned int VAO, VBO, EBO;
+    unsigned int VAO, VBO, EBO, size, materialIndex;
 public:
     Mesh() = default;
-    virtual ~Mesh() = default;
+    Mesh(aiMesh* mesh);
+    virtual ~Mesh();
     void draw(ShaderProgram *shader) override;
+
+    unsigned int getMaterialIndex() const { return materialIndex; }
 };
 
 #endif // MESH_H

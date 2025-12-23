@@ -16,4 +16,5 @@ struct Material
     std::optional<Texture> normalMap;
 };
 
+
 #endif // MATERIAL_H

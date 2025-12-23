@@ -6,7 +6,7 @@ CXX = g++
 # select compiler flags
 CXXFLAGS = -std=c++17 -g -Wall
 
-INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include -Ilib/assimp/include
+INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include -Ilib/assimp/include -Ilib/assimp/build/include
 LIB_GLFW = lib/glfw/build/src/libglfw.so
 LIB_FT2 = lib/ft2/objs/.libs/libfreetype.so
 LIB_ASSIMP = lib/assimp/build/bin/libassimp.so.6.0.2
@@ -191,7 +191,9 @@ BUILD_FILES = \
 	stage/ForwardGeometry\
 	Font\
 	Vector\
-	Text
+	Text\
+	Model\
+	Mesh
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
 build: bin/main.exe

@@ -28,6 +28,7 @@ Renderer::Renderer(GLADloadfunc load)
     
     stbi_flip_vertically_on_write(1);
     Font::init();
+    Model::init();
     glEnable(GL_DEPTH_TEST);
 }
 

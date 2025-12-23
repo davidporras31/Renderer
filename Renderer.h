@@ -21,6 +21,7 @@
 #include "Color.h"
 #include "Font.h"
 #include "RendererStage.h"
+#include "Model.h"
 
 class Renderer {
 private:

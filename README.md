@@ -44,3 +44,4 @@ This project is licensed under the [MIT License](LICENSE).
 - [GLM](https://github.com/g-truc/glm) for mathematics operations
 - [stb](https://github.com/nothings/stb) for image loading
 - [FreeType](https://freetype.org/) for font rendering
+- [Assimp](https://github.com/assimp/assimp) for model loading

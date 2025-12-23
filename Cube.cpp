@@ -26,7 +26,7 @@ Cube::Cube()
     glGenBuffers(1,&EBO);
 
     glBindVertexArray(VAO);
-// 2. copy our vertices array in a vertex buffer for OpenGL to use
+    // 2. copy our vertices array in a vertex buffer for OpenGL to use
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     // 3. copy our index array in a element buffer for OpenGL to use
