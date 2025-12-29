@@ -7,8 +7,8 @@ void Model::processNode(aiNode *node, const aiScene *scene)
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.pushBack(Mesh(mesh));
-        meshes[meshes.getSize() - 1].setParent(this);
+        meshes.emplaceBack(mesh);
+        meshes.last().setParent(this);
     }
 
     for (unsigned int i = 0; i < node->mNumChildren; i++)

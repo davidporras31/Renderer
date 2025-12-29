@@ -91,9 +91,7 @@ int main()
                                         "./shaders");
 
         Material material = Material();
-        Texture texture;
-        texture.load("test/img.png");
-        material.albedo = std::move(texture);
+        material.albedo.emplace<Texture>().load("test/img.png");
 
         render_state.push_back(DrawCall(&square));
         render_state.push_back(DrawCall(&cube));

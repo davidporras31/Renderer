@@ -9,7 +9,7 @@
 #define VECTOR_BASE_CAPACITY 8
 #endif
 #ifndef VECTOR_GROW_FACTOR
-#define VECTOR_GROW_FACTOR capacity * 3/4
+#define VECTOR_GROW_FACTOR capacity * 3 / 4
 #endif
 
 #define VECTOR_SLIM_TYPE unsigned long
@@ -24,19 +24,24 @@ private:
     S size;
     void expand();
     void growTo(const S newSize);
+
 public:
     Vector();
     ~Vector();
 
-    void pushBack(const T& val);
-    void pushBack(T&& val);
+    void pushBack(const T &val);
+    void pushBack(T &&val);
     void popBack();
+
+    template <typename... Args>
+    void emplaceBack(Args &&...args);
 
     void reserve(const S newCapacity);
     void clear();
     void safeClear();
 
-    T& operator[](S i) const;
+    T &operator[](S i) const;
+    T &last() const;
     S getSize() const;
 };
 
@@ -62,7 +67,7 @@ inline void Vector<T, S>::growTo(S newSize)
             tmp[i] = std::move(data[i]);
         }
     }
-    
+
     delete[] data;
     data = tmp;
 }
@@ -133,8 +138,24 @@ inline T &Vector<T, S>::operator[](S i) const
 }
 
 template <typename T, typename S>
+inline T &Vector<T, S>::last() const
+{
+    return data[size - 1];
+}
+
+template <typename T, typename S>
 inline S Vector<T, S>::getSize() const
 {
     return size;
 }
+
+template <typename T, typename S>
+template <typename... Args>
+inline void Vector<T, S>::emplaceBack(Args &&...args)
+{
+    if (size >= capacity)
+        expand();
+    new (&data[size++]) T(std::forward<Args>(args)...);
+}
+
 #endif // VECTOR_H

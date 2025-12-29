@@ -17,8 +17,6 @@ private:
     void processNode(aiNode* node, const aiScene* scene);
     Material loadMaterial(aiMaterial* aiMat);
 public:
-    Model() = default;
-    virtual ~Model() = default;
 
     static void init();
 
