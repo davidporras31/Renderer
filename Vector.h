@@ -4,6 +4,7 @@
 #include <cstring>
 #include <utility>
 #include <assert.h>
+#include "Test.hpp"
 
 #ifndef VECTOR_BASE_CAPACITY
 #define VECTOR_BASE_CAPACITY 8
@@ -43,6 +44,7 @@ public:
     T &operator[](S i) const;
     T &last() const;
     S getSize() const;
+    S getCapacity() const;
 };
 
 template <typename T, typename S>
@@ -147,6 +149,12 @@ template <typename T, typename S>
 inline S Vector<T, S>::getSize() const
 {
     return size;
+}
+
+template <typename T, typename S>
+inline S Vector<T, S>::getCapacity() const
+{
+    return capacity;
 }
 
 template <typename T, typename S>

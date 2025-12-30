@@ -1,4 +1,5 @@
 #include <iostream>
+#include "../Test.hpp"
 #include "../Renderer.h"
 #include "../stage/ForwardGeometry.h"
 #include <GLFW/glfw3.h>
@@ -21,7 +22,11 @@ const unsigned int SCR_HEIGHT = 600;
 static Renderer *renderer;
 
 int main()
-{ // glfw: initialize and configure
+{
+    #ifdef TESTMODE
+    return 0;
+    #endif
+    // glfw: initialize and configure
     // ------------------------------
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

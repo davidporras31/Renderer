@@ -31,9 +31,12 @@ else
 	endif
 endif
 
-.PHONY: all clean
+.PHONY: all clean test
 
 all: config build
+
+test: TEST = -DTESTMODE=1
+test: config build
 
 FILESTRUCTURE = lib bin obj obj/test obj/stage
 
@@ -45,9 +48,11 @@ clean:
 config: config-file lib-downloads
 	@echo "Configuration complite."
 
-config-file:
-	@echo "Creating file structure..."
-	@mkdir -p $(FILESTRUCTURE)
+config-file: $(FILESTRUCTURE)
+	@echo "all necessary directories created."
+
+$(FILESTRUCTURE):
+	@mkdir -p $@
 
 lib-downloads: lib/glad/build/src/gl.c lib/glfw/installed.flag lib/glm/installed.flag lib/stb/installed.flag lib/ft2/installed.flag lib/assimp/installed.flag
 	@echo "lib downloads complite."
@@ -136,18 +141,24 @@ ifeq ($(OSFLAG),WIN64)
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN64.zip -d lib/glfw
 	@mv lib/glfw/glfw-3.4.bin.WIN32/lib-mingw-64/* lib/glfw/build
 	@echo "glfw build complite."
+	@echo "not yet implemented for win64"
+	@exit 1
 endif
 ifeq ($(OSFLAG),WIN32)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN32.zip -d lib/glfw
 	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-mingw-32/* lib/glfw/build
 	@echo "glfw build complite."
+	@echo "not yet implemented for win32"
+	@exit 1
 endif
 ifeq ($(OSFLAG),MACOS)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN64.zip -d lib/glfw
 	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-arm64/* lib/glfw/build
 	@echo "glfw build complite."
+	@echo "not yet implemented for macos"
+	@exit 1
 endif
 ifeq ($(OSFLAG),LINUX)
 	@echo "building glfw..."
@@ -203,7 +214,7 @@ build: bin/main.exe
 	@echo "Build complite."
 
 bin/main.exe: test/main.cpp bin/libglfw.so bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES)
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) lib/glad/build/src/gl.c
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) lib/glad/build/src/gl.c
 
 bin/libglfw.so:
 	@cp $(LIB_GLFW) bin/libglfw.so
@@ -214,4 +225,4 @@ bin/libassimp.so.6:
 
 $(OBJECTS_FILES): obj/%.o: %.cpp %.h
 	@echo "Compiling $<..."
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -c $< -o $@
