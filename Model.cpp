@@ -30,9 +30,7 @@ Material Model::loadMaterial(aiMaterial *aiMat)
         material.albedo = glm::vec3(color.r, color.g, color.b);
     }else if (aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
     {
-        Texture albedoTex;
-        albedoTex.load(texPath.C_Str());
-        material.albedo = albedoTex;
+        material.albedo.emplace<Texture>().load(texPath.C_Str());
     }
     
     if (aiMat->Get(AI_MATKEY_METALLIC_FACTOR, value) == AI_SUCCESS)
@@ -40,9 +38,7 @@ Material Model::loadMaterial(aiMaterial *aiMat)
         material.metallic = value;
     }else if (aiMat->GetTexture(aiTextureType_METALNESS, 0, &texPath) == AI_SUCCESS)
     {
-        Texture metallicTex;
-        metallicTex.load(texPath.C_Str());
-        material.metallic = metallicTex;
+        material.metallic.emplace<Texture>().load(texPath.C_Str());
     }
     
     if (aiMat->Get(AI_MATKEY_ROUGHNESS_FACTOR, value) == AI_SUCCESS)
@@ -50,9 +46,7 @@ Material Model::loadMaterial(aiMaterial *aiMat)
         material.roughness = value;
     }else if (aiMat->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &texPath) == AI_SUCCESS)
     {
-        Texture roughnessTex;
-        roughnessTex.load(texPath.C_Str());
-        material.roughness = roughnessTex;
+        material.roughness.emplace<Texture>().load(texPath.C_Str());
     }
     
 #define AI_MATKEY_AMBIENT_OCCLUSION_FACTOR "$mat.ao_factor", 0, 0
@@ -61,25 +55,19 @@ Material Model::loadMaterial(aiMaterial *aiMat)
         material.ao = value;
     }else if (aiMat->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &texPath) == AI_SUCCESS)
     {
-        Texture aoTex;
-        aoTex.load(texPath.C_Str());
-        material.ao = aoTex;
+        material.ao.emplace<Texture>().load(texPath.C_Str());
     }
     if (aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_EMISSIVE, &color) == AI_SUCCESS)
     {
         material.emissive = glm::vec3(color.r, color.g, color.b);
     }else if (aiMat->GetTexture(aiTextureType_EMISSIVE, 0, &texPath) == AI_SUCCESS)
     {
-        Texture emissiveTex;
-        emissiveTex.load(texPath.C_Str());
-        material.emissive = emissiveTex;
+        material.emissive.emplace<Texture>().load(texPath.C_Str());
     }
 
     if (aiMat->GetTexture(aiTextureType_NORMALS, 0, &texPath) == AI_SUCCESS)
     {
-        Texture normalMap;
-        normalMap.load(texPath.C_Str());
-        material.normalMap = normalMap;
+        material.normalMap.emplace().load(texPath.C_Str());
     }
 
     return material;

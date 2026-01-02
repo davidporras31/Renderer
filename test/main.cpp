@@ -83,6 +83,7 @@ int main()
         model.open("test/model/Untitled.obj");
         model.setPosition({300, 100, -150});
         model.setScale({50.0f, 50.0f, 50.0f});
+        model.setRotation({45.0f, 45.0f, 0.0f});
 
         std::vector<DrawCall> render_state;
 
