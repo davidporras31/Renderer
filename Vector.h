@@ -30,19 +30,31 @@ public:
     Vector();
     ~Vector();
 
+    /// @brief Adds an element to the end of the vector.
     void pushBack(const T &val);
+    /// @brief Adds an element to the end of the vector.
     void pushBack(T &&val);
+    /// @brief Removes the last element without calling its destructor.
     void popBack();
+    /// @brief Removes the last element and calls its destructor.
+    void safePopBack();
 
+    /// @brief Constructs an element in-place at the end of the vector.
+    /// @tparam Args Types of the arguments to forward to the constructor of T.
     template <typename... Args>
     void emplaceBack(Args &&...args);
 
+    /// @brief Reserves memory for at least newCapacity elements.
+    /// @param newCapacity The new capacity to reserve.
     void reserve(const S newCapacity);
+    /// @brief Clears the vector without calling destructors.
     void clear();
+    /// @brief Clears the vector and calls destructors.
     void safeClear();
 
     T &operator[](S i) const;
     T &last() const;
+    
     S getSize() const;
     S getCapacity() const;
 };
@@ -110,6 +122,15 @@ inline void Vector<T, S>::popBack()
 }
 
 template <typename T, typename S>
+inline void Vector<T, S>::safePopBack()
+{
+    if (size != 0)
+    {
+        std::destroy_at(std::addressof(data[--size]));
+    }
+}
+
+template <typename T, typename S>
 inline void Vector<T, S>::reserve(S newCapacity)
 {
     if (newCapacity > capacity)
@@ -127,9 +148,9 @@ inline void Vector<T, S>::clear()
 template <typename T, typename S>
 inline void Vector<T, S>::safeClear()
 {
-    delete[] data;
-    data = new T[VECTOR_BASE_CAPACITY];
-    capacity = VECTOR_BASE_CAPACITY;
+    auto first = std::addressof(data[0]);
+    auto last = std::addressof(data[capacity - 1]);
+    std::destroy(first, last + 1);
     size = 0;
 }
 

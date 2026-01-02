@@ -10,6 +10,10 @@
 #include <glm/glm.hpp>
 #include <map>
 #include "Texture.h"
+#include "Test.hpp"
+#ifdef TESTMODE
+#include <GLFW/glfw3.h>
+#endif
 
 #include "Color.h"
 #include "ShaderProgram.h"
@@ -33,6 +37,7 @@ public:
     FT_Face* getFace();
     Character genChar(const char c);
     static void init();
+    static void uninit();
     static const char* errorName(FT_Error error);
 };
 

@@ -42,23 +42,23 @@
 #define REC_FALSE(value) \
     if (value)           \
         throw Test::TestFailure(__FILE__, "==", #value, "false");
-#define REC_NULL(value) \
+#define REC_NULL(value)   \
     if (value != nullptr) \
         throw Test::TestFailure(__FILE__, "==", #value, "nullptr");
 #define REC_NOT_NULL(value) \
     if (value == nullptr)   \
         throw Test::TestFailure(__FILE__, "!=", #value, "nullptr");
 #define REC_LEQL(value, target) \
-    if (value > target)      \
+    if (value > target)         \
         throw Test::TestFailure(__FILE__, "<=", #value, #target);
 #define REC_GEQL(value, target) \
-    if (value < target)      \
+    if (value < target)         \
         throw Test::TestFailure(__FILE__, ">=", #value, #target);
 #define REC_LSS(value, target) \
-    if (value >= target)     \
+    if (value >= target)       \
         throw Test::TestFailure(__FILE__, "<", #value, #target);
 #define REC_GTR(value, target) \
-    if (value <= target)     \
+    if (value <= target)       \
         throw Test::TestFailure(__FILE__, ">", #value, #target);
 
 /**
@@ -80,16 +80,23 @@
         catch (const Test::TestFailure &e)                                                   \
         {                                                                                    \
             std::cerr << e.what() << std::endl;                                              \
+            throw std::runtime_error("Test case failed.");                                   \
             return;                                                                          \
         }                                                                                    \
     }                                                                                        \
     static int var_name __attribute((unused)) = (CONCATENATE(calling_, function_name)(), 0); \
     static void function_name()
 #else // TESTMODE
-#define REC_EQL(value, target)
-#define REC_NEQ(value, target)
+#define REC_EQL(value, target) 
+#define REC_NEQ(value, target) 
 #define REC_TRUE(value)
 #define REC_FALSE(value)
+#define REC_NULL(value)
+#define REC_NOT_NULL(value)
+#define REC_LEQL(value, target)
+#define REC_GEQL(value, target)
+#define REC_LSS(value, target)
+#define REC_GTR(value, target)
 #define TEST(test_name, test_description) static void inline UNIQUE_IDENTIFIER(_unused_)()
 
 #endif // TESTMODE

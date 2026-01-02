@@ -66,9 +66,12 @@ TEST("Vector", "clear and safeClear functionality")
     {
         REC_EQL(vec[i], i);
     }
+    #ifdef TESTMODE //just to remove unused variable warning
+    size_t oldCapacity = vec.getCapacity();
+    #endif  // TESTMODE
     vec.safeClear();
     REC_EQL(vec.getSize(), 0);
-    REC_LEQL(vec.getCapacity(), 16); // assuming VECTOR_BASE_CAPACITY is 16
+    REC_LEQL(vec.getCapacity(), oldCapacity);
 }
 TEST("Vector", "pushBack with rvalue functionality")
 {
@@ -106,4 +109,42 @@ TEST("Vector", "operator[] functionality")
     {
         REC_EQL(vec[i], i * 1.5);
     }
+}
+TEST("Vector", "safePopBack functionality")
+{
+    Vector<int> vec;
+    for (int i = 0; i < 50; ++i)
+    {
+        vec.pushBack(i);
+    }
+    REC_EQL(vec.getSize(), 50);
+    vec.safePopBack();
+    REC_EQL(vec.getSize(), 49);
+}
+TEST("Vector", "safePopBack with non-trivially destructible type")
+{
+    Vector<std::string> vec;
+    vec.pushBack("Hello");
+    vec.pushBack("World");
+    REC_EQL(vec.getSize(), 2);
+    vec.safePopBack();
+    REC_EQL(vec.getSize(), 1);
+}
+TEST("Vector", "safeClear with non-trivially destructible type")
+{
+    Vector<std::string> vec;
+    vec.pushBack("Hello");
+    vec.pushBack("World");
+    REC_EQL(vec.getSize(), 2);
+    vec.safeClear();
+    REC_EQL(vec.getSize(), 0);
+}
+TEST("Vector", "emplaceBack functionality")
+{
+    Vector<std::string> vec;
+    vec.emplaceBack("Hello");
+    vec.emplaceBack("World");
+    REC_EQL(vec.getSize(), 2);
+    REC_EQL(vec[0], "Hello");
+    REC_EQL(vec[1], "World");
 }
