@@ -16,8 +16,6 @@ private:
         glm::vec3 Normal;
         glm::vec2 TexCoords;
     };
-    Vector<Vertex, unsigned int> vertices;
-    Vector<unsigned int, unsigned int> indices;
     unsigned int VAO, VBO, EBO, size, materialIndex;
 public:
     Mesh() = default;

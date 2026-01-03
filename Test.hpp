@@ -5,7 +5,7 @@
 
 #include <stdexcept>
 #include <string>
-#include <iostream>
+#include <print>
 
 // Bassed on https://github.com/eyalroz/cpp-static-block/
 #ifndef CONCATENATE
@@ -72,7 +72,7 @@
     static void function_name();                                                             \
     static void CONCATENATE(calling_, function_name)()                                       \
     {                                                                                        \
-        std::cout << "Running: " << test_name << " - " << test_description << std::endl;     \
+        std::print("Running: {} - {}\n", test_name, test_description);                       \
         try                                                                                  \
         {                                                                                    \
             function_name();                                                                 \
@@ -87,8 +87,8 @@
     static int var_name __attribute((unused)) = (CONCATENATE(calling_, function_name)(), 0); \
     static void function_name()
 #else // TESTMODE
-#define REC_EQL(value, target) 
-#define REC_NEQ(value, target) 
+#define REC_EQL(value, target)
+#define REC_NEQ(value, target)
 #define REC_TRUE(value)
 #define REC_FALSE(value)
 #define REC_NULL(value)

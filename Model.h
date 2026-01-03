@@ -8,6 +8,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <print>
 
 class Model : public Drawable {
 private:
@@ -15,13 +16,15 @@ private:
     Vector<Material, unsigned int> materials;
     static Assimp::Importer* importer;
     void processNode(aiNode* node, const aiScene* scene);
-    Material loadMaterial(aiMaterial* aiMat);
+    void loadMaterial(aiMaterial* aiMat);
 public:
 
     static void init();
 
     void draw(ShaderProgram* shader) override;
     void open(const std::string& path);
+
+    Vector<Material, unsigned int>& getMaterials() { return materials; }
 };
 
 #endif // MODEL_H

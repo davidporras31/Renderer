@@ -1,4 +1,4 @@
-#include <iostream>
+#include <print>
 #include "../Test.hpp"
 #include "../Renderer.h"
 #include "../stage/ForwardGeometry.h"
@@ -23,9 +23,9 @@ static Renderer *renderer;
 
 int main()
 {
-    #ifdef TESTMODE
+#ifdef TESTMODE
     return 0;
-    #endif
+#endif
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -42,7 +42,7 @@ int main()
         GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
         if (window == NULL)
         {
-            std::cout << "Failed to create GLFW window" << std::endl;
+            std::print("Failed to create GLFW window\n");
             glfwTerminate();
             return -1;
         }
@@ -79,11 +79,18 @@ int main()
         text.setScale({50, 50, 1});
         text.setColor(ConstColor::Yellow);
 
-        Model model;
-        model.open("test/model/Untitled.obj");
-        model.setPosition({300, 100, -150});
-        model.setScale({50.0f, 50.0f, 50.0f});
-        model.setRotation({45.0f, 45.0f, 0.0f});
+        Model basicModel;
+        basicModel.open("test/model/Untitled.obj");
+        basicModel.setPosition({300, 100, -150});
+        basicModel.setScale({50.0f, 50.0f, 50.0f});
+        basicModel.setRotation({45.0f, 45.0f, 0.0f});
+
+        Model advancedModel;
+        stbi_set_flip_vertically_on_load(false);
+        advancedModel.open("test/WeaponSet/objfiles/Untitled.obj");
+        advancedModel.setPosition({600, 400, -300});
+        advancedModel.setScale(glm::vec3(2));
+        advancedModel.setRotation({90.0f, 0.0f, 0.0f});
 
         std::vector<DrawCall> render_state;
 
@@ -103,7 +110,8 @@ int main()
         render_state.push_back(DrawCall(&cube));
         render_state.push_back(DrawCall(&triangleTest));
         render_state.push_back(DrawCall(&text, &textShaderProgram));
-        render_state.push_back(DrawCall(&model));
+        render_state.push_back(DrawCall(&basicModel));
+        render_state.push_back(DrawCall(&advancedModel));
 
         for (auto &&i : render_state)
         {
@@ -160,7 +168,7 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
     {
-        std::cout << "capture" << std::endl;
+        std::print("capture\n");
         renderer->captureScreenshot("./test.png", GL_RGBA);
     }
 }

@@ -4,7 +4,7 @@
 # select compiler
 CXX = g++
 # select compiler flags
-CXXFLAGS = -std=c++17 -g -Wall
+CXXFLAGS = -std=c++23 -g -Wall
 
 INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include -Ilib/assimp/include -Ilib/assimp/build/include
 LIB_GLFW = lib/glfw/build/src/libglfw.so
