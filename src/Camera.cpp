@@ -1,4 +1,4 @@
-#include "Camera.h"
+#include "../include/Camera.h"
 
 Camera::Camera(float near, float far): near(near), far(far), dirty(true)
 {

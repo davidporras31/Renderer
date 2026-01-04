@@ -1,4 +1,4 @@
-#include "Vector.h"
+#include "../include/Vector.h"
 
 TEST("Vector", "Basic functionality")
 {

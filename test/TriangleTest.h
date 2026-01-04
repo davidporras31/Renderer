@@ -2,7 +2,7 @@
 #define TRIANGLETEST_H
 
 #include <glad/gl.h>
-#include "../Drawable.h"
+#include "../include/Drawable.h"
 
 
 class TriangleTest : public Drawable

@@ -1,4 +1,4 @@
-#include "ShaderProgram.h"
+#include "../include/ShaderProgram.h"
 
 ShaderProgram::ShaderProgram(const std::string &name, const std::vector<std::pair<const char*, GLenum>>& shaders, std::string binaryPath)
 : ShaderBase(name)

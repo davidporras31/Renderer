@@ -1,16 +1,16 @@
 #include <print>
-#include "../Test.hpp"
-#include "../Renderer.h"
-#include "../stage/ForwardGeometry.h"
+#include "../include/Test.hpp"
+#include "../include/Renderer.h"
+#include "../include/stage/ForwardGeometry.h"
 #include <GLFW/glfw3.h>
 #include "TriangleTest.h"
-#include "../OrthographicCamera.h"
-#include "../ShaderProgram.h"
-#include "../Texture.h"
-#include "../Square.h"
-#include "../Cube.h"
-#include "../Text.h"
-#include "../Model.h"
+#include "../include/OrthographicCamera.h"
+#include "../include/ShaderProgram.h"
+#include "../include/Texture.h"
+#include "../include/Square.h"
+#include "../include/Cube.h"
+#include "../include/Text.h"
+#include "../include/Model.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);

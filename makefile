@@ -189,7 +189,7 @@ lib/glfw/glfw-3.4.zip:
 BUILD_FILES = \
 	Renderer\
 	Transformable\
-	test/TriangleTest\
+	../test/TriangleTest\
 	Camera\
 	OrthographicCamera\
 	PerspectiveCamera\
@@ -223,6 +223,6 @@ bin/libfreetype.so:
 bin/libassimp.so.6:
 	@cp $(LIB_ASSIMP) bin/libassimp.so.6
 
-$(OBJECTS_FILES): obj/%.o: %.cpp %.h
+$(OBJECTS_FILES): obj/%.o: src/%.cpp include/%.h
 	@echo "Compiling $<..."
 	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -c $< -o $@

@@ -1,4 +1,4 @@
-#include "ForwardGeometry.h"
+#include "../../include/stage/ForwardGeometry.h"
 
 void ForwardGeometry::draw(DrawCall *drawCall)
 {

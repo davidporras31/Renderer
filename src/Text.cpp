@@ -1,4 +1,4 @@
-#include "Text.h"
+#include "../include/Text.h"
 
 Text::Text(Font *font, std::string text)
     :font(font),text(text),size(150),color(ConstColor::Black),dirty(true)

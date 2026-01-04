@@ -1,4 +1,4 @@
-#include "Font.h"
+#include "../include/Font.h"
 FT_Library Font::library;
 Font::Font(std::filesystem::path path)
 {

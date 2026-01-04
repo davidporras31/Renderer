@@ -1,4 +1,4 @@
-#include "ComputeShader.h"
+#include "../include/ComputeShader.h"
 
 ComputeShader::ComputeShader(const std::string &name, const char *computeShaderSource, const std::string &binaryPath)
 : ShaderBase(name)
