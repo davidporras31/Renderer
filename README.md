@@ -15,7 +15,7 @@ This project is inspired by [SFML](https://www.sfml-dev.org/) and the tutorials 
 - **Operating System**: Linux(for now)
 - **Dependencies**:
     - OpenGL
-    - C++17 or higher
+    - C++23 or higher
     - make
 
 ## Installation
@@ -32,7 +32,7 @@ This project is inspired by [SFML](https://www.sfml-dev.org/) and the tutorials 
 ## Usage
 Run the executable:
 ```bash
-./bin/renderer.exe
+./bin/main.out
 ```
 
 ## License
