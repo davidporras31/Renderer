@@ -19,7 +19,7 @@ private:
     unsigned int VAO, VBO, EBO, size, materialIndex;
 public:
     Mesh() = default;
-    Mesh(aiMesh* mesh);
+    Mesh(aiMesh* mesh, glm::vec3 *maxPos);
     virtual ~Mesh();
     void draw(ShaderProgram *shader) override;
 

@@ -31,6 +31,8 @@ TriangleTest::TriangleTest()
 
     glBindVertexArray(0); 
     glDeleteBuffers(1, &VBO);
+
+    setModelMaxSize(1.0f);
 }
 
 TriangleTest::~TriangleTest()

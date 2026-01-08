@@ -8,14 +8,13 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <print>
 
 class Model : public Drawable {
 private:
     Vector<Mesh, unsigned int> meshes;
     Vector<Material, unsigned int> materials;
     static Assimp::Importer* importer;
-    void processNode(aiNode* node, const aiScene* scene);
+    glm::vec3 processNode(aiNode* node, const aiScene* scene);
     void loadMaterial(aiMaterial* aiMat);
 public:
 

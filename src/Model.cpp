@@ -2,19 +2,25 @@
 
 Assimp::Importer *Model::importer = nullptr;
 
-void Model::processNode(aiNode *node, const aiScene *scene)
+glm::vec3 Model::processNode(aiNode *node, const aiScene *scene)
 {
+    glm::vec3 maxPos(0.0f);
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
-        meshes.emplaceBack(mesh);
+        meshes.emplaceBack(mesh, &maxPos);
         meshes.last().setParent(this);
     }
 
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene);
+        glm::vec3 childMaxPos = processNode(node->mChildren[i], scene);
+        maxPos.x = std::max(maxPos.x, childMaxPos.x);
+        maxPos.y = std::max(maxPos.y, childMaxPos.y);
+        maxPos.z = std::max(maxPos.z, childMaxPos.z);
     }
+
+    return maxPos;
 }
 
 void Model::loadMaterial(aiMaterial *aiMat)
@@ -111,7 +117,8 @@ void Model::open(const std::string &path)
         aiMaterial *aiMat = scene->mMaterials[i];
         loadMaterial(aiMat);
     }
-    processNode(scene->mRootNode, scene);
+    glm::vec3 maxPos = processNode(scene->mRootNode, scene);
+    setModelMaxSize(std::max(maxPos.x, std::max(maxPos.y, maxPos.z)));
 
     importer->FreeScene();
 }

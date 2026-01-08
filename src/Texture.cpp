@@ -62,3 +62,8 @@ void Texture::loadFromMemory(GLint format, int width, int height, unsigned char 
     if (mipmap)
         glGenerateMipmap(GL_TEXTURE_2D);
 }
+
+GLuint Texture::getID() const
+{
+    return ID;
+}

@@ -3,7 +3,7 @@
 Square::Square()
 {
     float vertices[] = {
-        // positions     // normals        // texture coords
+        // positions            // normals       // texture coords
         -1.0f,  +1.0f,   0.0f,  -1.0f,  +1.0f,   0.0f,       0.0f,1.0f,
         +1.0f,  +1.0f,   0.0f,  +1.0f,  +1.0f,   0.0f,       1.0f,1.0f,
         +1.0f,  -1.0f,   0.0f,  +1.0f,  -1.0f,   0.0f,       1.0f,0.0f,
@@ -35,8 +35,7 @@ Square::Square()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    //glDeleteBuffers(1,&VBO);
-    //glDeleteBuffers(1,&EBO);
+    setModelMaxSize(1.0f);
 }
 
 Square::~Square()

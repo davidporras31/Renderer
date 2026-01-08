@@ -14,6 +14,7 @@ struct Material
     std::variant<float, Texture> ao = 1.0f;
     std::variant<glm::vec3, Texture> emissive = glm::vec3(0.0f);
     std::optional<Texture> normalMap;
+    Material() = default;
 };
 
 

@@ -41,6 +41,9 @@ Cube::Cube()
     // texture coord attribute
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+
+    // set the maximum size of the model for rendering purposes
+    setModelMaxSize(1.0f);
 }
 
 Cube::~Cube()

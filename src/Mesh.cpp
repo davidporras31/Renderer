@@ -1,6 +1,7 @@
 #include "../include/Mesh.h"
 
-Mesh::Mesh(aiMesh *mesh)
+
+Mesh::Mesh(aiMesh *mesh, glm::vec3 *maxPos)
 {
     Vector<Vertex, unsigned int> vertices;
     Vector<unsigned int, unsigned int> indices;
@@ -10,6 +11,11 @@ Mesh::Mesh(aiMesh *mesh)
     {
         Vertex vertex;
         vertex.Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+
+        maxPos->x = std::max(maxPos->x, std::abs(vertex.Position.x));
+        maxPos->y = std::max(maxPos->y, std::abs(vertex.Position.y));
+        maxPos->z = std::max(maxPos->z, std::abs(vertex.Position.z));
+
         if (mesh->mNormals)
         {
             vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
@@ -28,7 +34,6 @@ Mesh::Mesh(aiMesh *mesh)
         }
         vertices.pushBack(vertex);
     }
-
     for (unsigned int i = 0; i < mesh->mNumFaces; i++)
     {
         aiFace face = mesh->mFaces[i];

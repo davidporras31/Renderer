@@ -64,7 +64,7 @@ $(LIB_ASSIMP): lib/assimp/assimp.zip
 	@echo "building assimp..."
 	@cd lib/assimp && cmake CMakeLists.txt -B build -D CMAKE_BUILD_TYPE=Release -D ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT=OFF -D ASSIMP_BUILD_OBJ_IMPORTER=ON -D ASSIMP_BUILD_FBX_IMPORTER=ON -D ASSIMP_BUILD_GLTF_IMPORTER=ON -D ASSIMP_BUILD_TESTS=OFF -D ASSIMP_BUILD_SAMPLES=OFF -D ASSIMP_BUILD_DOCS=OFF
 	@cd lib/assimp/build && make
-	@echo "assimp Install complite."	
+	@echo "assimp Install complete."	
 
 lib/assimp/assimp.zip: $(FILESTRUCTURE)
 	@echo "Downloading assimp..."
@@ -78,7 +78,7 @@ $(LIB_FT2): lib/ft2/ft2.tar.gz
 	@echo "building ft2..."
 	@cd lib/ft2 && make
 	@cd lib/ft2 && make
-	@echo "ft2 Install complite."
+	@echo "ft2 Install complete."
 
 lib/ft2/ft2.tar.gz: $(FILESTRUCTURE)
 	@echo "Downloading ft2..."
@@ -90,7 +90,7 @@ $(LIB_STB): lib/stb/stb.zip
 	@unzip -o lib/stb/stb.zip -d lib/stb
 	@mv -n lib/stb/stb-master/* lib/stb/stb
 	@rm -rf lib/stb/stb-master
-	@echo "stb Install complite."
+	@echo "stb Install complete."
 
 lib/stb/stb.zip: $(FILESTRUCTURE)
 	@echo "Downloading stb..."
@@ -100,7 +100,7 @@ lib/stb/stb.zip: $(FILESTRUCTURE)
 $(LIB_GLM): lib/glm/glm-1.0.2.zip
 	@echo "Install glm..."
 	@unzip -o lib/glm/glm-1.0.2.zip -d lib
-	@echo "glm Install complite."
+	@echo "glm Install complete."
 
 lib/glm/glm-1.0.2.zip: $(FILESTRUCTURE)
 	@echo "Downloading glm..."
@@ -113,7 +113,7 @@ $(LIB_GLAD): lib/glad/README.md
 	@python -m venv lib/glad/venv
 	@lib/glad/venv/bin/pip install -r lib/glad/requirements.txt
 	@cd lib/glad && venv/bin/python -m glad --out-path=build --api=gl:core=4.3 c --loader
-	@echo "glad build complite."
+	@echo "glad build complete."
 
 lib/glad/README.md: lib/glad/glad.zip
 	@echo "extracting glad..."
@@ -132,7 +132,7 @@ ifeq ($(OSFLAG),WIN64)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN64.zip -d lib/glfw
 	@mv lib/glfw/glfw-3.4.bin.WIN32/lib-mingw-64/* lib/glfw/build
-	@echo "glfw build complite."
+	@echo "glfw build complete."
 	@echo "not yet implemented for win64"
 	@exit 1
 endif
@@ -140,7 +140,7 @@ ifeq ($(OSFLAG),WIN32)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN32.zip -d lib/glfw
 	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-mingw-32/* lib/glfw/build
-	@echo "glfw build complite."
+	@echo "glfw build complete."
 	@echo "not yet implemented for win32"
 	@exit 1
 endif
@@ -148,7 +148,7 @@ ifeq ($(OSFLAG),MACOS)
 	@echo "building glfw..."
 	@unzip -o lib/glfw/glfw-3.4.bin.WIN64.zip -d lib/glfw
 	@mv lib/glfw/glfw-3.4.bin.WIN64/lib-arm64/* lib/glfw/build
-	@echo "glfw build complite."
+	@echo "glfw build complete."
 	@echo "not yet implemented for macos"
 	@exit 1
 endif
@@ -162,7 +162,7 @@ ifeq ($(OSFLAG),LINUX)
 	@echo "Compiling glfw..."
 	@cd lib/glfw/build && make
 	@touch lib/glfw/installed.flag
-	@echo "glfw build complite."
+	@echo "glfw build complete."
 endif
 ifeq ($(OSFLAG),UNKNOWN)
 	@echo "Unsupported OS:$(OSFLAG)"
@@ -182,6 +182,7 @@ lib/glfw/glfw-3.4.zip: $(FILESTRUCTURE)
 BUILD_FILES = \
 	Renderer\
 	Transformable\
+	Drawable\
 	../test/TriangleTest\
 	Camera\
 	OrthographicCamera\
