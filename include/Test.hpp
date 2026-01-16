@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <string>
 #include <print>
+#include <iostream>
 
 // Bassed on https://github.com/eyalroz/cpp-static-block/
 #ifndef CONCATENATE
@@ -72,14 +73,14 @@
     static void function_name();                                                             \
     static void CONCATENATE(calling_, function_name)()                                       \
     {                                                                                        \
-        std::print("Running: {} - {}\n", test_name, test_description);                       \
+        std::println("Running: {} - {}", test_name, test_description);                       \
         try                                                                                  \
         {                                                                                    \
             function_name();                                                                 \
         }                                                                                    \
         catch (const Test::TestFailure &e)                                                   \
         {                                                                                    \
-            std::cerr << e.what() << std::endl;                                              \
+            std::println(std::cerr, "{}", e.what());                                         \
             throw std::runtime_error("Test case failed.");                                   \
             return;                                                                          \
         }                                                                                    \

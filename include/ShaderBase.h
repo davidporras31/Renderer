@@ -9,7 +9,12 @@
 #include <vector>
 #include <unordered_map>
 
+#include "Vector.h"
 #include "Material.h"
+#include "lights/AreaLight.h"
+#include "lights/DirectionalLight.h"
+#include "lights/PointLight.h"
+#include "lights/SpotLight.h"
 
 class ShaderBase
 {
@@ -39,6 +44,10 @@ public:
     void setVec4(const std::string& name, const glm::vec4& value);
     void setMat4(const std::string& name, const glm::mat4& mat);
     void setMaterial(const std::string& name, const Material& material);
+    void setLightArray(const std::string& name, const Vector<AreaLight*>* lights);
+    void setLightArray(const std::string& name, const Vector<DirectionalLight*>* lights);
+    void setLightArray(const std::string& name, const Vector<PointLight*>* lights);
+    void setLightArray(const std::string& name, const Vector<SpotLight*>* lights);
 };
 
 #endif //SHADERBASE_H

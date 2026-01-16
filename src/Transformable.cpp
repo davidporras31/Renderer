@@ -10,6 +10,11 @@ Transformable::~Transformable()
         
 }
 
+glm::vec3 Transformable::getGlobalPosition()
+{
+    return getPositionFromTransform(this->getTransform());
+}
+
 void Transformable::setParent(Transformable *par)
 {
     if(par == this)
@@ -19,7 +24,7 @@ void Transformable::setParent(Transformable *par)
     if(par) par->children.push_back(this);
 }
 
-glm::mat4 &Transformable::getTransform()
+glm::mat4& Transformable::getTransform()
 { 
     if (dirty) {
         if(children.size()!= 0)
@@ -44,7 +49,7 @@ glm::mat4 &Transformable::getTransform()
     return transform; 
 }
 
-glm::vec3 Transformable::getPositionFromTransform(glm::mat4 &mat)
+glm::vec3 Transformable::getPositionFromTransform(const glm::mat4 &mat)
 {
     return glm::vec3(mat[3][0],mat[3][1],mat[3][2]);
 }

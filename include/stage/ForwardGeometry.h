@@ -6,12 +6,13 @@
 #include "../Camera.h"
 #include "../ShaderProgram.h"
 #include "../Material.h"
+#include "../lights/LightContainer.h"
 
 #ifndef FORWARDGEOMETRY_SHADER_PATH
 #define FORWARDGEOMETRY_SHADER_PATH "./shaders/forward_geometry_shader"
 #endif //FORWARDGEOMETRY_SHADER_PATH
 
-class ForwardGeometry : public RendererStage
+class ForwardGeometry : public RendererStage, public LightContainer
 {
     private:
         Vector<DrawCall*,unsigned int> drawCalls;
@@ -46,6 +47,7 @@ class ForwardGeometry : public RendererStage
                 
             }
             clearDrawCalls();
+            clearAllLights();
         }
 
         void pushDrawCall(DrawCall* drawCall) override {

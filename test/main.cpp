@@ -11,6 +11,7 @@
 #include "../include/Cube.h"
 #include "../include/Text.h"
 #include "../include/Model.h"
+#include "../include/lights/PointLight.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -42,16 +43,18 @@ int main()
         GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
         if (window == NULL)
         {
-            std::print("Failed to create GLFW window\n");
+            std::println("Failed to create GLFW window");
             glfwTerminate();
             return -1;
         }
         glfwMakeContextCurrent(window);
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+        // start the renderer
         renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
         renderer->setClearColor(ConstColor::Dark_Modern_Gray);
 
+        // set up the rendering stages
         ForwardGeometry *forwardGeometry = new ForwardGeometry();
         renderer->addStage(forwardGeometry);
         renderer->initialize();
@@ -59,6 +62,7 @@ int main()
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        // create tests objects
         TriangleTest triangleTest;
         triangleTest.setPosition({0.5f, 0.5f, -1.f});
         triangleTest.setScale({SCR_WIDTH / 2, SCR_HEIGHT / 2, 1.f});
@@ -98,11 +102,12 @@ int main()
         camera.setPosition({0, 0, -2});
         forwardGeometry->setCamera(&camera);
 
+        // create shader programs for test rendering
         ShaderProgram textShaderProgram("text_shader",
                                         {{FORWARDGEOMETRY_SHADER_PATH ".vs", GL_VERTEX_SHADER},
                                          {"test/text.fs", GL_FRAGMENT_SHADER}},
                                         "./shaders");
-
+        // create a default material
         Material material = Material();
         material.albedo.emplace<Texture>().load("test/img.png");
 
@@ -113,11 +118,20 @@ int main()
         render_state.push_back(DrawCall(&basicModel));
         render_state.push_back(DrawCall(&advancedModel));
 
+        // assign the material to each draw call
         for (auto &&i : render_state)
         {
             i.material = &material;
             forwardGeometry->pushDrawCall(&i);
         }
+
+        // create a point light
+        PointLight pointLight;
+        pointLight.setPosition({400, 300, 100});
+        pointLight.setColor(ConstColor::Blue);
+        pointLight.setRange(1000.0f);
+        forwardGeometry->addLight(&pointLight);
+
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
@@ -141,10 +155,13 @@ int main()
             cube.setRotation(rot);
 
             renderer->renderFrame();
+
+            // prepare for next frame
             for (auto &&i : render_state)
             {
                 forwardGeometry->pushDrawCall(&i);
             }
+            forwardGeometry->addLight(&pointLight);
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -168,7 +185,7 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
     {
-        std::print("capture\n");
+        std::println("capture");
         renderer->captureScreenshot("./test.png", GL_RGBA);
     }
 }

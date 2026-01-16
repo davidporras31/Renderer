@@ -16,6 +16,7 @@ FrameBuffer::FrameBuffer(const glm::ivec2 &size)
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         // Handle framebuffer creation error
+        throw std::runtime_error("Failed to create framebuffer");
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);

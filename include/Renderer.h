@@ -1,18 +1,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#ifdef __gl_h_
-  #error OpenGL (gl.h) header already included (API: gl), remove previous include!
-#endif
-#ifdef __gl3_h_
-  #error OpenGL (gl3.h) header already included (API: gl), remove previous include!
-#endif
-#ifdef __glext_h_
-  #error OpenGL (glext.h) header already included (API: gl), remove previous include!
-#endif
-#ifdef __gl3ext_h_
-  #error OpenGL (gl3ext.h) header already included (API: gl), remove previous include!
-#endif
+
 #include <glad/gl.h>
 #include <stdexcept>
 #include <glm/glm.hpp>
@@ -20,8 +9,8 @@
 #include "Vector.h"
 #include "Color.h"
 #include "Font.h"
-#include "RendererStage.h"
 #include "Model.h"
+#include "RendererStage.h"
 
 class Renderer {
 private:

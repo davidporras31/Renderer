@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <glad/gl.h>
+#include <stdexcept>
 #include "Texture.h"
 
 class FrameBuffer {
@@ -19,6 +20,7 @@ class FrameBuffer {
 
         void resize(const glm::ivec2& newSize);
         glm::ivec2 getSize() const;
+        Texture* getColorTexture() { return &colorTexture; }
 };
 
 #endif // FRAME_BUFFER_H

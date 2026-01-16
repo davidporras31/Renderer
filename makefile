@@ -44,7 +44,7 @@ config: $(LIB_GLAD) $(LIB_GLM) $(LIB_STB) $(LIB_FT2) $(LIB_ASSIMP) $(LIB_GLFW)
 test: TEST = -DTESTMODE=1
 test: build
 
-FILESTRUCTURE = lib bin obj obj/test obj/stage
+FILESTRUCTURE = lib bin obj obj/test obj/stage obj/lights
 files-structure: $(FILESTRUCTURE)
 	@echo "all necessary directories created."
 
@@ -198,7 +198,16 @@ BUILD_FILES = \
 	Vector\
 	Text\
 	Model\
-	Mesh
+	Mesh\
+	lights/Light\
+	lights/AreaLight\
+	lights/DirectionalLight\
+	lights/PointLight\
+	lights/SpotLight\
+	lights/LightContainer
+
+
+
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
 build: bin/main.exe
@@ -207,15 +216,15 @@ build: bin/main.exe
 	@cp -r shaders bin/shaders
 	@echo "Build complete."
 
-bin/main.exe: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES)
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) lib/glad/build/src/gl.c
+bin/main.exe: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6.0.2 $(OBJECTS_FILES)
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6.0.2 $(OBJECTS_FILES) lib/glad/build/src/gl.c
 
 bin/libglfw.so.3.4:
 	@cp $(LIB_GLFW) bin/libglfw.so.3.4
 bin/libfreetype.so:
 	@cp $(LIB_FT2) bin/libfreetype.so
-bin/libassimp.so.6:
-	@cp $(LIB_ASSIMP) bin/libassimp.so.6
+bin/libassimp.so.6.0.2:
+	@cp $(LIB_ASSIMP) bin/libassimp.so.6.0.2
 
 $(OBJECTS_FILES): obj/%.o: src/%.cpp include/%.h
 	@echo "Compiling $<..."

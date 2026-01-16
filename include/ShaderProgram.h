@@ -6,10 +6,9 @@
 class ShaderProgram : public ShaderBase
 {
 private:
-
+    // data
 public:
-    ShaderProgram(const std::string& name, const std::vector<std::pair<const char*, GLenum>>& shaders,std::string binaryPath);
+    ShaderProgram(const std::string &name, const std::vector<std::pair<const char *, GLenum>> &shaders, std::string binaryPath);
 };
 
-
-#endif //SHADERPROGRAM_H
+#endif // SHADERPROGRAM_H

@@ -178,7 +178,22 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
         setInt(name + ".normalMap", -1); // Indicate no normal map
     }
 }
-
+void ShaderBase::setLightArray(const std::string& name, const Vector<AreaLight*>* lights)
+{
+    
+}
+void ShaderBase::setLightArray(const std::string& name, const Vector<DirectionalLight*>* lights)
+{
+    
+}
+void ShaderBase::setLightArray(const std::string& name, const Vector<PointLight*>* lights)
+{
+    
+}
+void ShaderBase::setLightArray(const std::string& name, const Vector<SpotLight*>* lights)
+{
+    
+}
 void ShaderBase::addShader(const char *path, GLenum shaderType)
 {
     std::string *source = loadFile(path);

@@ -7,9 +7,11 @@ void ForwardGeometry::draw(DrawCall *drawCall)
         shader = defaultShader;
     }
     shader->use();
+    //TODO use UBO for camera
     shader->setMat4("projection", camera->getProjection());
     shader->setMat4("view", camera->getTransform());
     shader->setMat4("model", drawCall->drawable->getTransform());
+    sendLightDataToShader(*shader, drawCall->drawable);
 
     if(drawCall->material) {
         shader->setMaterial("material", *drawCall->material);
