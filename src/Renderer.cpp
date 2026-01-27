@@ -55,7 +55,7 @@ void Renderer::initialize()
 
 RendererStage *Renderer::getStage(const std::string &name) const
 {
-    RendererStage* tmp;
+    RendererStage* tmp = nullptr;
     for (unsigned int i = 0; i < this->stages.getSize(); i++)
     {
         tmp = this->stages[i];
@@ -73,6 +73,31 @@ void Renderer::renderFrame()
     }
 }
 
+bool Renderer::getDebugMode(const std::string &stageName) const
+{
+    RendererStage *stage = getStage(stageName);
+    if (stage)
+    {
+        return stage->getDebugMode();
+    }
+    else
+    {
+        throw std::runtime_error("Renderer stage " + stageName + " not found");
+    }
+}
+
+void Renderer::setDebugMode(const std::string &stageName, const bool mode)
+{
+    RendererStage *stage = getStage(stageName);
+    if (stage)
+    {
+        stage->setDebugMode(mode);
+    }
+    else
+    {
+        throw std::runtime_error("Renderer stage " + stageName + " not found");
+    }
+}
 void Renderer::setViewport(const glm::i64vec4 viewport)
 {
     glViewport(viewport.x, viewport.y, viewport.z, viewport.w);

@@ -1,7 +1,9 @@
 
 #include "../../include/lights/DirectionalLight.h"
 
-DirectionalLight::DirectionalLight() {
+DirectionalLight::DirectionalLight()
+    : Light(LightType::Directional)
+{
     // Constructor implementation
 }
 

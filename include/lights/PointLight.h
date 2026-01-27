@@ -7,7 +7,6 @@
 // Represents a point light source
 class PointLight : public Light {
 private:
-    float range;
 public:
     PointLight();
     ~PointLight();

@@ -3,37 +3,34 @@
 #define LIGHTCONTAINER_H
 
 #include "../Vector.h"
-#include "AreaLight.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
-#include "SpotLight.h"
-#include "../ShaderProgram.h"
-#include "../Drawable.h"
+#include "../UBO.h"
+#include "Light.h"
+#include "../Cube.h"
+#include "../DrawCall.h"
 
-class LightContainer {
+class LightContainer
+{
 private:
-    Vector<AreaLight*> areaLights;
-    Vector<DirectionalLight*> directionalLights;
-    Vector<PointLight*> pointLights;
-    Vector<SpotLight*> spotLights;
+    Vector<LightData> lightDataArray;
 
-    void senderAreaLightDataToShader(ShaderProgram& shader, Drawable* receiver);
-    void senderDirectionalLightDataToShader(ShaderProgram& shader, Drawable* receiver);
-    void senderPointLightDataToShader(ShaderProgram& shader, Drawable* receiver);
-    void senderSpotLightDataToShader(ShaderProgram& shader, Drawable* receiver);
+    UBO lightDataUBO;
+    bool debugMode = false;
+    Vector<Cube> lightDebugProxies;
 public:
     LightContainer();
     ~LightContainer();
 
-    void addLight(AreaLight* light);
-    void addLight(DirectionalLight* light);
-    void addLight(PointLight* light);
-    void addLight(SpotLight* light);
+    void addLight(Light *light);
 
-    void sendLightDataToShader(ShaderProgram& shader, Drawable* receiver);
+    void sendLightData();
 
     void clearAllLights();
+
+    UBO &getLightDataUBO() { return lightDataUBO; }
+
+    void setDebugLightMode(bool debugMode) { this->debugMode = debugMode; }
+    bool getDebugLightMode() const { return debugMode; }
+    const Vector<Cube> &getLightDebugProxies() const { return lightDebugProxies; }
 };
 
 #endif // LIGHTCONTAINER_H
-    

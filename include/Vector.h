@@ -47,6 +47,9 @@ public:
     /// @brief Reserves memory for at least newCapacity elements.
     /// @param newCapacity The new capacity to reserve.
     void reserve(const S newCapacity);
+    /// @brief Resizes the vector to newSize. Does not call constructors or destructors.
+    /// @param newSize The new size of the vector.
+    void resize(const S newSize);
     /// @brief Clears the vector without calling destructors.
     void clear();
     /// @brief Clears the vector and calls destructors.
@@ -57,6 +60,7 @@ public:
     
     S getSize() const;
     S getCapacity() const;
+    T *getData() const;
 };
 
 template <typename T, typename S>
@@ -140,6 +144,13 @@ inline void Vector<T, S>::reserve(S newCapacity)
 }
 
 template <typename T, typename S>
+inline void Vector<T, S>::resize(const S newSize)
+{
+    resize(newSize);
+    size = newSize;
+}
+
+template <typename T, typename S>
 inline void Vector<T, S>::clear()
 {
     size = 0;
@@ -176,6 +187,12 @@ template <typename T, typename S>
 inline S Vector<T, S>::getCapacity() const
 {
     return capacity;
+}
+
+template <typename T, typename S>
+inline T *Vector<T, S>::getData() const
+{
+    return data;
 }
 
 template <typename T, typename S>

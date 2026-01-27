@@ -7,8 +7,6 @@
 // Represents a spotlight light source
 class SpotLight : public Light {
 private:
-    float range;
-    float angle;
 public:
     SpotLight();
     ~SpotLight();

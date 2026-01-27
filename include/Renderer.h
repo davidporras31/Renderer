@@ -26,6 +26,9 @@ public:
     void renderFrame();
     void clear();
 
+    bool getDebugMode(const std::string& stageName) const;
+    void setDebugMode(const std::string& stageName, const bool mode);
+
     void setViewport(const glm::i64vec4 viewport);
     void setClearColor(const Color& color);
     void captureScreenshot(const char* filename,GLuint format = GL_RGB);

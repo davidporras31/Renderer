@@ -1,8 +1,8 @@
 
 #include "../../include/lights/Light.h"
 
-Light::Light() {
-    // Constructor implementation
+Light::Light(LightType type) {
+    lightData.position.w = static_cast<float>(type);
 }
 
 Light::~Light() {
@@ -11,31 +11,31 @@ Light::~Light() {
 
 void Light::setPosition(const glm::vec3 &pos)
 {
-    position = pos;
+    lightData.position = glm::vec4(pos, lightData.position.w);
 }
 
 glm::vec3 Light::getPosition() const
 {
-    return position;
+    return glm::vec3(lightData.position);
 }
 
 void Light::setDirection(const glm::vec3 &dir)
 {
-    direction = dir;
+    lightData.direction = glm::vec4(dir, lightData.direction.w);
 }
 
 glm::vec3 Light::getDirection() const
 {
-    return direction;
+    return glm::vec3(lightData.direction);
 }
 
 void Light::setColor(const Color &col)
 {
-    color = col;
+    lightData.color = col;
 }
 
 Color Light::getColor() const
 {
-    return color;
+    return lightData.color;
 }
    

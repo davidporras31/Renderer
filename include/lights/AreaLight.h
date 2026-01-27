@@ -8,7 +8,6 @@
 // with specified width and height.
 class AreaLight : public Light {
 private:
-    glm::vec3 size;
 public:
     AreaLight();
     ~AreaLight();

@@ -1,7 +1,9 @@
 
 #include "../../include/lights/PointLight.h"
 
-PointLight::PointLight() {
+PointLight::PointLight()
+    : Light(LightType::Point)
+{
     // Constructor implementation
 }
 
@@ -11,14 +13,14 @@ PointLight::~PointLight() {
 
 float PointLight::getRange() const
 {
-    return range;
+    return getLightData().data1.x;
 }
 void PointLight::setRange(float r)
 {
-    range = r;
+    getLightData().data1.x = r;
 }
 
 bool PointLight::afectsDrawable(const glm::vec3 &pos, const float radius) const
 {
-    return glm::distance(this->getPosition(), pos) <= range + radius;
+    return glm::distance(this->getPosition(), pos) <= getLightData().data1.x + radius;
 }

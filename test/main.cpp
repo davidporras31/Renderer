@@ -2,6 +2,7 @@
 #include "../include/Test.hpp"
 #include "../include/Renderer.h"
 #include "../include/stage/ForwardGeometry.h"
+#include "../include/stage/DebugRender.h"
 #include <GLFW/glfw3.h>
 #include "TriangleTest.h"
 #include "../include/OrthographicCamera.h"
@@ -56,7 +57,9 @@ int main()
 
         // set up the rendering stages
         ForwardGeometry *forwardGeometry = new ForwardGeometry();
+        DebugRender *debugRender = new DebugRender();
         renderer->addStage(forwardGeometry);
+        renderer->addStage(debugRender);
         renderer->initialize();
 
         glEnable(GL_BLEND);
@@ -110,6 +113,10 @@ int main()
         // create a default material
         Material material = Material();
         material.albedo.emplace<Texture>().load("test/img.png");
+        material.metallic = 0.5f;
+        material.roughness = 0.5f;
+        material.ao = 1.0f;
+
 
         render_state.push_back(DrawCall(&square));
         render_state.push_back(DrawCall(&cube));
@@ -127,9 +134,9 @@ int main()
 
         // create a point light
         PointLight pointLight;
-        pointLight.setPosition({400, 300, 100});
-        pointLight.setColor(ConstColor::Blue);
-        pointLight.setRange(1000.0f);
+        pointLight.setPosition({600, 400, 150});
+        pointLight.setColor(ConstColor::White);
+        pointLight.setRange(600.0f);
         forwardGeometry->addLight(&pointLight);
 
         // render loop
@@ -145,7 +152,7 @@ int main()
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
             ypos = abs(ypos - SCR_HEIGHT);
-            triangleTest.setPosition(glm::vec3(xpos, ypos, -1));
+            pointLight.setPosition(glm::vec3(xpos, ypos, -50));
             glm::vec3 rot = triangleTest.getRotation();
             rot.z += 0.005f;
             triangleTest.setRotation(rot);
@@ -162,6 +169,7 @@ int main()
                 forwardGeometry->pushDrawCall(&i);
             }
             forwardGeometry->addLight(&pointLight);
+            forwardGeometry->sendLightData();
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
@@ -177,6 +185,8 @@ int main()
     return 0;
 }
 
+bool keyPressed = false;
+int debugMode = -1;
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
@@ -187,6 +197,29 @@ void processInput(GLFWwindow *window)
     {
         std::println("capture");
         renderer->captureScreenshot("./test.png", GL_RGBA);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+        keyPressed = true;
+    }
+    else if (keyPressed)
+    {
+        debugMode++;
+        if ((debugMode % 4 == 0 || debugMode % 4 == 1) && keyPressed)
+        {
+            std::println("debug graphics");
+            bool current = renderer->getDebugMode("ForwardGeometry");
+            renderer->setDebugMode("ForwardGeometry", !current);
+            keyPressed = false;
+        }
+        if ((debugMode % 4 == 2 || debugMode % 4 == 3) && keyPressed)
+        {
+            std::println("debug lights");
+            ForwardGeometry* fg = static_cast<ForwardGeometry*>(renderer->getStage("ForwardGeometry"));
+            bool current = fg->getDebugLightMode();
+            fg->setDebugLightMode(!current);
+            keyPressed = false;
+        }
     }
 }
 

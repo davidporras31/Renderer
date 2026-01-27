@@ -97,8 +97,16 @@ void Model::draw(ShaderProgram *shader)
 {
     for (unsigned int i = 0; i < meshes.getSize(); i++)
     {
+        try
+        {
+            shader->setMaterial("material", materials[meshes[i].getMaterialIndex()]);
+        }
+        catch(...)
+        {
+            //do nothing
+        }
+        
         shader->setMat4("model", meshes[i].getTransform());
-        shader->setMaterial("material", materials[meshes[i].getMaterialIndex()]);
         meshes[i].draw(shader);
     }
 }

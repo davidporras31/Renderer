@@ -148,3 +148,19 @@ TEST("Vector", "emplaceBack functionality")
     REC_EQL(vec[0], "Hello");
     REC_EQL(vec[1], "World");
 }
+TEST("Vector", "getData functionality")
+{
+    Vector<int> vec;
+    for (int i = 0; i < 10; ++i)
+    {
+        vec.pushBack(i);
+    }
+    REC_EQL(vec.getSize(), 10);
+    #ifdef TESTMODE //just to remove unused variable warning
+    int *data = vec.getData();
+    for (int i = 0; i < 10; ++i)
+    {
+        REC_EQL(data[i], i);
+    }
+    #endif  // TESTMODE
+}

@@ -11,7 +11,13 @@ void ForwardGeometry::draw(DrawCall *drawCall)
     shader->setMat4("projection", camera->getProjection());
     shader->setMat4("view", camera->getTransform());
     shader->setMat4("model", drawCall->drawable->getTransform());
-    sendLightDataToShader(*shader, drawCall->drawable);
+
+    try {
+        shader->setVec3("viewPos", camera->getGlobalPosition());
+    } catch (...) {
+        // Ignore if the shader does not have viewPos uniform
+    }
+    shader->setUBO("LightDataUBO", getLightDataUBO());
 
     if(drawCall->material) {
         shader->setMaterial("material", *drawCall->material);

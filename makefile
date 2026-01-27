@@ -9,7 +9,7 @@ CXXFLAGS = -std=c++23 -g -Wall
 INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include -Ilib/assimp/include -Ilib/assimp/build/include
 LIB_GLFW = lib/glfw/build/src/libglfw.so.3.4
 LIB_FT2 = lib/ft2/objs/.libs/libfreetype.so
-LIB_ASSIMP = lib/assimp/build/bin/libassimp.so.6.0.2
+LIB_ASSIMP = lib/assimp/build/bin/libassimp.so.6
 LIB_GLAD = lib/glad/build/src/gl.c
 LIB_GLM = lib/glm/readme.md
 LIB_STB = lib/stb/stb/README.md
@@ -194,11 +194,13 @@ BUILD_FILES = \
 	Square\
 	Cube\
 	stage/ForwardGeometry\
+	stage/DebugRender\
 	Font\
 	Vector\
 	Text\
 	Model\
 	Mesh\
+	UBO\
 	lights/Light\
 	lights/AreaLight\
 	lights/DirectionalLight\
@@ -216,16 +218,16 @@ build: bin/main.exe
 	@cp -r shaders bin/shaders
 	@echo "Build complete."
 
-bin/main.exe: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6.0.2 $(OBJECTS_FILES)
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6.0.2 $(OBJECTS_FILES) lib/glad/build/src/gl.c
+bin/main.exe: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) makefile
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) lib/glad/build/src/gl.c
 
 bin/libglfw.so.3.4:
 	@cp $(LIB_GLFW) bin/libglfw.so.3.4
 bin/libfreetype.so:
 	@cp $(LIB_FT2) bin/libfreetype.so
-bin/libassimp.so.6.0.2:
-	@cp $(LIB_ASSIMP) bin/libassimp.so.6.0.2
+bin/libassimp.so.6:
+	@cp $(LIB_ASSIMP) bin/libassimp.so.6
 
-$(OBJECTS_FILES): obj/%.o: src/%.cpp include/%.h
+$(OBJECTS_FILES): obj/%.o: src/%.cpp include/%.h makefile
 	@echo "Compiling $<..."
 	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -c $< -o $@

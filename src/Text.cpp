@@ -10,13 +10,25 @@ void Text::draw(ShaderProgram* shader)
 {
     if(dirty)
         remakeChars();
-    
-    shader->setVec4("text_color", color);
-    
+    try
+    {
+        shader->setVec4("text_color", color);
+    }
+    catch(...)
+    {
+        //do nothing
+    }
     for (auto &&i : chars)
     {
-        i.texture->use();
-        shader->setInt("material.albedoMap", 0);
+        try
+        {
+            i.texture->use();
+            shader->setInt("material.albedoMap", 0);
+        }
+        catch(...)
+        {
+            //do nothing
+        }
         shader->setMat4("model", i.square.getTransform());
         i.square.draw(shader);
     }

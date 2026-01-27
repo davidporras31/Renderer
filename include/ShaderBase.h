@@ -11,10 +11,7 @@
 
 #include "Vector.h"
 #include "Material.h"
-#include "lights/AreaLight.h"
-#include "lights/DirectionalLight.h"
-#include "lights/PointLight.h"
-#include "lights/SpotLight.h"
+#include "UBO.h"
 
 class ShaderBase
 {
@@ -36,6 +33,7 @@ public:
     ~ShaderBase();
     void use() const;
     int getUniformLocation(const std::string& uniformName);
+    int getUBOBindingPoint(const std::string& uboName);
     void setBool(const std::string& name, bool value);
     void setInt(const std::string& name, int value);
     void setFloat(const std::string& name, float value);
@@ -44,10 +42,7 @@ public:
     void setVec4(const std::string& name, const glm::vec4& value);
     void setMat4(const std::string& name, const glm::mat4& mat);
     void setMaterial(const std::string& name, const Material& material);
-    void setLightArray(const std::string& name, const Vector<AreaLight*>* lights);
-    void setLightArray(const std::string& name, const Vector<DirectionalLight*>* lights);
-    void setLightArray(const std::string& name, const Vector<PointLight*>* lights);
-    void setLightArray(const std::string& name, const Vector<SpotLight*>* lights);
+    void setUBO(const std::string& name, const UBO& ubo);
 };
 
 #endif //SHADERBASE_H

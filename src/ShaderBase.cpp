@@ -76,6 +76,19 @@ int ShaderBase::getUniformLocation(const std::string &uniformName)
     return location;
 }
 
+int ShaderBase::getUBOBindingPoint(const std::string &uboName)
+{
+    std::unordered_map<std::string, int>::const_iterator it = uniformLocations.find(uboName);
+    if (it != uniformLocations.end())
+        return it->second;
+    GLuint index = glGetUniformBlockIndex(this->ID, uboName.c_str());
+    if (index == GL_INVALID_INDEX)
+        throw std::runtime_error("Could not find UBO: " + uboName + " in shader: " + name);
+    GLint bindingPoint;
+    glGetActiveUniformBlockiv(this->ID, index, GL_UNIFORM_BLOCK_BINDING, &bindingPoint);
+    uniformLocations[uboName] = bindingPoint;
+    return bindingPoint;
+}
 void ShaderBase::setBool(const std::string &name, bool value)
 {
     glUniform1i(getUniformLocation(name), static_cast<int>(value));
@@ -178,21 +191,9 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
         setInt(name + ".normalMap", -1); // Indicate no normal map
     }
 }
-void ShaderBase::setLightArray(const std::string& name, const Vector<AreaLight*>* lights)
+void ShaderBase::setUBO(const std::string &name, const UBO &ubo)
 {
-    
-}
-void ShaderBase::setLightArray(const std::string& name, const Vector<DirectionalLight*>* lights)
-{
-    
-}
-void ShaderBase::setLightArray(const std::string& name, const Vector<PointLight*>* lights)
-{
-    
-}
-void ShaderBase::setLightArray(const std::string& name, const Vector<SpotLight*>* lights)
-{
-    
+    ubo.bindToBindingPoint(getUBOBindingPoint(name));
 }
 void ShaderBase::addShader(const char *path, GLenum shaderType)
 {
