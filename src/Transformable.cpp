@@ -15,6 +15,14 @@ glm::vec3 Transformable::getGlobalPosition()
     return getPositionFromTransform(this->getTransform());
 }
 
+glm::vec3 Transformable::getGlobalRotation()
+{
+    return getRotationFromTransform(this->getTransform());
+}
+glm::vec3 Transformable::getGlobalScale()
+{
+    return getScaleFromTransform(this->getTransform());
+}
 void Transformable::setParent(Transformable *par)
 {
     if(par == this)
@@ -52,4 +60,19 @@ glm::mat4& Transformable::getTransform()
 glm::vec3 Transformable::getPositionFromTransform(const glm::mat4 &mat)
 {
     return glm::vec3(mat[3][0],mat[3][1],mat[3][2]);
+}
+
+glm::vec3 Transformable::getRotationFromTransform(const glm::mat4 &mat)
+{
+    return glm::vec3(glm::eulerAngles(glm::quat(mat)));
+}
+
+glm::vec3 Transformable::getScaleFromTransform(const glm::mat4 &mat)
+{
+    return glm::vec3(glm::length(mat[0]), glm::length(mat[1]), glm::length(mat[2]));
+}
+
+glm::mat4 Transformable::toLocalTransform(const glm::mat4 &global, const glm::mat4 &parentGlobal)
+{
+    return glm::inverse(parentGlobal) * global;
 }

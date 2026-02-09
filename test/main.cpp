@@ -5,6 +5,7 @@
 #include "../include/stage/DebugRender.h"
 #include <GLFW/glfw3.h>
 #include "TriangleTest.h"
+#include "CSVLoader.h"
 #include "../include/OrthographicCamera.h"
 #include "../include/ShaderProgram.h"
 #include "../include/Texture.h"
@@ -13,6 +14,7 @@
 #include "../include/Text.h"
 #include "../include/Model.h"
 #include "../include/lights/PointLight.h"
+#include "../include/lights/DirectionalLight.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -22,6 +24,34 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 static Renderer *renderer;
+static bool animationEnabled = true;
+static glm::vec3 camRotation = {0, 0, 0};
+
+static CSVFile csvFile("../test/geometry.csv");
+void updateGeometry(std::vector<DrawCall> &render_state)
+{
+    csvFile.update();
+    for (size_t i = 0; i < render_state.size(); i++)
+    {
+        // Update each draw call with the latest geometry data
+        Transformable *transform = (Transformable *)render_state[i].drawable;
+        glm::vec3 newPosition = glm::vec3(
+            std::stof(csvFile.getData()[i][0]),
+            std::stof(csvFile.getData()[i][1]),
+            std::stof(csvFile.getData()[i][2]));
+        glm::vec3 newRotation = glm::vec3(
+            std::stof(csvFile.getData()[i][3]),
+            std::stof(csvFile.getData()[i][4]),
+            std::stof(csvFile.getData()[i][5]));
+        glm::vec3 newScale = glm::vec3(
+            std::stof(csvFile.getData()[i][6]),
+            std::stof(csvFile.getData()[i][7]),
+            std::stof(csvFile.getData()[i][8]));
+        transform->setPosition(newPosition);
+        transform->setRotation(newRotation);
+        transform->setScale(newScale);
+    }
+}
 
 int main()
 {
@@ -101,8 +131,14 @@ int main()
 
         std::vector<DrawCall> render_state;
 
+        Transformable camOrigin;
+        camOrigin.setPosition({0, 0, 0});
+        camOrigin.setRotation({0, 0, 0});
+        camOrigin.setScale({1, 1, 1});
+
         OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 500.0f);
         camera.setPosition({0, 0, -2});
+        // camera.setParent(&camOrigin);
         forwardGeometry->setCamera(&camera);
 
         // create shader programs for test rendering
@@ -113,14 +149,13 @@ int main()
         // create a default material
         Material material = Material();
         material.albedo.emplace<Texture>().load("test/img.png");
-        material.metallic = 0.5f;
-        material.roughness = 0.5f;
+        material.metallic = 0.0f;
+        material.roughness = 0.0f;
         material.ao = 1.0f;
 
-
+        render_state.push_back(DrawCall(&triangleTest));
         render_state.push_back(DrawCall(&square));
         render_state.push_back(DrawCall(&cube));
-        render_state.push_back(DrawCall(&triangleTest));
         render_state.push_back(DrawCall(&text, &textShaderProgram));
         render_state.push_back(DrawCall(&basicModel));
         render_state.push_back(DrawCall(&advancedModel));
@@ -134,10 +169,20 @@ int main()
 
         // create a point light
         PointLight pointLight;
-        pointLight.setPosition({600, 400, 150});
+        pointLight.setPosition({600, 400, 50});
         pointLight.setColor(ConstColor::White);
-        pointLight.setRange(600.0f);
+        pointLight.setRange(10000.0f);
         forwardGeometry->addLight(&pointLight);
+
+        DirectionalLight dirLight;
+        dirLight.setDirection({-1, -1, -1});
+        dirLight.setColor(ConstColor::White);
+        forwardGeometry->addLight(&dirLight);
+
+        std::vector<Light *> lights =
+            {
+                &pointLight,
+                &dirLight};
 
         // render loop
         // -----------
@@ -162,13 +207,19 @@ int main()
             cube.setRotation(rot);
 
             renderer->renderFrame();
-
+            if (!animationEnabled)
+            {
+                updateGeometry(render_state);
+            }
             // prepare for next frame
             for (auto &&i : render_state)
             {
                 forwardGeometry->pushDrawCall(&i);
             }
-            forwardGeometry->addLight(&pointLight);
+            for (auto &&light : lights)
+            {
+                forwardGeometry->addLight(light);
+            }
             forwardGeometry->sendLightData();
 
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -185,7 +236,8 @@ int main()
     return 0;
 }
 
-bool keyPressed = false;
+bool keyQPressed = false;
+bool keyEPressed = false;
 int debugMode = -1;
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
@@ -198,27 +250,37 @@ void processInput(GLFWwindow *window)
         std::println("capture");
         renderer->captureScreenshot("./test.png", GL_RGBA);
     }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
-        keyPressed = true;
+        keyEPressed = true;
     }
-    else if (keyPressed)
+    else if (keyEPressed)
+    {
+        keyEPressed = false;
+        std::println("toggle animation");
+        animationEnabled = !animationEnabled;
+    }
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+        keyQPressed = true;
+    }
+    else if (keyQPressed)
     {
         debugMode++;
-        if ((debugMode % 4 == 0 || debugMode % 4 == 1) && keyPressed)
+        if ((debugMode % 4 == 0 || debugMode % 4 == 1) && keyQPressed)
         {
             std::println("debug graphics");
             bool current = renderer->getDebugMode("ForwardGeometry");
             renderer->setDebugMode("ForwardGeometry", !current);
-            keyPressed = false;
+            keyQPressed = false;
         }
-        if ((debugMode % 4 == 2 || debugMode % 4 == 3) && keyPressed)
+        if ((debugMode % 4 == 2 || debugMode % 4 == 3) && keyQPressed)
         {
             std::println("debug lights");
-            ForwardGeometry* fg = static_cast<ForwardGeometry*>(renderer->getStage("ForwardGeometry"));
+            ForwardGeometry *fg = static_cast<ForwardGeometry *>(renderer->getStage("ForwardGeometry"));
             bool current = fg->getDebugLightMode();
             fg->setDebugLightMode(!current);
-            keyPressed = false;
+            keyQPressed = false;
         }
     }
 }

@@ -2,6 +2,7 @@
 #define TRANSFORMABLE_H
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <algorithm>
 
@@ -27,13 +28,19 @@ public:
     glm::vec3 getScale() const { return scale; }
 
     glm::vec3 getGlobalPosition();
+    glm::vec3 getGlobalRotation();
+    glm::vec3 getGlobalScale();
 
 
     void setParent(Transformable* par);
     Transformable* getParent() const { return parent; }
 
     glm::mat4& getTransform();
+
     static glm::vec3 getPositionFromTransform(const glm::mat4& mat);
+    static glm::vec3 getRotationFromTransform(const glm::mat4& mat);
+    static glm::vec3 getScaleFromTransform(const glm::mat4& mat);
+    static glm::mat4 toLocalTransform(const glm::mat4& global, const glm::mat4& parentGlobal);
 };
 
 #endif // TRANSFORMABLE_H
