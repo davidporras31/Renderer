@@ -92,6 +92,9 @@ int main()
         renderer->addStage(debugRender);
         renderer->initialize();
 
+
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -150,8 +153,7 @@ int main()
         Material material = Material();
         material.albedo.emplace<Texture>().load("test/img.png");
         material.metallic = 0.0f;
-        material.roughness = 0.0f;
-        material.ao = 1.0f;
+        material.roughness = 1.0f;
 
         render_state.push_back(DrawCall(&triangleTest));
         render_state.push_back(DrawCall(&square));
@@ -170,12 +172,12 @@ int main()
         // create a point light
         PointLight pointLight;
         pointLight.setPosition({600, 400, 50});
-        pointLight.setColor(ConstColor::White);
+        pointLight.setColor(ConstColor::Red*4.f);
         pointLight.setRange(10000.0f);
         forwardGeometry->addLight(&pointLight);
 
         DirectionalLight dirLight;
-        dirLight.setDirection({-1, -1, -1});
+        dirLight.setDirection({ 1, 1, 1});
         dirLight.setColor(ConstColor::White);
         forwardGeometry->addLight(&dirLight);
 

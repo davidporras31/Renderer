@@ -10,8 +10,8 @@ Square::Square()
         -1.0f,  -1.0f,   0.0f,   0.0f,  0.0f,   1.0f,       0.0f,0.0f,
     };
     unsigned int indices[] = {
-        0,1,2,
-        2,3,0
+        2,1,0,
+        0,3,2
     };
 
     glGenBuffers(1,&VBO);

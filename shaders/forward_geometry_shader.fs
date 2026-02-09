@@ -147,7 +147,7 @@ vec3 calculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 P, vec3 albedo,
 
     // Energy conservation
     vec3 kS = F;
-    vec3 kD = (vec3(1.0) - kS) * (1.0 - metallic);
+    vec3 kD = (1.0 - kS) * (1.0 - metallic);
 
     vec3 diffuse = kD * albedo / PI;
 
