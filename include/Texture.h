@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include <glad/gl.h>
+#include <glm/glm.hpp>
 #include <stb/stb_image.h>
 #include <stdexcept>
 class Texture
@@ -17,6 +18,7 @@ public:
     void use(const size_t unit = 0) const;
     void load(const char* path, bool mipmap = true);
     void loadFromMemory(GLint format,int width,int height,unsigned char * buffer, bool mipmap = true);
+    void resize(glm::ivec2 size);
     GLuint getID() const;
 };
 

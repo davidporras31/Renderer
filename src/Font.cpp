@@ -89,7 +89,7 @@ const char *Font::errorName(FT_Error error)
     return ret;
 }
 
-#ifdef TESTMODE
+#ifdef TESTMODE                         //TODO find a better way to test this without creating a window
 static GLFWwindow *initTestFontGL()
 {
     // glfw: initialize and configure

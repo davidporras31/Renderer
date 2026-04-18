@@ -33,34 +33,34 @@
 // Test macros
 #define REC_EQL(value, target) \
     if (value != target)       \
-        throw Test::TestFailure(__FILE__, "==", #value, #target);
+        throw Test::TestFailure(__FILE__, __LINE__, "==", #value, #target);
 #define REC_NEQ(value, target) \
     if (value == target)       \
-        throw Test::TestFailure(__FILE__, "!=", #value, #target);
+        throw Test::TestFailure(__FILE__, __LINE__, "!=", #value, #target);
 #define REC_TRUE(value) \
     if (!(value))       \
-        throw Test::TestFailure(__FILE__, "==", #value, "true");
+        throw Test::TestFailure(__FILE__, __LINE__, "==", #value, "true");
 #define REC_FALSE(value) \
     if (value)           \
-        throw Test::TestFailure(__FILE__, "==", #value, "false");
+        throw Test::TestFailure(__FILE__, __LINE__, "==", #value, "false");
 #define REC_NULL(value)   \
     if (value != nullptr) \
-        throw Test::TestFailure(__FILE__, "==", #value, "nullptr");
+        throw Test::TestFailure(__FILE__, __LINE__, "==", #value, "nullptr");
 #define REC_NOT_NULL(value) \
     if (value == nullptr)   \
-        throw Test::TestFailure(__FILE__, "!=", #value, "nullptr");
+        throw Test::TestFailure(__FILE__, __LINE__, "!=", #value, "nullptr");
 #define REC_LEQL(value, target) \
     if (value > target)         \
-        throw Test::TestFailure(__FILE__, "<=", #value, #target);
+        throw Test::TestFailure(__FILE__, __LINE__, "<=", #value, #target);
 #define REC_GEQL(value, target) \
     if (value < target)         \
-        throw Test::TestFailure(__FILE__, ">=", #value, #target);
+        throw Test::TestFailure(__FILE__, __LINE__, ">=", #value, #target);
 #define REC_LSS(value, target) \
     if (value >= target)       \
-        throw Test::TestFailure(__FILE__, "<", #value, #target);
+        throw Test::TestFailure(__FILE__, __LINE__, "<", #value, #target);
 #define REC_GTR(value, target) \
     if (value <= target)       \
-        throw Test::TestFailure(__FILE__, ">", #value, #target);
+        throw Test::TestFailure(__FILE__, __LINE__, ">", #value, #target);
 
 /**
  * Macro to define a test case.
@@ -107,7 +107,8 @@ namespace Test
     class TestFailure : public std::runtime_error
     {
     public:
-        TestFailure(const std::string &origin, const std::string &comparator, const std::string &expression, const std::string &value) : std::runtime_error(origin + "| Test failed: " + expression + " must be " + comparator + " to " + value) {}
+        TestFailure(const std::string &origin, const unsigned int &line, const std::string &comparator, const std::string &expression, const std::string &value)
+            : std::runtime_error(origin + ":" + std::to_string(line) + "| Test failed: " + expression + " must be " + comparator + " to " + value) {}
     };
 }
 

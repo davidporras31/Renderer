@@ -46,8 +46,11 @@ public:
             draw(drawCall);
         }
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        drawCalls.clear();
     };
+    void cleanup(Renderer *renderer) override
+    {
+        drawCalls.clear();
+    }
     void draw(DrawCall *drawCall);
     void setCamera(Camera *camera)
     {

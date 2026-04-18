@@ -63,6 +63,14 @@ void Texture::loadFromMemory(GLint format, int width, int height, unsigned char 
         glGenerateMipmap(GL_TEXTURE_2D);
 }
 
+void Texture::resize(glm::ivec2 size)
+{
+    GLint format;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, size.x, size.y, 0, format, GL_UNSIGNED_BYTE, nullptr);
+}
 GLuint Texture::getID() const
 {
     return ID;

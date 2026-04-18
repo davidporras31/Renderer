@@ -221,14 +221,17 @@ BUILD_FILES = \
 	Texture\
 	Square\
 	Cube\
+	FrameBuffer\
 	stage/ForwardGeometry\
 	stage/DebugRender\
 	Font\
 	Vector\
+	Path\
 	Text\
 	Model\
 	Mesh\
 	UBO\
+	VectorUBO\
 	lights/Light\
 	lights/AreaLight\
 	lights/DirectionalLight\

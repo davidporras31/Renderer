@@ -40,12 +40,12 @@ class UIRender : public RendererStage
 
         }
 
-        void pushDrawCall(DrawCall* drawCall) override {
-            drawCalls.pushBack(drawCall);
+        void cleanup(Renderer* renderer) override {
+            drawCalls.clear();
         }
 
-        void clearDrawCalls() {
-            drawCalls.clear();
+        void pushDrawCall(DrawCall* drawCall) override {
+            drawCalls.pushBack(drawCall);
         }
 
         void draw(DrawCall* drawCall);

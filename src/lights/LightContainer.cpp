@@ -3,7 +3,6 @@
 
 LightContainer::LightContainer()
 {
-    lightDataArray.reserve(17); // Reserve space for 16 lights + light count
     lightDebugProxies.reserve(16);
     
 }
@@ -26,14 +25,11 @@ void LightContainer::addLight(Light* light)
 
 void LightContainer::sendLightData()
 {
-    LightData count;
-    count.data1.r = lightDataArray.getSize();
-    lightDataArray[16] = count;
-    lightDataUBO.bindData(lightDataArray.getData(), lightDataArray.getCapacity() * sizeof(LightData));
+    lightDataArray.bindData();
 }
 void LightContainer::clearAllLights()
 {
     lightDataArray.clear();
-    lightDebugProxies.clear();
+    lightDebugProxies.safeClear();
 }
    

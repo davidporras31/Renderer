@@ -73,6 +73,9 @@ public:
                 draw(drawCall);
             }
         }
+    }
+    void cleanup(Renderer *renderer) override
+    {
         clearDrawCalls();
         clearAllLights();
     }

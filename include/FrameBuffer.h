@@ -9,12 +9,14 @@
 class FrameBuffer {
     private:
         glm::ivec2 size;
+        glm::vec2 scale;
         GLuint FBO;
         Texture colorTexture;
     public:
-        FrameBuffer(const glm::ivec2& size);
+        FrameBuffer(const glm::vec2& scale = {1.0f, 1.0f});
         ~FrameBuffer();
 
+        void initialize(const glm::ivec2& size);
         void bind();
         void unbind();
 

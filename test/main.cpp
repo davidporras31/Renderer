@@ -55,9 +55,9 @@ void updateGeometry(std::vector<DrawCall> &render_state)
 
 int main()
 {
-#ifdef TESTMODE
-    return 0;
-#endif
+//#ifdef TESTMODE
+//    return 0;
+//#endif
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -91,7 +91,6 @@ int main()
         renderer->addStage(forwardGeometry);
         renderer->addStage(debugRender);
         renderer->initialize();
-
 
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -172,12 +171,12 @@ int main()
         // create a point light
         PointLight pointLight;
         pointLight.setPosition({600, 400, 50});
-        pointLight.setColor(ConstColor::Red*4.f);
+        pointLight.setColor(ConstColor::Red);
         pointLight.setRange(10000.0f);
         forwardGeometry->addLight(&pointLight);
 
         DirectionalLight dirLight;
-        dirLight.setDirection({ 1, 1, 1});
+        dirLight.setDirection({1, 1, 1});
         dirLight.setColor(ConstColor::White);
         forwardGeometry->addLight(&dirLight);
 
@@ -203,10 +202,10 @@ int main()
             glm::vec3 rot = triangleTest.getRotation();
             rot.z += 0.005f;
             triangleTest.setRotation(rot);
-            rot = cube.getRotation();
+            rot = advancedModel.getRotation();
             rot.x += 0.002f;
             rot.y += 0.003f;
-            cube.setRotation(rot);
+            advancedModel.setRotation(rot);
 
             renderer->renderFrame();
             if (!animationEnabled)

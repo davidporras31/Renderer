@@ -3,6 +3,7 @@
 #define LIGHTCONTAINER_H
 
 #include "../Vector.h"
+#include "../VectorUBO.h"
 #include "../UBO.h"
 #include "Light.h"
 #include "../Cube.h"
@@ -11,9 +12,8 @@
 class LightContainer
 {
 private:
-    Vector<LightData> lightDataArray;
+    VectorUBO<LightData,16> lightDataArray;
 
-    UBO lightDataUBO;
     bool debugMode = false;
     Vector<Cube> lightDebugProxies;
 public:
@@ -26,7 +26,7 @@ public:
 
     void clearAllLights();
 
-    UBO &getLightDataUBO() { return lightDataUBO; }
+    UBO &getLightDataUBO() { return lightDataArray.getUBO(); }
 
     void setDebugLightMode(bool debugMode) { this->debugMode = debugMode; }
     bool getDebugLightMode() const { return debugMode; }

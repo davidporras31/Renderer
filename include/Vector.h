@@ -34,6 +34,8 @@ public:
     void pushBack(const T &val);
     /// @brief Adds an element to the end of the vector.
     void pushBack(T &&val);
+    /// @brief Adds an array of elements to the end of the vector.
+    void pushBack(const T *vals, const S count);
     /// @brief Removes the last element without calling its destructor.
     void popBack();
     /// @brief Removes the last element and calls its destructor.
@@ -116,6 +118,16 @@ inline void Vector<T, S>::pushBack(T &&val)
     if (size >= capacity)
         expand();
     data[size++] = std::move(val);
+}
+
+template <typename T, typename S>
+inline void Vector<T, S>::pushBack(const T *vals, const S count)
+{
+    for (size_t i = 0; i < count; i++)
+    {
+        pushBack(vals[i]);
+    }
+    
 }
 
 template <typename T, typename S>
