@@ -13,6 +13,8 @@ LIB_ASSIMP = lib/assimp/build/bin/libassimp.so.6
 LIB_GLAD = lib/glad/build/src/gl.c
 LIB_GLM = lib/glm/readme.md
 LIB_STB = lib/stb/stb/README.md
+LIB_SHADER_PRECOMPILER = lib/shader-precompiler/README.md
+LIB_RESOURCE_MANAGER = lib/resource-manager/README.md
 
 OSFLAG = UNKNOWN
 # Detect the operating system
@@ -38,7 +40,7 @@ endif
 
 all: build
 
-config: $(LIB_GLAD) $(LIB_GLM) $(LIB_STB) $(LIB_FT2) $(LIB_ASSIMP) $(LIB_GLFW)
+config: $(LIB_GLAD) $(LIB_GLM) $(LIB_STB) $(LIB_FT2) $(LIB_ASSIMP) $(LIB_GLFW) $(LIB_SHADER_PRECOMPILER) $(LIB_RESOURCE_MANAGER)
 	@echo "Configuration complete."
 
 test: TEST = -DTESTMODE=1
@@ -57,13 +59,39 @@ clean:
 	@rm -rf $(FILESTRUCTURE)
 	@echo "Cleaning complete."
 
+$(LIB_RESOURCE_MANAGER): lib/resource-manager/resource-manager.zip
+	@echo "Install resource manager..."
+	@unzip -o lib/resource-manager/resource-manager.zip -d lib/resource-manager
+	@mv -n lib/resource-manager/Resource-Manager-main/* lib/resource-manager
+	@rm -rf lib/resource-manager/Resource-Manager-main
+	@echo "building resource manager..."
+	@cd lib/resource-manager && $(MAKE) CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" 
+	@echo "resource manager Install complete."
+
+lib/resource-manager/resource-manager.zip:
+	@echo "Downloading resource manager..."
+	@mkdir -p lib/resource-manager
+	@curl -s -L -o lib/resource-manager/resource-manager.zip https://github.com/davidporras31/Resource-Manager/archive/refs/heads/main.zip
+
+$(LIB_SHADER_PRECOMPILER): lib/shader-precompiler/shader-precompiler.zip
+	@echo "Install shader precompiler..."
+	@unzip -o lib/shader-precompiler/shader-precompiler.zip -d lib/shader-precompiler
+	@mv -n lib/shader-precompiler/shader-precompiler-main/* lib/shader-precompiler
+	@rm -rf lib/shader-precompiler/shader-precompiler-main
+	@echo "shader precompiler Install complete."
+
+lib/shader-precompiler/shader-precompiler.zip:
+	@echo "Downloading shader precompiler..."
+	@mkdir -p lib/shader-precompiler
+	@curl -s -L -o lib/shader-precompiler/shader-precompiler.zip https://github.com/davidporras31/shader-precompiler/archive/refs/heads/main.zip
+
 $(LIB_ASSIMP): lib/assimp/assimp.zip
 	@echo "Install assimp..."
 	@unzip -o lib/assimp/assimp.zip -d lib/assimp
 	@mv -n lib/assimp/assimp-6.0.2/* lib/assimp
 	@echo "building assimp..."
 	@cd lib/assimp && cmake CMakeLists.txt -B build -D CMAKE_BUILD_TYPE=Release -D ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT=OFF -D ASSIMP_BUILD_OBJ_IMPORTER=ON -D ASSIMP_BUILD_FBX_IMPORTER=ON -D ASSIMP_BUILD_GLTF_IMPORTER=ON -D ASSIMP_BUILD_TESTS=OFF -D ASSIMP_BUILD_SAMPLES=OFF -D ASSIMP_BUILD_DOCS=OFF
-	@cd lib/assimp/build && make
+	@cd lib/assimp/build && $(MAKE)
 	@echo "assimp Install complete."	
 
 lib/assimp/assimp.zip: $(FILESTRUCTURE)
@@ -76,8 +104,8 @@ $(LIB_FT2): lib/ft2/ft2.tar.gz
 	@tar -xvzf lib/ft2/ft2.tar.gz -C lib/ft2
 	@mv -n lib/ft2/freetype-2.14.1/* lib/ft2
 	@echo "building ft2..."
-	@cd lib/ft2 && make
-	@cd lib/ft2 && make
+	@cd lib/ft2 && $(MAKE)
+	@cd lib/ft2 && $(MAKE)
 	@echo "ft2 Install complete."
 
 lib/ft2/ft2.tar.gz: $(FILESTRUCTURE)
@@ -160,7 +188,7 @@ ifeq ($(OSFLAG),LINUX)
 	@echo "Configuring glfw..."
 	@cd lib/glfw && cmake -B build -D CMAKE_BUILD_TYPE=Release -D BUILD_SHARED_LIBS=ON -D GLFW_BUILD_EXAMPLES=OFF -D GLFW_BUILD_TESTS=OFF -D GLFW_BUILD_DOCS=OFF
 	@echo "Compiling glfw..."
-	@cd lib/glfw/build && make
+	@cd lib/glfw/build && $(MAKE)
 	@touch lib/glfw/installed.flag
 	@echo "glfw build complete."
 endif
@@ -212,14 +240,16 @@ BUILD_FILES = \
 
 OBJECTS_FILES = $(foreach file,$(BUILD_FILES),obj/$(file).o)
 
-build: bin/main.exe
+build: bin/main.out
 	@rm -rf bin/test bin/shaders
 	@cp -r test bin/test
 	@cp -r shaders bin/shaders
 	@echo "Build complete."
 
-bin/main.exe: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) makefile
+bin/main.out: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) makefile
+	@echo "Linking..."
 	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) lib/glad/build/src/gl.c
+	@echo "Linking complete."
 
 bin/libglfw.so.3.4:
 	@cp $(LIB_GLFW) bin/libglfw.so.3.4
