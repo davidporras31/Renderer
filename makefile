@@ -6,7 +6,15 @@ CXX = g++
 # select compiler flags
 CXXFLAGS = -std=c++23 -g -Wall
 
-INCLUDEPATH = -Ilib/glad/build/include -Ilib/glfw/include -Ilib/glm -Ilib/stb -Ilib/ft2/include -Ilib/assimp/include -Ilib/assimp/build/include
+INCLUDEPATH = lib/glad/build/include\
+			lib/glfw/include\
+			lib/glm\
+			lib/stb\
+			lib/ft2/include\
+			lib/assimp/include\
+			lib/assimp/build/include
+INCLUDEPATH_OBJ = $(foreach INCLUDEPATH_OBJ_FILE,$(INCLUDEPATH),-I$(INCLUDEPATH_OBJ_FILE))
+INCLUDEPATH_BUILD = $(foreach INCLUDEPATH_BUILD_FILE,$(INCLUDEPATH),-I../$(INCLUDEPATH_BUILD_FILE))
 LIB_GLFW = lib/glfw/build/src/libglfw.so.3.4
 LIB_FT2 = lib/ft2/objs/.libs/libfreetype.so
 LIB_ASSIMP = lib/assimp/build/bin/libassimp.so.6
@@ -14,7 +22,7 @@ LIB_GLAD = lib/glad/build/src/gl.c
 LIB_GLM = lib/glm/readme.md
 LIB_STB = lib/stb/stb/README.md
 LIB_SHADER_PRECOMPILER = lib/shader-precompiler/README.md
-LIB_RESOURCE_MANAGER = lib/resource-manager/README.md
+LIB_RESOURCE_MANAGER = lib/resource-manager/bin/resource-manager.so
 
 OSFLAG = UNKNOWN
 # Detect the operating system
@@ -65,7 +73,7 @@ $(LIB_RESOURCE_MANAGER): lib/resource-manager/resource-manager.zip
 	@mv -n lib/resource-manager/Resource-Manager-main/* lib/resource-manager
 	@rm -rf lib/resource-manager/Resource-Manager-main
 	@echo "building resource manager..."
-	@cd lib/resource-manager && $(MAKE) CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS)" 
+	@cd lib/resource-manager && $(MAKE) CXX="$(CXX)" CXXFLAGS="$(CXXFLAGS) -fPIC" BUILD_SHARED_LIBS=ON
 	@echo "resource manager Install complete."
 
 lib/resource-manager/resource-manager.zip:
@@ -249,9 +257,9 @@ build: bin/main.out
 	@cp -r shaders bin/shaders
 	@echo "Build complete."
 
-bin/main.out: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) makefile
+bin/main.out: test/main.cpp bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 bin/libresourcemanager.so obj/ShaderPrecompiler.o $(OBJECTS_FILES) makefile
 	@echo "Linking..."
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -o bin/main.out test/main.cpp -Wl,-rpath=. bin/libglfw.so.3.4 bin/libfreetype.so bin/libassimp.so.6 $(OBJECTS_FILES) lib/glad/build/src/gl.c
+	@cd bin && $(CXX) $(CXXFLAGS) $(INCLUDEPATH_BUILD) $(TEST) -o main.out ../test/main.cpp -Wl,-rpath=. libglfw.so.3.4 libfreetype.so libassimp.so.6 libresourcemanager.so $(foreach obj,$(OBJECTS_FILES),../$(obj)) ../lib/glad/build/src/gl.c ../obj/ShaderPrecompiler.o
 	@echo "Linking complete."
 
 bin/libglfw.so.3.4:
@@ -260,7 +268,13 @@ bin/libfreetype.so:
 	@cp $(LIB_FT2) bin/libfreetype.so
 bin/libassimp.so.6:
 	@cp $(LIB_ASSIMP) bin/libassimp.so.6
+bin/libresourcemanager.so:
+	@cp $(LIB_RESOURCE_MANAGER) bin/libresourcemanager.so
+obj/ShaderPrecompiler.o: lib/shader-precompiler/ShaderPrecompiler.cpp lib/shader-precompiler/ShaderPrecompiler.h makefile
+	@echo "Compiling shader precompiler..."
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH_OBJ) $(TEST) -c lib/shader-precompiler/ShaderPrecompiler.cpp -o obj/ShaderPrecompiler.o
+	@echo "shader precompiler compiled."
 
 $(OBJECTS_FILES): obj/%.o: src/%.cpp include/%.h makefile
 	@echo "Compiling $<..."
-	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH) $(TEST) -c $< -o $@
+	@$(CXX) $(CXXFLAGS) $(INCLUDEPATH_OBJ) $(TEST) -c $< -o $@
