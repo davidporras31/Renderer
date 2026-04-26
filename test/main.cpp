@@ -85,6 +85,8 @@ int main()
         renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
         renderer->setClearColor(ConstColor::Dark_Modern_Gray);
 
+        // set up the frame buffers
+        //renderer->addFrameBuffer(new FrameBuffer(), "MainFrameBuffer");// TODO add more frame buffers for different rendering stages
         // set up the rendering stages
         ForwardGeometry *forwardGeometry = new ForwardGeometry();
         DebugRender *debugRender = new DebugRender();
@@ -144,10 +146,8 @@ int main()
         forwardGeometry->setCamera(&camera);
 
         // create shader programs for test rendering
-        ShaderProgram textShaderProgram("text_shader",
-                                        {{FORWARDGEOMETRY_SHADER_PATH ".vs", GL_VERTEX_SHADER},
-                                         {"test/text.fs", GL_FRAGMENT_SHADER}},
-                                        "./shaders");
+        std::map<std::string, std::string> ShaderDefines;
+        ShaderProgram textShaderProgram("text_shader.shader", &ShaderDefines);
         // create a default material
         Material material = Material();
         material.albedo.emplace<Texture>().load("test/img.png");

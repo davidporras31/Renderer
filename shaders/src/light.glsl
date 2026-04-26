@@ -1,18 +1,6 @@
-#version 430 core
-
-struct Material {
-    vec3 albedo;
-    sampler2D albedoMap;
-    float metallic;
-    sampler2D metallicMap;
-    float roughness;
-    sampler2D roughnessMap;
-    float ao;
-    sampler2D aoMap;
-    vec3 emissive;
-    sampler2D emissiveMap;
-    sampler2D normalMap;
-};
+#ifndef LIGHT_GLSL
+#define LIGHT_GLSL
+#include "math.glsl"
 
 struct Light {
     vec4 position;      //xyz = position, w = type
@@ -22,39 +10,10 @@ struct Light {
 };
 
 layout(std140, binding = 0) uniform LightDataUBO {
+    int size;
+    vec3 _pad; // padding to align to 16 bytes
     Light lights[16];
-    Light count;
 };
-
-in vec2 uv;
-in vec3 normal;
-in vec3 worldPos;
-
-out vec4 FragColor;
-
-uniform vec3 viewPos;
-uniform Material material;
-
-vec4 getAlbedo() {
-    return material.albedo.x != -1 ? vec4(material.albedo, 1.0) : texture(material.albedoMap, uv);
-}
-float getMmetallic() {
-    return material.metallic != -1 ? material.metallic : texture(material.metallicMap, uv).r;
-}
-float getRoughness() {
-    return material.roughness != -1 ? material.roughness : texture(material.roughnessMap, uv).r;
-}
-float getAnbientOclusion() {
-    return material.ao != -1 ? material.ao : texture(material.aoMap, uv).r;
-}
-vec3 getEmissive() {
-    return material.emissive.x != -1 ? material.emissive : texture(material.emissiveMap, uv).rgb;
-}
-vec3 getNormal() {
-    return texture(material.normalMap, uv).rgb;
-}
-
-const float PI = 3.14159265359;
 
 // Fresnel (Schlick approximation)
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
@@ -149,7 +108,7 @@ vec3 calculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 P, vec3 albedo,
     vec3 kS = F;
     vec3 kD = (1.0 - kS) * (1.0 - metallic);
 
-    vec3 diffuse = kD * albedo / PI;
+    vec3 diffuse = kD * albedo / PI ;
 
     // Final lighting
     return (diffuse + specular) * light.color.rgb * NdotL;
@@ -157,7 +116,7 @@ vec3 calculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 P, vec3 albedo,
 
 vec3 calculateLighting(vec3 N, vec3 V, vec3 P, vec3 albedo, float metallic, float roughness) {
     vec3 result = vec3(0.0);
-    for(int i = 0; i < count.data.r; ++i) {
+    for(int i = 0; i < size; ++i) {
         Light light = lights[i];
 
         float type = light.position.w;
@@ -180,19 +139,4 @@ vec3 calculateLighting(vec3 N, vec3 V, vec3 P, vec3 albedo, float metallic, floa
     return result;
 }
 
-void main() {
-    vec3 N = normalize(normal);
-    vec3 V = normalize(viewPos - worldPos);
-
-    vec3 albedo = getAlbedo().rgb;
-    float metallic = getMmetallic();
-    float roughness = getRoughness();
-
-    vec3 color = calculateLighting(N, V, worldPos, albedo, metallic, roughness);
-
-    vec3 ambient = albedo * getAnbientOclusion() * 0.03;
-    color += ambient;
-    color += getEmissive();
-
-    FragColor = vec4(color, 1.0);
-}
+#endif // LIGHT_GLSL

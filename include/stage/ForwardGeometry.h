@@ -36,10 +36,8 @@ public:
 
     void initialize(Renderer *renderer) override
     {
-        defaultShader = new ShaderProgram("forward_geometry_shader",
-                                          {{FORWARDGEOMETRY_SHADER_PATH ".vs", GL_VERTEX_SHADER},
-                                           {FORWARDGEOMETRY_SHADER_PATH ".fs", GL_FRAGMENT_SHADER}},
-                                          "./shaders");
+        std::map<std::string, std::string> ShaderDefines;
+        defaultShader = new ShaderProgram("forward_geometry_shader.shader", &ShaderDefines);
 
         defaultMaterial = Material();
         debugRender = static_cast<DebugRender *>(renderer->getStage("DebugRender"));

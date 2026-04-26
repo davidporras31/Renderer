@@ -1,0 +1,2 @@
+debug_render_shader
+forward_geometry_shader.vs,vertex

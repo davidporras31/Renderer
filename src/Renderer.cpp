@@ -54,6 +54,7 @@ void Renderer::initialize()
     for (unsigned int i = 0; i < this->frameBuffers.getSize(); i++)
     {
         this->frameBuffers[i].first->initialize({viewport.z, viewport.w});
+        this->frameBuffers[i].first->unbind();
     }
     for (unsigned int i = 0; i < this->stages.getSize(); i++)
     {
