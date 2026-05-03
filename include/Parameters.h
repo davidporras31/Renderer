@@ -23,6 +23,10 @@ std::map<std::string, std::string> generateParameterMap(Parameters &params)
     #undef RENDERER_PARAMETERS
     return parameterMap;
 }
+
+/// @brief Create a Parameters struct from a map of parameter names to their string representations.
+/// @param parameterMap A map of parameter names to their string representations.
+/// @return A Parameters struct populated with the values from the map.
 Parameters fromParameterMap(const std::map<std::string, std::string> &parameterMap)
 {
     Parameters params;

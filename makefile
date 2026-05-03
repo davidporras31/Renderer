@@ -220,6 +220,7 @@ BUILD_FILES = \
 	Transformable\
 	Drawable\
 	../test/TriangleTest\
+	../test/CamControl\
 	Camera\
 	OrthographicCamera\
 	PerspectiveCamera\

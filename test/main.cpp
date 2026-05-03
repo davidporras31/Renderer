@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 #include "TriangleTest.h"
 #include "CSVLoader.h"
+#include "CamControl.h"
 #include "../include/OrthographicCamera.h"
 #include "../include/ShaderProgram.h"
 #include "../include/Texture.h"
@@ -17,6 +18,7 @@
 #include "../include/lights/DirectionalLight.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
+void processMouseMovement(GLFWwindow *window, double xpos, double ypos);
 void processInput(GLFWwindow *window);
 
 // settings
@@ -25,7 +27,7 @@ const unsigned int SCR_HEIGHT = 600;
 
 static Renderer *renderer;
 static bool animationEnabled = true;
-static glm::vec3 camRotation = {0, 0, 0};
+static CamControl *camControl;
 
 static CSVFile csvFile("../test/geometry.csv");
 void updateGeometry(std::vector<DrawCall> &render_state)
@@ -80,6 +82,7 @@ int main()
         }
         glfwMakeContextCurrent(window);
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+        glfwSetCursorPosCallback(window, processMouseMovement);
 
         // start the renderer
         renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
@@ -135,14 +138,9 @@ int main()
 
         std::vector<DrawCall> render_state;
 
-        Transformable camOrigin;
-        camOrigin.setPosition({0, 0, 0});
-        camOrigin.setRotation({0, 0, 0});
-        camOrigin.setScale({1, 1, 1});
-
-        OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.1f, 500.0f);
+        OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.001f, 1000.0f);
         camera.setPosition({0, 0, -2});
-        // camera.setParent(&camOrigin);
+        camControl = new CamControl(&camera);
         forwardGeometry->setCamera(&camera);
 
         // create shader programs for test rendering
@@ -237,6 +235,18 @@ int main()
     return 0;
 }
 
+double lastX = 0, lastY = 0;
+
+void processMouseMovement(GLFWwindow *window, double xpos, double ypos)
+{
+    if (camControl)
+    {
+        camControl->processMouseMovement(xpos - lastX, ypos - lastY);
+    }
+    lastX = xpos;
+    lastY = ypos;
+}
+
 bool keyQPressed = false;
 bool keyEPressed = false;
 int debugMode = -1;
@@ -244,6 +254,7 @@ int debugMode = -1;
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
 {
+    camControl->processInput(window);
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
