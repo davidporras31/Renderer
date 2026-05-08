@@ -104,6 +104,7 @@
 
 namespace Test
 {
+    /// @brief Exception class for test failures, containing information about the failure.
     class TestFailure : public std::runtime_error
     {
     public:

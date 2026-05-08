@@ -3,6 +3,7 @@
 
 #include "Camera.h"
 
+/// @brief A camera that uses perspective projection.
 class PerspectiveCamera : public Camera
 {
 private:

@@ -16,6 +16,9 @@
 #define VECTOR_SLIM_TYPE unsigned long
 #define VECTOR_HEAVY_TYPE unsigned long long
 
+/// @brief A dynamic array implementation.
+/// @tparam T The type of elements stored in the vector.
+/// @tparam S The type used for size and capacity (default is size_t).
 template <typename T, typename S = size_t>
 class Vector
 {

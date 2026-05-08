@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include "Texture.h"
 
+/// @brief A wrapper around an OpenGL framebuffer object (FBO) that manages a color texture attachment and allows for resizing.
 class FrameBuffer {
     private:
         glm::ivec2 size;

@@ -8,6 +8,7 @@
 #include "Font.h"
 #include "Square.h"
 
+/// @brief A drawable text object that can be rendered using a shader program. The Text class manages the individual characters as textures and squares, and handles the rendering of the text string.
 class Text : public Drawable
 {
 private:

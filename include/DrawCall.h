@@ -6,6 +6,7 @@
 #include "ShaderProgram.h"
 #include "Material.h"
 
+/// @brief A struct that represents a draw call, containing a drawable object, an optional custom shader program, and an optional material.
 struct DrawCall
 {
     Drawable* drawable;

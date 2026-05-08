@@ -9,6 +9,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+/// @brief A 3D model that can be loaded from a file and drawn using a shader program.
 class Model : public Drawable {
 private:
     Vector<Mesh, unsigned int> meshes;

@@ -5,6 +5,7 @@
 #include "DrawCall.h"
 class Renderer;
 
+/// @brief an abstract class that represents a stage in the rendering pipeline. Each stage is responsible for executing a specific part of the rendering process, such as geometry processing, lighting, or post-processing. The renderer manages the stages and executes them in order during the rendering loop.
 class RendererStage {
     bool debugMode = false;
 public:

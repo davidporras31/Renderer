@@ -7,7 +7,7 @@
 #include "TriangleTest.h"
 #include "CSVLoader.h"
 #include "CamControl.h"
-#include "../include/OrthographicCamera.h"
+#include "../include/PerspectiveCamera.h"
 #include "../include/ShaderProgram.h"
 #include "../include/Texture.h"
 #include "../include/Square.h"
@@ -103,7 +103,7 @@ int main()
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // create tests objects
-        TriangleTest triangleTest;
+        /*TriangleTest triangleTest;
         triangleTest.setPosition({0.5f, 0.5f, -1.f});
         triangleTest.setScale({SCR_WIDTH / 2, SCR_HEIGHT / 2, 1.f});
 
@@ -134,11 +134,17 @@ int main()
         advancedModel.open("test/WeaponSet/objfiles/Untitled.obj");
         advancedModel.setPosition({600, 400, -300});
         advancedModel.setScale(glm::vec3(2));
-        advancedModel.setRotation({90.0f, 0.0f, 0.0f});
+        advancedModel.setRotation({90.0f, 0.0f, 0.0f});*/
+
+        Model sponzaModel;
+        sponzaModel.open("test/sponza/sponza.obj");
+        sponzaModel.setPosition({0, -1, 0});
+        sponzaModel.setScale({0.1f, 0.1f, 0.1f});
+        sponzaModel.setRotation({0, 0, 0});
 
         std::vector<DrawCall> render_state;
 
-        OrthographicCamera camera(0.f, SCR_WIDTH, 0.f, SCR_HEIGHT, 0.001f, 1000.0f);
+        PerspectiveCamera camera(45.0f, static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.001f, 1000.0f);
         camera.setPosition({0, 0, -2});
         camControl = new CamControl(&camera);
         forwardGeometry->setCamera(&camera);
@@ -152,17 +158,18 @@ int main()
         material.metallic = 0.0f;
         material.roughness = 1.0f;
 
-        render_state.push_back(DrawCall(&triangleTest));
-        render_state.push_back(DrawCall(&square));
-        render_state.push_back(DrawCall(&cube));
-        render_state.push_back(DrawCall(&text, &textShaderProgram));
-        render_state.push_back(DrawCall(&basicModel));
-        render_state.push_back(DrawCall(&advancedModel));
+        //render_state.push_back(DrawCall(&triangleTest));
+        //render_state.push_back(DrawCall(&square));
+        //render_state.push_back(DrawCall(&cube));
+        //render_state.push_back(DrawCall(&text, &textShaderProgram));
+        //render_state.push_back(DrawCall(&basicModel));
+        //render_state.push_back(DrawCall(&advancedModel));
+        render_state.push_back(DrawCall(&sponzaModel));
 
         // assign the material to each draw call
         for (auto &&i : render_state)
         {
-            i.material = &material;
+            //i.material = &material;
             forwardGeometry->pushDrawCall(&i);
         }
 
@@ -192,18 +199,6 @@ int main()
             processInput(window);
 
             renderer->clear();
-
-            double xpos, ypos;
-            glfwGetCursorPos(window, &xpos, &ypos);
-            ypos = abs(ypos - SCR_HEIGHT);
-            pointLight.setPosition(glm::vec3(xpos, ypos, -50));
-            glm::vec3 rot = triangleTest.getRotation();
-            rot.z += 0.005f;
-            triangleTest.setRotation(rot);
-            rot = advancedModel.getRotation();
-            rot.x += 0.002f;
-            rot.y += 0.003f;
-            advancedModel.setRotation(rot);
 
             renderer->renderFrame();
             if (!animationEnabled)

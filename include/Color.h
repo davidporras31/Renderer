@@ -6,7 +6,7 @@
 typedef glm::vec4 Color; 
 
 
-// Common color constants
+/// @brief Common color constants
 namespace ConstColor
 {
     const Color Black      = Color(0.0f, 0.0f, 0.0f, 1.0f);

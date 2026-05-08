@@ -25,6 +25,7 @@ struct Character {
     unsigned int Advance;    // Offset to advance to next glyph
 };
 
+/// @brief A font that can be loaded from a file and used to generate character textures for rendering text.
 class Font
 {
 private:

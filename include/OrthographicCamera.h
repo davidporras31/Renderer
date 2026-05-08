@@ -3,6 +3,7 @@
 
 #include "Camera.h"
 
+/// @brief A camera that uses orthographic projection.
 class OrthographicCamera : public Camera
 {
 private:

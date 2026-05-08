@@ -13,6 +13,8 @@
 #include "RendererStage.h"
 #include "FrameBuffer.h"
 
+/// @brief the openGL renderer that manages the rendering stages and frame buffers, and handles the rendering loop.
+/// The renderer is responsible for initializing the rendering stages and frame buffers, and for executing the rendering loop.
 class Renderer {
 private:
     static unsigned int getChanelSize(GLuint format);

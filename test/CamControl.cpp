@@ -2,6 +2,16 @@
 
 void CamControl::processInput(GLFWwindow *window)
 {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        clicked = true;
+    }
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        clicked = false;
+    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         moveCamera({0, 1});
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -14,10 +24,13 @@ void CamControl::processInput(GLFWwindow *window)
 
 void CamControl::processMouseMovement(double xoffset, double yoffset)
 {
-    glm::vec3 rotation = camera->getRotation();
-    rotation.x += static_cast<float>(-yoffset * 0.016) * sensitivity;
-    rotation.y += static_cast<float>(-xoffset * 0.016) * sensitivity;
-    camera->setRotation(rotation);
+    if (clicked)
+    {
+        glm::vec3 rotation = camera->getRotation();
+        rotation.x += static_cast<float>(-yoffset * 0.016) * sensitivity;
+        rotation.y += static_cast<float>(-xoffset * 0.016) * sensitivity;
+        camera->setRotation(rotation);
+    }
 }
 
 void CamControl::moveCamera(glm::vec2 direction)
