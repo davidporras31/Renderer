@@ -43,6 +43,8 @@ public:
     void popBack();
     /// @brief Removes the last element and calls its destructor.
     void safePopBack();
+    /// @brief Removes the element at the specified index.
+    void remove(const S index);
 
     /// @brief Constructs an element in-place at the end of the vector.
     /// @tparam Args Types of the arguments to forward to the constructor of T.
@@ -146,6 +148,27 @@ inline void Vector<T, S>::safePopBack()
     if (size != 0)
     {
         std::destroy_at(std::addressof(data[--size]));
+    }
+}
+
+template <typename T, typename S>
+inline void Vector<T, S>::remove(const S index)
+{
+    if (index < size)
+    {
+        std::destroy_at(std::addressof(data[index]));
+        for (S i = index; i < size - 1; ++i)
+        {
+            if constexpr (std::is_trivially_copyable<T>::value)
+            {
+                data[i] = data[i + 1];
+            }
+            else
+            {
+                data[i] = std::move(data[i + 1]);
+            }
+        }
+        --size;
     }
 }
 

@@ -8,8 +8,10 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "Parameters.h"
+#include "MouseEvent.h"
+#include "KeyEvent.h"
 
-/// @brief Represents a window in the application. It manages the GLFW window and provides methods for window operations such as clearing, drawing, and setting properties.
+/// @brief Represents a window in the application. It manages the GLFW window and provides methods for window operations such as clearing, drawing, and handling events.
 /// @example
 /// Windows window("My Renderer", parameters);
 /// while (window.isOpen()) {
@@ -24,6 +26,12 @@ private:
     GLFWwindow *window;
     Renderer *renderer;
     double frameTimeLimit, lastFrameTime, currentFrameTime;
+    Vector<KeyEvent*, unsigned short> keyEvents;
+    Vector<MouseEvent*,unsigned short> mouseEvents;
+    void framebufferSizeCallback(int width, int height);
+    void mouseMovementCallback(double xpos, double ypos);
+    void mouseButtonCallback(int button, int action, int mods);
+    void keyboardInputCallback(int key, int scancode, int action, int mods);
 public:
     Windows(const std::string &title, const Parameters &params);
     ~Windows();
@@ -52,6 +60,19 @@ public:
     /// @brief Sets the fullscreen mode for the window.
     /// @param fullscreen If true, the window will be set to fullscreen; otherwise, it will be windowed.
     void setFullscreen(bool fullscreen);
+
+    /// @brief Adds a key event to the window.
+    /// @param keyEvent A pointer to the KeyEvent to add.
+    void addKeyEvent(KeyEvent* keyEvent);
+    /// @brief Removes a key event from the window.
+    /// @param keyEvent A pointer to the KeyEvent to remove.
+    void removeKeyEvent(KeyEvent* keyEvent);
+    /// @brief Adds a mouse event to the window.
+    /// @param mouseEvent A pointer to the MouseEvent to add.
+    void addMouseEvent(MouseEvent* mouseEvent);
+    /// @brief Removes a mouse event from the window.
+    /// @param mouseEvent A pointer to the MouseEvent to remove.
+    void removeMouseEvent(MouseEvent* mouseEvent);
 
     /// @brief Gets the renderer associated with the window.
     /// @return A pointer to the Renderer instance.

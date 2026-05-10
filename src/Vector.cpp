@@ -164,3 +164,27 @@ TEST("Vector", "getData functionality")
     }
     #endif  // TESTMODE
 }
+TEST("Vector", "remove one object")
+{
+    Vector<int> vec;
+    for (int i = 0; i < 10; ++i)
+    {
+        vec.pushBack(i);
+    }
+    REC_EQL(vec.getSize(), 10);
+    vec.remove(5);
+    REC_EQL(vec.getSize(), 9);
+    for (int i = 0; i < 5; ++i)
+    {
+        REC_EQL(vec[i], i);
+    }
+    for (int i = 6; i < 10; ++i)
+    {
+        REC_EQL(vec[i - 1], i);
+    }
+    for (size_t i = 0; i < vec.getSize(); i++)
+    {
+        REC_NEQ(vec[i],5);
+    }
+    
+}
