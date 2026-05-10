@@ -1,4 +1,6 @@
 #include <print>
+#include <thread>
+#include <chrono>
 #include "../include/Test.hpp"
 #include "../include/Renderer.h"
 #include "../include/stage/ForwardGeometry.h"
@@ -60,6 +62,9 @@ int main()
 //#ifdef TESTMODE
 //    return 0;
 //#endif
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for renderdoc to start and be ready to capture the output
+
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -83,6 +88,9 @@ int main()
         glfwMakeContextCurrent(window);
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
         glfwSetCursorPosCallback(window, processMouseMovement);
+
+        //glfw vsync
+        glfwSwapInterval(0);
 
         // start the renderer
         renderer = new Renderer((GLADloadfunc)glfwGetProcAddress);
@@ -139,12 +147,12 @@ int main()
         Model sponzaModel;
         sponzaModel.open("test/sponza/sponza.obj");
         sponzaModel.setPosition({0, -1, 0});
-        sponzaModel.setScale({0.1f, 0.1f, 0.1f});
+        sponzaModel.setScale({0.01f, 0.01f, 0.01f});
         sponzaModel.setRotation({0, 0, 0});
 
         std::vector<DrawCall> render_state;
 
-        PerspectiveCamera camera(45.0f, static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.001f, 1000.0f);
+        PerspectiveCamera camera(45.0f, static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.5f, 100.0f);
         camera.setPosition({0, 0, -2});
         camControl = new CamControl(&camera);
         forwardGeometry->setCamera(&camera);
@@ -190,10 +198,25 @@ int main()
                 &pointLight,
                 &dirLight};
 
+        double lastTime = glfwGetTime();
+        int nbFrames = 0;
         // render loop
         // -----------
         while (!glfwWindowShouldClose(window))
         {
+            double currentTime = glfwGetTime();
+            
+            nbFrames++;
+            
+            if (currentTime - lastTime >= 1.0) {
+                double fps = (double)nbFrames / (currentTime - lastTime);
+                char title[256];
+                snprintf(title, 256, "Mon Jeu [%.1f FPS]", fps);
+                glfwSetWindowTitle(window, title);
+                
+                nbFrames = 0;
+                lastTime = currentTime;
+            }
             // input
             // -----
             processInput(window);

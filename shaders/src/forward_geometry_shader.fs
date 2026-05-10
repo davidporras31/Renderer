@@ -19,5 +19,5 @@ void main() {
     color += ambient;
     color += getEmissive();
 
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(albedo, 1.0);
 }

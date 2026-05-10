@@ -1,12 +1,15 @@
 //define renderer parameters using Xmacro
 // the macro takes three arguments: type, name, default value
+#ifndef RENDERER_PARAMETERS
+#define RENDERER_PARAMETERS(type, name, defaultValue)
+#endif
 // window parameters
 RENDERER_PARAMETERS(unsigned int, windowWidth, 800)
 RENDERER_PARAMETERS(unsigned int, windowHeight, 600)
 RENDERER_PARAMETERS(bool, vsyncEnabled, true)
 RENDERER_PARAMETERS(bool, fullscreenEnabled, false)
 RENDERER_PARAMETERS(bool, borderlessWindowEnabled, false)
-RENDERER_PARAMETERS(unsigned int, frameRateLimit, 60)
+RENDERER_PARAMETERS(unsigned int, frameRateLimit, 60)   // -1 for unlimited
 // camera parameters
 RENDERER_PARAMETERS(float, cameraFOV, 45.0f)
 // antialiasing parameters

@@ -42,6 +42,8 @@ public:
     /// @brief Set the parent of the transformable object.
     /// @param par The parent transformable object. If set to nullptr, the object will have no parent.
     void setParent(Transformable* par);
+    /// @brief Get the parent of the transformable object.
+    /// @return A pointer to the parent transformable object, or nullptr if there is no parent.
     Transformable* getParent() const { return parent; }
 
     glm::mat4& getTransform();
