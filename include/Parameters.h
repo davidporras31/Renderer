@@ -15,26 +15,12 @@ struct Parameters
 /// @brief Generate a map of parameter names to their string representations.
 /// @param params The parameters struct containing all parameter values.
 /// @return A map of parameter names to their string representations.
-std::map<std::string, std::string> generateParameterMap(Parameters &params)
-{
-    std::map<std::string, std::string> parameterMap;
-    #define RENDERER_PARAMETERS(type, name, defaultValue) parameterMap[#name] = std::to_string(params.name);
-    #include "Parameter.h"
-    #undef RENDERER_PARAMETERS
-    return parameterMap;
-}
+std::map<std::string, std::string> generateParameterMap(Parameters &params);
 
 /// @brief Create a Parameters struct from a map of parameter names to their string representations.
 /// @param parameterMap A map of parameter names to their string representations.
 /// @return A Parameters struct populated with the values from the map.
-Parameters fromParameterMap(const std::map<std::string, std::string> &parameterMap)
-{
-    Parameters params;
-    #define RENDERER_PARAMETERS(type, name, defaultValue) params.name = fromString<type>(parameterMap.at(#name));
-    #include "Parameter.h"
-    #undef RENDERER_PARAMETERS
-    return params;
-}
+Parameters fromParameterMap(const std::map<std::string, std::string> &parameterMap);
 
 
 

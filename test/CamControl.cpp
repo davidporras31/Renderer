@@ -2,16 +2,6 @@
 
 void CamControl::processInput(GLFWwindow *window)
 {
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
-    {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        clicked = true;
-    }
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
-    {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        clicked = false;
-    }
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         moveCamera({0, 1});
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)

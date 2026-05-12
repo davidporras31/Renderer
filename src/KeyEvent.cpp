@@ -1,6 +1,11 @@
 
 #include "../include/KeyEvent.h"
 
+KeyEvent::KeyEvent(int key, std::function<void(int, int, void *)> pressCallback, void *userData)
+    : key(key), pressCallback(pressCallback), releaseCallback(nullptr), repeatCallback(nullptr), userData(userData)
+{
+    
+}
 KeyEvent::KeyEvent( int key, std::function<void(int, int, void *)> pressCallback, std::function<void(int, int, void *)> releaseCallback, std::function<void(int, int, void *)> repeatCallback, void *userData)
     : key(key), pressCallback(pressCallback), releaseCallback(releaseCallback), repeatCallback(repeatCallback), userData(userData)
 {

@@ -19,6 +19,8 @@ public:
 
     void setSensitivity(float newSensitivity) { sensitivity = newSensitivity; }
     float getSensitivity() const { return sensitivity; }
+
+    void setClicked(bool val){clicked = val;}
 private:
     // Move the camera in the specified direction based on its current orientation.
     void moveCamera(glm::vec2 direction);

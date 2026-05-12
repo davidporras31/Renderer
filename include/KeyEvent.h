@@ -8,11 +8,12 @@ class KeyEvent
 {
 private:
     int key;
-    void *userData;
     std::function<void(int, int, void *)> pressCallback;
     std::function<void(int, int, void *)> releaseCallback;
     std::function<void(int, int, void *)> repeatCallback;
+    void *userData;
 public:
+    KeyEvent(int key, std::function<void(int, int, void *)> pressCallback, void *userData = nullptr);
     KeyEvent( int key, std::function<void(int, int, void *)> pressCallback, std::function<void(int, int, void *)> releaseCallback, std::function<void(int, int, void *)> repeatCallback, void *userData = nullptr);
     ~KeyEvent();
 

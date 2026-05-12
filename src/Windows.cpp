@@ -27,7 +27,7 @@ void Windows::keyboardInputCallback(int key, int scancode, int action, int mods)
 {
     for (size_t i = 0; i < keyEvents.getSize(); i++)
     {
-        if (key = keyEvents[i]->getKey())
+        if (key == keyEvents[i]->getKey())
         {
             switch (action)
             {
@@ -103,7 +103,7 @@ void Windows::close()
 
 void Windows::clear()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    renderer->clear();
     currentFrameTime = glfwGetTime();
 }
 

@@ -216,6 +216,11 @@ lib/glfw/glfw-3.4.zip: $(FILESTRUCTURE)
 	@python download_json.py lib/glfw/assets.json
 
 BUILD_FILES = \
+	Windows\
+	KeyEvent\
+	MouseEvent\
+	String\
+	Parameters\
 	Renderer\
 	Transformable\
 	Drawable\
