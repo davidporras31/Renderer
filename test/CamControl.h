@@ -14,16 +14,15 @@ public:
     /// @param camera Pointer to the camera to control
     /// @param sensitivity Mouse movement sensitivity (default is 1.0f)
     CamControl(Camera *camera, float sensitivity = 1.f) : camera(camera), sensitivity(sensitivity) {}
-    void processInput(GLFWwindow *window);
     void processMouseMovement(double xoffset, double yoffset);
 
     void setSensitivity(float newSensitivity) { sensitivity = newSensitivity; }
     float getSensitivity() const { return sensitivity; }
 
     void setClicked(bool val){clicked = val;}
-private:
     // Move the camera in the specified direction based on its current orientation.
     void moveCamera(glm::vec2 direction);
+private:
     Camera *camera;
     float sensitivity;
     bool clicked = false;

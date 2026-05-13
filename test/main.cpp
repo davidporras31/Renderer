@@ -136,7 +136,19 @@ int main()
                     windows.setCaptureMouse(false);
                     break;
                 }
-        }));
+    }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_W,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
+        camControl->moveCamera({0,1});
+    }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_S,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
+        camControl->moveCamera({0,-1});
+    }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_A,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
+        camControl->moveCamera({1,0});
+    }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_D,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
+        camControl->moveCamera({-1,0});
+    }));
 
     // create tests objects
     /*TriangleTest triangleTest;

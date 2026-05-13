@@ -34,9 +34,6 @@ void Windows::keyboardInputCallback(int key, int scancode, int action, int mods)
             case GLFW_PRESS:
                 keyEvents[i]->onPress(scancode,mods);
                 break;
-            case GLFW_REPEAT:
-                keyEvents[i]->onRepeat(scancode,mods);
-                break;
             case GLFW_RELEASE:
                 keyEvents[i]->onRelease(scancode,mods);
                 break;
@@ -116,6 +113,12 @@ void Windows::swapBuffersAndPollEvents()
 {
     glfwSwapBuffers(window);
     glfwPollEvents();
+    for (size_t i = 0; i < keyEvents.getSize(); i++)
+    {
+        if(keyEvents[i]->isHolded())
+            keyEvents[i]->onHold(0,0);
+    }
+    
     // Limit FPS
     double frameTime = glfwGetTime() - currentFrameTime;
     if (frameTime < frameTimeLimit)
