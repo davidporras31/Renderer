@@ -12,7 +12,7 @@ struct Light {
 layout(std140, binding = 0) uniform LightDataUBO {
     int size;
     vec3 _pad; // padding to align to 16 bytes
-    Light lights[16];
+    Light lights[ maxLights ];
 };
 
 // Fresnel (Schlick approximation)

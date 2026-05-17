@@ -31,6 +31,7 @@
 #ifdef TESTMODE
 
 // Test macros
+
 #define REC_EQL(value, target) \
     if (value != target)       \
         throw Test::TestFailure(__FILE__, __LINE__, "==", #value, #target);

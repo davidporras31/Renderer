@@ -26,7 +26,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 static Renderer *renderer;
-static bool animationEnabled = true;
+static bool reload_transform = true;
 static CamControl *camControl;
 
 static CSVFile csvFile("../test/geometry.csv");
@@ -57,11 +57,9 @@ void updateGeometry(std::vector<DrawCall> &render_state)
 
 int main()
 {
-    // #ifdef TESTMODE
-    //     return 0;
-    // #endif
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // Wait for renderdoc to start and be ready to capture the output
+#ifdef TESTMODE
+    return 0;
+#endif
 
     Parameters params;
     Windows windows("Mon Jeu", params);
@@ -76,7 +74,7 @@ int main()
     DebugRender *debugRender = new DebugRender();
     renderer->addStage(forwardGeometry);
     renderer->addStage(debugRender);
-    renderer->initialize();
+    renderer->initialize(params);
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
@@ -93,8 +91,9 @@ int main()
 
     windows.addKeyEvent(new KeyEvent(GLFW_KEY_E, std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData)
                                      {
-        std::println("toggle animation");
-        animationEnabled = !animationEnabled; }, std::function<void(int, int, void *)>()));
+        std::println("Reload all transforms");
+        reload_transform = !reload_transform; 
+    }, std::function<void(int, int, void *)>()));
 
     int debugMode = -1;
 
@@ -116,73 +115,37 @@ int main()
         } }));
 
     double lastX = 0, lastY = 0;
-    windows.addMouseEvent(new MouseEvent([&lastX, &lastY](double x, double y, void *userData){
+    windows.addMouseEvent(new MouseEvent([&lastX, &lastY](double x, double y, void *userData)
+                                         {
         if (camControl)
         {
             camControl->processMouseMovement(x - lastX, y - lastY);
         }
         lastX = x;
-        lastY = y; }, 
-        [&windows](int button, int action, int mods, void *userData) {
-            if(button == GLFW_MOUSE_BUTTON_1)
-                switch (action)
-                {
-                case GLFW_PRESS:
-                    camControl->setClicked(true);
-                    windows.setCaptureMouse(true);
-                    break;
-                case GLFW_RELEASE:
-                    camControl->setClicked(false);
-                    windows.setCaptureMouse(false);
-                    break;
-                }
-    }));
-    windows.addKeyEvent(new KeyEvent(GLFW_KEY_W,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
-        camControl->moveCamera({0,1});
-    }));
-    windows.addKeyEvent(new KeyEvent(GLFW_KEY_S,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
-        camControl->moveCamera({0,-1});
-    }));
-    windows.addKeyEvent(new KeyEvent(GLFW_KEY_A,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
-        camControl->moveCamera({1,0});
-    }));
-    windows.addKeyEvent(new KeyEvent(GLFW_KEY_D,std::function<void(int, int, void *)>(),std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData){
-        camControl->moveCamera({-1,0});
-    }));
-
-    // create tests objects
-    /*TriangleTest triangleTest;
-    triangleTest.setPosition({0.5f, 0.5f, -1.f});
-    triangleTest.setScale({SCR_WIDTH / 2, SCR_HEIGHT / 2, 1.f});
-
-    Square square;
-    square.setPosition({2, 2, 1});
-    square.setScale({1, 1, 1});
-
-    Cube cube;
-    cube.setPosition({400, 300, -200});
-    cube.setScale({100, 100, 100});
-
-    square.setParent(&cube);
-
-    Font font("./test/FreeSans.ttf");
-    Text text(&font, "hello world\nboo");
-    text.setPosition({200, 75, -200});
-    text.setScale({50, 50, 1});
-    text.setColor(ConstColor::Yellow);
-
-    Model basicModel;
-    basicModel.open("test/model/Untitled.obj");
-    basicModel.setPosition({300, 100, -150});
-    basicModel.setScale({50.0f, 50.0f, 50.0f});
-    basicModel.setRotation({45.0f, 45.0f, 0.0f});
-
-    Model advancedModel;
-    stbi_set_flip_vertically_on_load(false);
-    advancedModel.open("test/WeaponSet/objfiles/Untitled.obj");
-    advancedModel.setPosition({600, 400, -300});
-    advancedModel.setScale(glm::vec3(2));
-    advancedModel.setRotation({90.0f, 0.0f, 0.0f});*/
+        lastY = y; },
+                                         [&windows](int button, int action, int mods, void *userData)
+                                         {
+                                             if (button == GLFW_MOUSE_BUTTON_1)
+                                                 switch (action)
+                                                 {
+                                                 case GLFW_PRESS:
+                                                     camControl->setClicked(true);
+                                                     windows.setCaptureMouse(true);
+                                                     break;
+                                                 case GLFW_RELEASE:
+                                                     camControl->setClicked(false);
+                                                     windows.setCaptureMouse(false);
+                                                     break;
+                                                 }
+                                         }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_W, std::function<void(int, int, void *)>(), std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData)
+                                     { camControl->moveCamera({0, 1}); }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_S, std::function<void(int, int, void *)>(), std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData)
+                                     { camControl->moveCamera({0, -1}); }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_A, std::function<void(int, int, void *)>(), std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData)
+                                     { camControl->moveCamera({1, 0}); }));
+    windows.addKeyEvent(new KeyEvent(GLFW_KEY_D, std::function<void(int, int, void *)>(), std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData)
+                                     { camControl->moveCamera({-1, 0}); }));
 
     Model sponzaModel;
     sponzaModel.open("test/sponza/sponza.obj");
@@ -198,20 +161,13 @@ int main()
     forwardGeometry->setCamera(&camera);
 
     // create shader programs for test rendering
-    std::map<std::string, std::string> ShaderDefines;
+    std::map<std::string, std::string> ShaderDefines = generateParameterMap(params);
     ShaderProgram textShaderProgram("text_shader.shader", &ShaderDefines);
     // create a default material
     Material material = Material();
     material.albedo.emplace<Texture>().load("test/img.png");
     material.metallic = 0.0f;
     material.roughness = 1.0f;
-
-    // render_state.push_back(DrawCall(&triangleTest));
-    // render_state.push_back(DrawCall(&square));
-    // render_state.push_back(DrawCall(&cube));
-    // render_state.push_back(DrawCall(&text, &textShaderProgram));
-    // render_state.push_back(DrawCall(&basicModel));
-    // render_state.push_back(DrawCall(&advancedModel));
     render_state.push_back(DrawCall(&sponzaModel));
 
     // assign the material to each draw call
@@ -223,9 +179,9 @@ int main()
 
     // create a point light
     PointLight pointLight;
-    pointLight.setPosition({600, 400, 50});
+    pointLight.setPosition({0, 1, 0});
     pointLight.setColor(ConstColor::Red);
-    pointLight.setRange(10000.0f);
+    pointLight.setRange(10.0f);
     forwardGeometry->addLight(&pointLight);
 
     DirectionalLight dirLight;
@@ -259,11 +215,11 @@ int main()
             nbFrames = 0;
             lastTime = currentTime;
         }
-
         renderer->renderFrame();
-        if (!animationEnabled)
+        if (!reload_transform)
         {
             updateGeometry(render_state);
+            reload_transform =false;
         }
         // prepare for next frame
         for (auto &&i : render_state)

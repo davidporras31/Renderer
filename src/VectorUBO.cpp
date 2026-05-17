@@ -8,7 +8,7 @@ TEST("VectorUBO", "Test memory allocation and deallocation")
         float padding[3]; // padding to ensure that the size of the struct is a multiple of 16 bytes
     };
 
-    VectorUBO<VectorUBOTestData, 4> vectorUBO;
+    VectorUBO<VectorUBOTestData> vectorUBO;
     REC_EQL(vectorUBO.getSize(), 0); // Check that the size is initially 0
 }
 
@@ -20,7 +20,7 @@ TEST("VectorUBO", "Test storage and retrieval of data in the VectorUBO class")
         float padding[3]; // padding to ensure that the size of the struct is a multiple of 16 bytes
     };
 
-    VectorUBO<VectorUBOTestData, 4> vectorUBO;
+    VectorUBO<VectorUBOTestData> vectorUBO;
     vectorUBO.pushBack(VectorUBOTestData{1.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{2.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{3.f, {0.f, 0.f, 0.f}});
@@ -38,7 +38,7 @@ TEST("VectorUBO", "Test storage and retrieval of data in the VectorUBO class")
 
 TEST("VectorUBO", "Test storage and retrieval of huge data in the VectorUBO class")
 {
-    VectorUBO<long double, 1000> vectorUBO;
+    VectorUBO<long double> vectorUBO;
     for (long double i = 0; i < 1000; ++i)
     {
         vectorUBO.pushBack(i);
@@ -64,7 +64,7 @@ TEST("VectorUBO", "Test storage and retrieval of huge data bigger then float in 
         float d;
     };
 
-    VectorUBO<Foo, 1000> vectorUBO;
+    VectorUBO<Foo> vectorUBO;
     for (float i = 0; i < 1000; ++i)
     {
         vectorUBO.pushBack(Foo{i, i + (1 << 16)});
@@ -89,7 +89,7 @@ TEST("VectorUBO", "Test clear function")
         float a;
         float padding[3]; // padding to ensure that the size of the struct is a multiple of 16 bytes
     };
-    VectorUBO<VectorUBOTestData, 4> vectorUBO;
+    VectorUBO<VectorUBOTestData> vectorUBO;
     vectorUBO.pushBack(VectorUBOTestData{1.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{2.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{3.f, {0.f, 0.f, 0.f}});

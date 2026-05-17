@@ -24,9 +24,9 @@ public:
         return "UIRender";
     }
 
-    void initialize(Renderer *renderer) override
+    void initialize(Renderer *renderer, Parameters params) override
     {
-        std::map<std::string, std::string> ShaderDefines;
+        std::map<std::string, std::string> ShaderDefines = generateParameterMap(params);
         defaultShader = new ShaderProgram("ui_shader.shader", &ShaderDefines);
     }
 

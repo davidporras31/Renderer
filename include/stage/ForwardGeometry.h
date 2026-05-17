@@ -34,10 +34,12 @@ public:
         return "ForwardGeometry";
     }
 
-    void initialize(Renderer *renderer) override
+    void initialize(Renderer *renderer, Parameters params) override
     {
-        std::map<std::string, std::string> ShaderDefines;
+        std::map<std::string, std::string> ShaderDefines = generateParameterMap(params);
         defaultShader = new ShaderProgram("forward_geometry_shader.shader", &ShaderDefines);
+
+        setMaxLights(params.maxLights);
 
         defaultMaterial = Material();
         debugRender = static_cast<DebugRender *>(renderer->getStage("DebugRender"));

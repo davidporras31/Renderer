@@ -1,17 +1,5 @@
 #include "CamControl.h"
 
-void CamControl::processInput(GLFWwindow *window)
-{
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        moveCamera({0, 1});
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        moveCamera({0, -1});
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        moveCamera({1, 0});
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        moveCamera({-1, 0});
-}
-
 void CamControl::processMouseMovement(double xoffset, double yoffset)
 {
     if (clicked)

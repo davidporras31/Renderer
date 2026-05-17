@@ -30,7 +30,7 @@ public:
     void addFrameBuffer(FrameBuffer* frameBuffer, const std::string& name);
     FrameBuffer* getFrameBuffer(const std::string& name) const;
 
-    void initialize();
+    void initialize(Parameters params);
     void renderFrame();
     void clear();
 

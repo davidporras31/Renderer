@@ -3,9 +3,6 @@
 ShaderProgram::ShaderProgram(std::string path, std::map<std::string, std::string> *defines)
     : ShaderBase(path)
 {
-    std::map<std::string, std::string> definescopy;
-    if (defines)
-        definescopy = *defines;
     std::ifstream file("./shaders/src/" + path);
 
     std::string directory;
@@ -54,6 +51,9 @@ ShaderProgram::ShaderProgram(std::string path, std::map<std::string, std::string
         std::string object = "./shaders/obj/" + std::string(objects[i].first) + ".o";
         delete[] objects[i].first;
         objects[i].first = strdup(object.c_str());
+        std::map<std::string, std::string> definescopy;
+        if (defines)
+            definescopy = *defines;
         if (ShaderPrecompiler::needsReprecompile(object, &definescopy))
             ShaderPrecompiler::precompileShader(source, object, &definescopy);
     }

@@ -12,7 +12,7 @@
 class LightContainer
 {
 private:
-    VectorUBO<LightData,16> lightDataArray;
+    VectorUBO<LightData> lightDataArray;
 
     bool debugMode = false;
     Vector<Cube> lightDebugProxies;
@@ -21,6 +21,7 @@ public:
     ~LightContainer();
 
     void addLight(Light *light);
+    void setMaxLights(size_t maxLights);
 
     void sendLightData();
 

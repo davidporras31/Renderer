@@ -47,7 +47,7 @@ void Renderer::addStage(RendererStage *stage)
     this->stages.pushBack(stage);
 }
 
-void Renderer::initialize()
+void Renderer::initialize(Parameters params)
 {
     glm::i64vec4 viewport;
     glGetIntegerv(GL_VIEWPORT, (GLint *)&viewport);
@@ -58,7 +58,7 @@ void Renderer::initialize()
     }
     for (unsigned int i = 0; i < this->stages.getSize(); i++)
     {
-        this->stages[i]->initialize(this);
+        this->stages[i]->initialize(this, params);
     }
 }
 

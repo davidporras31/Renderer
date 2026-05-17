@@ -19,8 +19,16 @@ void LightContainer::addLight(Light* light)
     {
         lightDebugProxies.emplaceBack();
         lightDebugProxies.last().setPosition(glm::vec3(light->getLightData().position));
-        lightDebugProxies.last().setScale(glm::vec3(10.0f));
+        if(light->getLightData().position.w == float(LightType::Point))
+            lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
+        else
+            lightDebugProxies.last().setScale(glm::vec3(1.0f));
     }
+}
+
+void LightContainer::setMaxLights(size_t maxLights)
+{
+    lightDataArray.setMaxSize(maxLights);
 }
 
 void LightContainer::sendLightData()

@@ -27,9 +27,9 @@ public:
     {
         return "DebugRender";
     };
-    void initialize(Renderer *renderer) override
+    void initialize(Renderer *renderer, Parameters params) override
     {
-        std::map<std::string, std::string> ShaderDefines;
+        std::map<std::string, std::string> ShaderDefines = generateParameterMap(params);
         defaultShader = new ShaderProgram("debug_render_shader.shader", &ShaderDefines);
     };
     void execute(Renderer *renderer) override

@@ -1,5 +1,5 @@
 positionX,positionY,positionZ, rotationX,rotationY,rotationZ, scaleX,scaleY,scaleZ
-100,400,-150,  0,0,0,  100,100,1
+0,-1,0,  0,0,0,  0.01, 0.01, 0.01
 2,2,1,  0,0,0,  1,1,1
 400,300,-200,  0,0,0,  100,100,100
 200,75,-200,  0,0,0,  50,50,1
