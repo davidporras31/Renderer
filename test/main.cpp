@@ -17,6 +17,7 @@
 #include "../include/Model.h"
 #include "../include/lights/PointLight.h"
 #include "../include/lights/DirectionalLight.h"
+#include "../include/lights/SpotLight.h"
 
 void processMouseMovement(GLFWwindow *window, double xpos, double ypos);
 void processInput(GLFWwindow *window);
@@ -182,17 +183,24 @@ int main()
     pointLight.setPosition({0, 1, 0});
     pointLight.setColor(ConstColor::Red);
     pointLight.setRange(10.0f);
-    forwardGeometry->addLight(&pointLight);
 
     DirectionalLight dirLight;
-    dirLight.setDirection({1, 1, 1});
+    dirLight.setDirection({0, 1, 0});
     dirLight.setColor(ConstColor::White);
-    forwardGeometry->addLight(&dirLight);
+
+    SpotLight spotLight;
+    spotLight.setPosition({4, 1, 0});
+    spotLight.setDirection({0, -1, 0});
+    spotLight.setColor(ConstColor::Blue);
+    spotLight.setRange(10.0f);
+    spotLight.setAngle(45.0f);
 
     std::vector<Light *> lights =
         {
             &pointLight,
-            &dirLight};
+            &dirLight,
+            &spotLight
+        };
 
     double lastTime = glfwGetTime();
     int nbFrames = 0;

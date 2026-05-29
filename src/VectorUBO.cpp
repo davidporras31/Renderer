@@ -21,6 +21,7 @@ TEST("VectorUBO", "Test storage and retrieval of data in the VectorUBO class")
     };
 
     VectorUBO<VectorUBOTestData> vectorUBO;
+    vectorUBO.reserve(4);
     vectorUBO.pushBack(VectorUBOTestData{1.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{2.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{3.f, {0.f, 0.f, 0.f}});
@@ -39,6 +40,7 @@ TEST("VectorUBO", "Test storage and retrieval of data in the VectorUBO class")
 TEST("VectorUBO", "Test storage and retrieval of huge data in the VectorUBO class")
 {
     VectorUBO<long double> vectorUBO;
+    vectorUBO.reserve(1000);
     for (long double i = 0; i < 1000; ++i)
     {
         vectorUBO.pushBack(i);
@@ -65,6 +67,7 @@ TEST("VectorUBO", "Test storage and retrieval of huge data bigger then float in 
     };
 
     VectorUBO<Foo> vectorUBO;
+    vectorUBO.reserve(1000);
     for (float i = 0; i < 1000; ++i)
     {
         vectorUBO.pushBack(Foo{i, i + (1 << 16)});
@@ -90,6 +93,7 @@ TEST("VectorUBO", "Test clear function")
         float padding[3]; // padding to ensure that the size of the struct is a multiple of 16 bytes
     };
     VectorUBO<VectorUBOTestData> vectorUBO;
+    vectorUBO.reserve(4);
     vectorUBO.pushBack(VectorUBOTestData{1.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{2.f, {0.f, 0.f, 0.f}});
     vectorUBO.pushBack(VectorUBOTestData{3.f, {0.f, 0.f, 0.f}});

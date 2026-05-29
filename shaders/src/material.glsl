@@ -20,7 +20,7 @@ uniform Material material;
 vec4 getAlbedo() {
     return material.albedo.x != -1 ? vec4(material.albedo, 1.0) : texture(material.albedoMap, uv);
 }
-float getMmetallic() {
+float getMetallic() {
     return material.metallic != -1 ? material.metallic : texture(material.metallicMap, uv).r;
 }
 float getRoughness() {

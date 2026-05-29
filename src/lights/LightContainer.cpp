@@ -19,16 +19,27 @@ void LightContainer::addLight(Light* light)
     {
         lightDebugProxies.emplaceBack();
         lightDebugProxies.last().setPosition(glm::vec3(light->getLightData().position));
-        if(light->getLightData().position.w == float(LightType::Point))
-            lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
-        else
-            lightDebugProxies.last().setScale(glm::vec3(1.0f));
+        switch (static_cast<LightType>(light->getLightData().position.w))
+        {
+            case LightType::Directional:
+                lightDebugProxies.last().setScale(glm::vec3(1.0f));
+                break;
+            case LightType::Point:
+                lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
+                break;
+            case LightType::Spot:
+                lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
+                break;
+            case LightType::Area:
+                lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
+                break;
+        }
     }
 }
 
 void LightContainer::setMaxLights(size_t maxLights)
 {
-    lightDataArray.setMaxSize(maxLights);
+    lightDataArray.reserve(maxLights);
 }
 
 void LightContainer::sendLightData()

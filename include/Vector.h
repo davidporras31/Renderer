@@ -34,16 +34,21 @@ public:
     ~Vector();
 
     /// @brief Adds an element to the end of the vector.
+    /// @param val The element to add.
     void pushBack(const T &val);
     /// @brief Adds an element to the end of the vector.
+    /// @param val The element to add.
     void pushBack(T &&val);
     /// @brief Adds an array of elements to the end of the vector.
+    /// @param vals The array of elements to add.
+    /// @param count The number of elements to add.
     void pushBack(const T *vals, const S count);
     /// @brief Removes the last element without calling its destructor.
     void popBack();
     /// @brief Removes the last element and calls its destructor.
     void safePopBack();
     /// @brief Removes the element at the specified index.
+    /// @param index The index of the element to remove.
     void remove(const S index);
 
     /// @brief Constructs an element in-place at the end of the vector.

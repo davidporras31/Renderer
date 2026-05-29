@@ -9,9 +9,8 @@ struct Light {
     vec4 data;          //data for light type spec
 };
 
+uniform int lightCount;
 layout(std140, binding = 0) uniform LightDataUBO {
-    int size;
-    vec3 _pad; // padding to align to 16 bytes
     Light lights[ maxLights ];
 };
 
@@ -114,26 +113,101 @@ vec3 calculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 P, vec3 albedo,
     return (diffuse + specular) * light.color.rgb * NdotL;
 }
 
+vec3 calculateSpotLight(Light light, vec3 N, vec3 V, vec3 P, vec3 albedo, float metallic, float roughness) {
+    vec3 L = normalize(light.position.xyz - P);
+    vec3 H = normalize(V + L);
+
+    float distance = length(light.position.xyz - P);
+    float range = light.data.x;
+    float attenuation = clamp(1.0 - distance / range, 0.0, 1.0);
+    attenuation *= attenuation; // smoother falloff
+
+    // Spot angle (in radians) stored in light.data.y
+    float theta = dot(normalize(light.direction.xyz), -L); // cos of angle between spot axis and vector from light to P
+    float outerAngle = light.data.y;
+    // use a small inner cone for smooth falloff (90% of outer)
+    float innerAngle = outerAngle * 0.9;
+    float outerCut = cos(outerAngle);
+    float innerCut = cos(innerAngle);
+    float spotEffect = 0.0;
+    if(innerCut > outerCut) {
+        spotEffect = clamp((theta - outerCut) / (innerCut - outerCut), 0.0, 1.0);
+    } else {
+        spotEffect = step(outerCut, theta);
+    }
+
+    vec3 radiance = light.color.rgb * attenuation * spotEffect;
+
+    // Base reflectivity
+    vec3 F0 = mix(vec3(0.04), albedo, metallic);
+
+    float NDF = DistributionGGX(N, H, roughness);
+    float G = GeometrySmith(N, V, L, roughness);
+    vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+
+    vec3 numerator = NDF * G * F;
+    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+    vec3 specular = numerator / denominator;
+
+    vec3 kS = F;
+    vec3 kD = (1.0 - kS) * (1.0 - metallic);
+
+    float NdotL = max(dot(N, L), 0.0);
+    if (NdotL <= 0.0)
+        return vec3(0.0);
+
+    return (kD * albedo / PI + specular) * radiance * NdotL;
+}
+
+vec3 calculateAreaLight(Light light, vec3 N, vec3 V, vec3 P, vec3 albedo, float metallic, float roughness) {
+    vec3 L = normalize(light.position.xyz - P);
+    vec3 H = normalize(V + L);
+
+    float NdotL = max(dot(N, L), 0.0);
+    if (NdotL <= 0.0)
+        return vec3(0.0);
+
+    // Base reflectivity
+    vec3 F0 = mix(vec3(0.04), albedo, metallic);
+
+    // Cook-Torrance BRDF
+    float D = DistributionGGX(N, H, roughness);
+    float G = GeometrySmith(N, V, L, roughness);
+    vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
+
+    vec3 numerator = D * G * F;
+    float denominator = 4.0 * max(dot(N, V), 0.0) * NdotL + 0.0001;
+    vec3 specular = numerator / denominator;
+
+    vec3 kS = F;
+    vec3 kD = (1.0 - kS) * (1.0 - metallic);
+
+    vec3 diffuse = kD * albedo / PI;
+
+    // Final lighting
+    return (diffuse + specular) * light.color.rgb * NdotL;
+}
+
 vec3 calculateLighting(vec3 N, vec3 V, vec3 P, vec3 albedo, float metallic, float roughness) {
     vec3 result = vec3(0.0);
-    for(int i = 0; i < size; ++i) {
+    for(int i = 0; i < lightCount; ++i) {
         Light light = lights[i];
 
         float type = light.position.w;
 
-        // Simple diffuse lighting calculation
-        if(type == 0) //directionnal light
-        {
-            result += calculateDirectionalLight(light, N, V, P, albedo, metallic, roughness);
-        } else if(type == 1)  //point light
-        {
-            result += calculatePointLight(light, N, V, P, albedo, metallic, roughness);
-        } else if(type == 2) //spot light
-        {
-
-        } else if(type == 3) //area light
-        {
-
+        switch(int(type)) {
+            case 0: // Directional Light
+                result += calculateDirectionalLight(light, N, V, P, albedo, metallic, roughness);
+                break;
+            case 1: // Point Light
+                result += calculatePointLight(light, N, V, P, albedo, metallic, roughness);
+                break;
+            case 2: // Spot Light
+                result += calculateSpotLight(light, N, V, P, albedo, metallic, roughness);
+                break;
+            case 3: // Area Light
+                result += calculateAreaLight(light, N, V, P, albedo, metallic, roughness);
+                break;
         }
     }
     return result;

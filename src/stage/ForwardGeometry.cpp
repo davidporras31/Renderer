@@ -18,6 +18,7 @@ void ForwardGeometry::draw(DrawCall *drawCall)
         // Ignore if the shader does not have viewPos uniform
     }
     shader->setUBO("LightDataUBO", getLightDataUBO());
+    shader->setInt("lightCount", getLightCount());
 
     if(drawCall->material) {
         shader->setMaterial("material", *drawCall->material);
