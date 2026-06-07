@@ -62,7 +62,7 @@ int main()
     return 0;
 #endif
 
-    Parameters params;
+    Parameters params = loadParametersFromFile("renderer.conf");
     Windows windows("Mon Jeu", params);
     // start the renderer
     renderer = windows.getRenderer();

@@ -1,6 +1,7 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 
+#include <fstream>
 #include <map>
 #include <string>
 #include "String.h"
@@ -21,6 +22,10 @@ std::map<std::string, std::string> generateParameterMap(Parameters &params);
 /// @param parameterMap A map of parameter names to their string representations.
 /// @return A Parameters struct populated with the values from the map.
 Parameters fromParameterMap(const std::map<std::string, std::string> &parameterMap);
+
+void saveParametersToFile(const Parameters &params, const std::string &filename);
+
+Parameters loadParametersFromFile(const std::string &filename);
 
 
 
