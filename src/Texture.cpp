@@ -48,11 +48,12 @@ void Texture::load(const char *path, bool mipmap)
     stbi_image_free(data);
 }
 
-void Texture::loadFromMemory(GLint format, int width, int height, unsigned char *buffer, bool mipmap)
+void Texture::loadFromMemory(GLint format, int width, int height, unsigned char *buffer, bool mipmap, bool clamp)
 {
     glBindTexture(GL_TEXTURE_2D, ID);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    GLint wrapMode = clamp ? GL_CLAMP_TO_EDGE : GL_REPEAT;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode);
     if (mipmap)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -65,6 +66,7 @@ void Texture::loadFromMemory(GLint format, int width, int height, unsigned char 
 
 void Texture::resize(glm::ivec2 size)
 {
+    glBindTexture(GL_TEXTURE_2D, ID);
     GLint format;
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

@@ -47,7 +47,7 @@ Character Font::genChar(const char c)
 
     Texture *texture = new Texture();
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    texture->loadFromMemory(GL_RED, width, height, flipped_buffer);
+    texture->loadFromMemory(GL_RED, width, height, flipped_buffer,true,true);
     delete[] flipped_buffer;
     return cash.insert({c,
                         Character{
