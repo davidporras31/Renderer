@@ -10,10 +10,6 @@
 #include "../lights/LightContainer.h"
 #include "DebugRender.h"
 
-#ifndef FORWARDGEOMETRY_SHADER_PATH
-#define FORWARDGEOMETRY_SHADER_PATH "./shaders/forward_geometry_shader"
-#endif // FORWARDGEOMETRY_SHADER_PATH
-
 class ForwardGeometry : public RendererStage, public LightContainer
 {
 private:
@@ -83,6 +79,10 @@ public:
     void pushDrawCall(DrawCall *drawCall) override
     {
         drawCalls.pushBack(drawCall);
+    }
+    Vector<DrawCall *, unsigned int> &getDrawCalls()
+    {
+        return drawCalls;
     }
     void clearDrawCalls()
     {

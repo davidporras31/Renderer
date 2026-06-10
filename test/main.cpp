@@ -5,6 +5,7 @@
 #include "../include/Test.hpp"
 #include "../include/stage/ForwardGeometry.h"
 #include "../include/stage/DebugRender.h"
+//#include "../include/stage/ShadowPass.h"
 #include "TriangleTest.h"
 #include "CSVLoader.h"
 #include "CamControl.h"
@@ -73,8 +74,10 @@ int main()
     // set up the rendering stages
     ForwardGeometry *forwardGeometry = new ForwardGeometry();
     DebugRender *debugRender = new DebugRender();
+    //ShadowPass *shadowPass = new ShadowPass();
     renderer->addStage(forwardGeometry);
     renderer->addStage(debugRender);
+    //renderer->addStage(shadowPass);
     renderer->initialize(params);
 
     glEnable(GL_CULL_FACE);
