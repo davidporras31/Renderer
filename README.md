@@ -17,6 +17,7 @@ This project is inspired by [SFML](https://www.sfml-dev.org/) and the tutorials 
     - OpenGL
     - C++23 or higher
     - make
+    - premake
 
 ## Installation
 1. Clone the repository:
@@ -26,6 +27,8 @@ This project is inspired by [SFML](https://www.sfml-dev.org/) and the tutorials 
      ```
 2. Build the project:
      ```bash
+     python3 setup.py
+     premake5 gmake
      make
      ```
 

@@ -31,7 +31,7 @@ static Renderer *renderer;
 static bool reload_transform = true;
 static CamControl *camControl;
 
-static CSVFile csvFile("../test/geometry.csv");
+static CSVFile csvFile("./test/geometry.csv");
 void updateGeometry(std::vector<DrawCall> &render_state)
 {
     csvFile.update();
@@ -59,9 +59,9 @@ void updateGeometry(std::vector<DrawCall> &render_state)
 
 int main()
 {
-#ifdef TESTMODE
-    return 0;
-#endif
+//#ifdef TESTMODE
+//    return 0;
+//#endif
 
     Parameters params = loadParametersFromFile("renderer.conf");
     Windows windows("Mon Jeu", params);

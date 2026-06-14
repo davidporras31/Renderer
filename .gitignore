@@ -33,3 +33,5 @@
 /bin
 /lib
 /.vscode
+*.make
+Makefile
