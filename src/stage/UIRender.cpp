@@ -11,9 +11,8 @@ void UIRender::draw(DrawCall *drawCall)
     shader->setMat4("view", camera->getTransform());
     shader->setMat4("model", drawCall->drawable->getTransform());
 
-    for(size_t i = 0; i < drawCall->textures.size(); ++i) {
-        drawCall->textures[i]->use(i);
-    }
+
+    shader->setMaterial("material", *drawCall->material);
 
     drawCall->drawable->draw(shader);
 }
