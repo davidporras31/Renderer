@@ -69,8 +69,8 @@ project "core"
             table.insert(cmds, "$(SILENT) {COPY} -L " .. file .. " %{cfg.targetdir}; {ECHO} copy " .. path.getname(file))
             end
         end
-    table.insert(cmds, "$(SILENT) {COPY} -L test %{cfg.targetdir}/test; {ECHO} copy test")
-    table.insert(cmds, "$(SILENT) {COPY} -L shaders %{cfg.targetdir}/shaders; {ECHO} copy shaders")
+    table.insert(cmds, "$(SILENT) {COPY} -L test %{cfg.targetdir}; {ECHO} copy test")
+    table.insert(cmds, "$(SILENT) {COPY} -L shaders %{cfg.targetdir}; {ECHO} copy shaders")
 
     postbuildcommands(cmds)
 

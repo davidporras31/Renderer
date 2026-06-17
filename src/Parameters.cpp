@@ -12,7 +12,10 @@ std::map<std::string, std::string> generateParameterMap(Parameters &params)
 Parameters fromParameterMap(const std::map<std::string, std::string> &parameterMap)
 {
     Parameters params;
-#define RENDERER_PARAMETERS(type, name, defaultValue) params.name = fromString<type>(parameterMap.at(#name));
+    std::map<std::string, std::string>::const_iterator it;
+#define RENDERER_PARAMETERS(type, name, defaultValue) \
+    it = parameterMap.find(#name); \
+    params.name = it != parameterMap.end() ? fromString<type>(it->second) : defaultValue;
 #include "../include/Parameter.h"
 #undef RENDERER_PARAMETERS
     return params;
@@ -54,5 +57,7 @@ Parameters loadParametersFromFile(const std::string &filename)
         }
     }
     inFile.close();
-    return fromParameterMap(parameterMap);
+    Parameters param = fromParameterMap(parameterMap);
+    saveParametersToFile(param,filename);
+    return param;
 }

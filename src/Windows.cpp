@@ -50,8 +50,8 @@ Windows::Windows(const std::string &title, const Parameters &params)
     : windowSize(params.windowWidth, params.windowHeight), frameTimeLimit(1.0 / params.frameRateLimit), lastFrameTime(0), currentFrameTime(0)
 {
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, params.glVersionMajor);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, params.glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);

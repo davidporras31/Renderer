@@ -5,7 +5,7 @@
 #include "../include/Test.hpp"
 #include "../include/stage/ForwardGeometry.h"
 #include "../include/stage/DebugRender.h"
-//#include "../include/stage/ShadowPass.h"
+#include "../include/stage/ShadowPass.h"
 #include "TriangleTest.h"
 #include "CSVLoader.h"
 #include "CamControl.h"
@@ -59,25 +59,40 @@ void updateGeometry(std::vector<DrawCall> &render_state)
 
 int main()
 {
-//#ifdef TESTMODE
-//    return 0;
-//#endif
+    std::println("startup");
 
     Parameters params = loadParametersFromFile("renderer.conf");
     Windows windows("Mon Jeu", params);
     // start the renderer
     renderer = windows.getRenderer();
-    renderer->setClearColor(ConstColor::Dark_Modern_Gray);
+    renderer->setClearColor(ConstColor::Cyan);
 
+    if(params.glDebugLog)
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(
+        [](GLenum source,
+        GLenum type,
+        GLuint id,
+        GLenum severity,
+        GLsizei length,
+        const GLchar* message,
+        const void* userParam)
+        {
+            std::cerr << "OpenGL: " << message << std::endl;
+        },
+        nullptr);
+    }
     // set up the frame buffers
     // renderer->addFrameBuffer(new FrameBuffer(), "MainFrameBuffer");// TODO add more frame buffers for different rendering stages
     // set up the rendering stages
     ForwardGeometry *forwardGeometry = new ForwardGeometry();
     DebugRender *debugRender = new DebugRender();
-    //ShadowPass *shadowPass = new ShadowPass();
+    ShadowPass *shadowPass = new ShadowPass();
     renderer->addStage(forwardGeometry);
     renderer->addStage(debugRender);
-    //renderer->addStage(shadowPass);
+    renderer->addStage(shadowPass);
     renderer->initialize(params);
 
     glEnable(GL_CULL_FACE);
@@ -189,7 +204,7 @@ int main()
 
     DirectionalLight dirLight;
     dirLight.setDirection({0, 1, 0});
-    dirLight.setColor(ConstColor::White);
+    dirLight.setColor(ConstColor::White*1.5f);
 
     SpotLight spotLight;
     spotLight.setPosition({4, 1, 0});

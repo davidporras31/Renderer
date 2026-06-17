@@ -23,8 +23,14 @@ std::map<std::string, std::string> generateParameterMap(Parameters &params);
 /// @return A Parameters struct populated with the values from the map.
 Parameters fromParameterMap(const std::map<std::string, std::string> &parameterMap);
 
+/// @brief Save Parameters to a file or create the file.
+/// @param params The parameters to save.
+/// @param filename The name of the file to save parameters to.
 void saveParametersToFile(const Parameters &params, const std::string &filename);
 
+/// @brief Load parameters from a file or create the file with default values, unset value will be populated with default one.
+/// @param filename The name of the file to load parameters from.
+/// @return A Parameters struct populated with the values from the file.
 Parameters loadParametersFromFile(const std::string &filename);
 
 

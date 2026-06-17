@@ -1,1 +1,3 @@
 shadow_depth_shader
+shadow_depth_shader.fs,fragment
+shadow_depth_shader.vs,vertex

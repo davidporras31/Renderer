@@ -12,18 +12,18 @@ class FrameBuffer {
         glm::ivec2 size;
         glm::vec2 scale;
         GLuint FBO;
-        Texture colorTexture;
+        Texture texture;
     public:
-        FrameBuffer(const glm::vec2& scale = {1.0f, 1.0f});
+        FrameBuffer(const glm::vec2& scale = {1.0f, 1.0f}, const GLint attachment = GL_COLOR_ATTACHMENT0);
         ~FrameBuffer();
 
         void initialize(const glm::ivec2& size);
         void bind();
-        void unbind();
+        static void unbind();
 
         void resize(const glm::ivec2& newSize);
         glm::ivec2 getSize() const;
-        Texture* getColorTexture() { return &colorTexture; }
+        Texture* getColorTexture() { return &texture; }
 };
 
 #endif // FRAME_BUFFER_H

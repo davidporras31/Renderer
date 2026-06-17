@@ -5,13 +5,14 @@
 #include "../RendererStage.h"
 #include "ForwardGeometry.h"
 #include "../TextureArray.h"
+#include "../FrameBufferTexArray.h"
 
 class ShadowPass : public RendererStage
 {
 private:
     ForwardGeometry *forwardGeometry;
     ShaderProgram *depthShader;
-    TextureArray shadowMapArray;
+    FrameBufferTexArray *shadowMapFBO;
 public:
     ShadowPass();
     ~ShadowPass();
@@ -22,18 +23,22 @@ public:
     void initialize(Renderer *renderer, Parameters params) override
     {
         forwardGeometry = static_cast<ForwardGeometry *>(renderer->getStage("ForwardGeometry"));
+        shadowMapFBO = new FrameBufferTexArray({1.f,1.f}, GL_DEPTH_ATTACHMENT);
+        shadowMapFBO->initialize(glm::ivec3(params.shadowMapResolution, params.shadowMapResolution, params.maxLights));
         
         std::map<std::string, std::string> ShaderDefines = generateParameterMap(params);
         depthShader = new ShaderProgram("shadow_depth_shader.shader", &ShaderDefines);
-        shadowMapArray.makeEmpty(GL_DEPTH_COMPONENT, glm::ivec3(params.shadowMapResolution, params.shadowMapResolution, params.maxLights));
     }
     void execute(Renderer *renderer) override
     {
+        shadowMapFBO->bind();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glDrawBuffer(GL_NONE);
         for (size_t i = 0; i < forwardGeometry->getLightCount(); i++)
         {
-            
+            shadowMapFBO->attach(i);
         }
-        
+        FrameBuffer::unbind();
     }
 
     void pushDrawCall(DrawCall *drawCall) override

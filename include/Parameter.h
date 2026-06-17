@@ -3,6 +3,10 @@
 #ifndef RENDERER_PARAMETERS
 #define RENDERER_PARAMETERS(type, name, defaultValue)
 #endif
+// opengl parameters
+RENDERER_PARAMETERS(bool, glDebugLog, true)
+RENDERER_PARAMETERS(int, glVersionMajor, 4)
+RENDERER_PARAMETERS(int, glVersionMinor, 3)
 // window parameters
 RENDERER_PARAMETERS(unsigned int, windowWidth, 800)
 RENDERER_PARAMETERS(unsigned int, windowHeight, 600)
@@ -20,7 +24,7 @@ RENDERER_PARAMETERS(bool, fxaaEnabled, false)
 RENDERER_PARAMETERS(unsigned int, maxLights, 100)
 // shadow parameters
 RENDERER_PARAMETERS(bool, shadowsEnabled, true)
-RENDERER_PARAMETERS(unsigned int, shadowMapResolution, 2048)
+RENDERER_PARAMETERS(unsigned int, shadowMapResolution, 1024)
 RENDERER_PARAMETERS(float, shadowBias, 0.005f)
 RENDERER_PARAMETERS(unsigned int, numCascades, 4)
 // post-processing parameters

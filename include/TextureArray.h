@@ -12,7 +12,7 @@ private:
 public:
     TextureArray();
     ~TextureArray();
-    void use(GLenum textureUnit);
+    void use(GLenum textureUnit = 0);
     void makeEmpty(GLint internalFormat, glm::ivec3 size);
     void resize(glm::ivec3 size);
     GLuint getID() const;

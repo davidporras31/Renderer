@@ -43,6 +43,7 @@ public:
 
     void execute(Renderer *renderer) override
     {
+        FrameBuffer::unbind();
         if (getDebugMode() || getDebugLightMode())
         {
             debugRender->setCamera(camera);

@@ -1,16 +1,16 @@
 #include "../include/FrameBuffer.h"
 
-FrameBuffer::FrameBuffer(const glm::vec2& scale)
+FrameBuffer::FrameBuffer(const glm::vec2& scale, const GLint attachment)
     : size(1,1), scale(scale)
 {
     glGenFramebuffers(1, &FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
     // Create a texture to attach to the framebuffer
-    
-    colorTexture.use();
-    colorTexture.resize(size);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture.getID(), 0);
+
+    texture.use();
+    texture.resize(size);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.getID(), 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         // Handle framebuffer creation error
@@ -50,8 +50,8 @@ void FrameBuffer::resize(const glm::ivec2& newSize)
         // Resize the framebuffer and its attachments
         bind();
         glViewport(0, 0, size.x, size.y);
-        colorTexture.use();
-        colorTexture.resize(size);
+        texture.use();
+        texture.resize(size);
     }
 }
 

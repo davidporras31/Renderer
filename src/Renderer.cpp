@@ -128,9 +128,11 @@ void Renderer::setDebugMode(const std::string &stageName, const bool mode)
 }
 void Renderer::setViewport(const glm::ivec4 viewport)
 {
+    FrameBuffer::unbind();
     glViewport(viewport.x, viewport.y, viewport.z, viewport.w);
     for (unsigned int i = 0; i < this->frameBuffers.getSize(); i++)
     {
+        this->frameBuffers[i].first->bind();
         this->frameBuffers[i].first->resize({viewport.z, viewport.w});
     }
 }
