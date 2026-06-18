@@ -23,10 +23,6 @@
 void processMouseMovement(GLFWwindow *window, double xpos, double ypos);
 void processInput(GLFWwindow *window);
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
 static Renderer *renderer;
 static bool reload_transform = true;
 static CamControl *camControl;
@@ -174,7 +170,7 @@ int main()
 
     std::vector<DrawCall> render_state;
 
-    PerspectiveCamera camera(45.0f, static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.5f, 100.0f);
+    PerspectiveCamera camera(params.cameraFOV, static_cast<float>(params.windowWidth) / static_cast<float>(params.windowHeight), 0.5f, 100.0f);
     camera.setPosition({0, 0, -2});
     camControl = new CamControl(&camera);
     forwardGeometry->setCamera(&camera);
