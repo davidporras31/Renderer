@@ -97,14 +97,8 @@ void Model::draw(ShaderProgram *shader)
 {
     for (unsigned int i = 0; i < meshes.getSize(); i++)
     {
-        try
-        {
+        if (shader->isUniformLocationExists("material.albedo"))     //because material are a struct
             shader->setMaterial("material", materials[meshes[i].getMaterialIndex()]);
-        }
-        catch(...)
-        {
-            //do nothing
-        }
         
         shader->setMat4("model", meshes[i].getTransform());
         meshes[i].draw(shader);

@@ -13,6 +13,7 @@
 #include "Material.h"
 #include "UBO.h"
 
+/// @brief Base class for shader programs. shader programs are built from a shader file (.shader).
 class ShaderBase
 {
 private:
@@ -32,7 +33,19 @@ public:
     ShaderBase(const std::string& name);
     ~ShaderBase();
     void use() const;
+    /// @brief Get the location of a uniform variable in the shader program.
+    /// @param uniformName The name of the uniform variable.
+    /// @return The location of the uniform variable
+    /// @throws std::runtime_error if the uniform variable does not exist in the shader program.
     int getUniformLocation(const std::string& uniformName);
+    /// @brief Check if a uniform location exists in the shader program.
+    /// @param uniformName The name of the uniform variable.
+    /// @return True if the uniform location exists, false otherwise.
+    bool isUniformLocationExists(const std::string& uniformName);
+    /// @brief Get the binding point of a uniform buffer object (UBO) in the shader program.
+    /// @param uboName The name of the UBO.
+    /// @return The binding point of the UBO.
+    /// @throws std::runtime_error if the UBO does not exist in the shader program
     int getUBOBindingPoint(const std::string& uboName);
     void setBool(const std::string& name, bool value);
     void setInt(const std::string& name, int value);

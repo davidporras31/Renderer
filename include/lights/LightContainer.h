@@ -28,6 +28,7 @@ public:
     void clearAllLights();
 
     UBO &getLightDataUBO() { return lightDataArray.getUBO(); }
+    VectorUBO<LightData> &getLightDataArray() { return lightDataArray; }
     size_t getLightCount() const { return lightDataArray.getSize(); }
 
     void setDebugLightMode(bool debugMode) { this->debugMode = debugMode; }

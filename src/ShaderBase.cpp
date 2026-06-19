@@ -76,6 +76,18 @@ int ShaderBase::getUniformLocation(const std::string &uniformName)
     return location;
 }
 
+bool ShaderBase::isUniformLocationExists(const std::string &uniformName)
+{
+    std::unordered_map<std::string, int>::const_iterator it = uniformLocations.find(uniformName);
+    if (it != uniformLocations.end())
+        return true;
+    int location = glGetUniformLocation(this->ID, uniformName.c_str());
+    if (location == -1)
+        return false;
+    uniformLocations[uniformName] = location;
+    return true;
+}
+
 int ShaderBase::getUBOBindingPoint(const std::string &uboName)
 {
     std::unordered_map<std::string, int>::const_iterator it = uniformLocations.find(uboName);

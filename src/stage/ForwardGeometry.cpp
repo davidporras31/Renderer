@@ -12,11 +12,8 @@ void ForwardGeometry::draw(DrawCall *drawCall)
     shader->setMat4("view", camera->getTransform());
     shader->setMat4("model", drawCall->drawable->getTransform());
 
-    try {
+    if (shader->isUniformLocationExists("viewPos"))
         shader->setVec3("viewPos", camera->getGlobalPosition());
-    } catch (...) {
-        // Ignore if the shader does not have viewPos uniform
-    }
     shader->setUBO("LightDataUBO", getLightDataUBO());
     shader->setInt("lightCount", getLightCount());
 

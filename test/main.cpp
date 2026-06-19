@@ -83,12 +83,12 @@ int main()
     // set up the frame buffers
     // renderer->addFrameBuffer(new FrameBuffer(), "MainFrameBuffer");// TODO add more frame buffers for different rendering stages
     // set up the rendering stages
+    ShadowPass *shadowPass = new ShadowPass();
     ForwardGeometry *forwardGeometry = new ForwardGeometry();
     DebugRender *debugRender = new DebugRender();
-    ShadowPass *shadowPass = new ShadowPass();
+    renderer->addStage(shadowPass);
     renderer->addStage(forwardGeometry);
     renderer->addStage(debugRender);
-    renderer->addStage(shadowPass);
     renderer->initialize(params);
 
     glEnable(GL_CULL_FACE);
