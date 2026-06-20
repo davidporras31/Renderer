@@ -193,6 +193,7 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
         setInt(name + ".emissiveMap", 4);
         setVec3(name + ".emissive", glm::vec3(-1.0f)); // Indicate that emissive is from texture
     }
+    setBool(name + ".hasNormalMap", material.normalMap.has_value());
     if (material.normalMap.has_value())
     {
         material.normalMap->use(5);
@@ -200,7 +201,7 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
     }
     else
     {
-        setInt(name + ".normalMap", -1); // Indicate no normal map
+        //setInt(name + ".normalMap", -1); // Indicate no normal map
     }
 }
 void ShaderBase::setUBO(const std::string &name, const UBO &ubo)

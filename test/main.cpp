@@ -20,9 +20,6 @@
 #include "../include/lights/DirectionalLight.h"
 #include "../include/lights/SpotLight.h"
 
-void processMouseMovement(GLFWwindow *window, double xpos, double ypos);
-void processInput(GLFWwindow *window);
-
 static Renderer *renderer;
 static bool reload_transform = true;
 static CamControl *camControl;

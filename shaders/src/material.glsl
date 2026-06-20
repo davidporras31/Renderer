@@ -1,7 +1,8 @@
 #ifndef MATERIAL_GLSL
 #define MATERIAL_GLSL
 
-
+// Material struct definition
+// use get functions to access the material values
 struct Material {
     vec3 albedo;
     sampler2D albedoMap;
@@ -13,6 +14,7 @@ struct Material {
     sampler2D aoMap;
     vec3 emissive;
     sampler2D emissiveMap;
+    bool hasNormalMap;
     sampler2D normalMap;
 };
 uniform Material material;
@@ -32,7 +34,8 @@ float getAnbientOclusion() {
 vec3 getEmissive() {
     return material.emissive.x != -1 ? material.emissive : texture(material.emissiveMap, uv).rgb;
 }
+// Returns the normal from the normal map if it exists, otherwise returns a default normal
 vec3 getNormal() {
-    return texture(material.normalMap, uv).rgb;
+    return material.hasNormalMap ? texture(material.normalMap, uv).rgb : vec3(1.0); // TODO: Replace with default normal value
 }
 #endif // MATERIAL_GLSL
