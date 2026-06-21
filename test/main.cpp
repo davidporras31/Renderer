@@ -58,7 +58,7 @@ int main()
     Windows windows("Mon Jeu", params);
     // start the renderer
     renderer = windows.getRenderer();
-    renderer->setClearColor(ConstColor::Cyan);
+    renderer->setClearColor(ConstColor::Dark_Modern_Gray);
 
     if(params.glDebugLog)
     {
@@ -94,12 +94,16 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     windows.addKeyEvent(new KeyEvent(GLFW_KEY_ESCAPE, [&windows](int scancode, int mods, void *userData)
-                                     { windows.close(); }));
+                                     {
+                                        std::println("closing");
+                                        windows.close();
+                                     }));
 
     windows.addKeyEvent(new KeyEvent(GLFW_KEY_ENTER, [](int scancode, int mods, void *userData)
                                      {
         std::println("capture");
-        renderer->captureScreenshot("./test.png", GL_RGBA); }));
+        renderer->captureScreenshot("./test.png", GL_RGBA);
+    }));
 
     windows.addKeyEvent(new KeyEvent(GLFW_KEY_E, std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData)
                                      {

@@ -47,7 +47,7 @@ Character Font::genChar(const char c)
 
     Texture *texture = new Texture();
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    texture->loadFromMemory(GL_RED, width, height, flipped_buffer,true,true);
+    texture->loadFromMemory(GL_RED, width, height, flipped_buffer, true, true);
     delete[] flipped_buffer;
     return cash.insert({c,
                         Character{
@@ -69,6 +69,7 @@ void Font::init()
 void Font::uninit()
 {
     FT_Done_FreeType(library);
+    library = nullptr;
 }
 
 const char *Font::errorName(FT_Error error)
@@ -89,38 +90,51 @@ const char *Font::errorName(FT_Error error)
     return ret;
 }
 
-#ifdef TESTMODE                         //TODO find a better way to test this without creating a window
+#ifdef TESTMODE // TODO find a better way to test this without creating a window
 static GLFWwindow *initTestFontGL()
 {
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
     GLFWwindow *window = glfwCreateWindow(1, 1, "LearnOpenGL", NULL, NULL);
-    gladLoadGL((GLADloadfunc)glfwGetProcAddress);
     glfwMakeContextCurrent(window);
+    gladLoadGL((GLADloadfunc)glfwGetProcAddress);
     Font::init();
     return window;
+}
+static void uninitTestFontGL(GLFWwindow *window)
+{
+    Font::uninit();
+    glfwDestroyWindow(window);
+    glfwTerminate();
 }
 TEST("Font", "Font init")
 {
     GLFWwindow *window = initTestFontGL();
     REC_NOT_NULL(window);
+    uninitTestFontGL(window);
 }
 TEST("Font", "Character generation")
 {
-    initTestFontGL();
-    Font font("./test/FreeSans.ttf");
-    Character c = font.genChar('A');
-    REC_NOT_NULL(c.texture);
+    GLFWwindow *window = initTestFontGL();
+    {
+        Font font("./test/FreeSans.ttf");
+        Character c = font.genChar('A');
+        REC_NOT_NULL(c.texture);
+    }
+    uninitTestFontGL(window);
 }
 TEST("Font", "Character caching")
 {
-    initTestFontGL();
-    Font font("./test/FreeSans.ttf");
-    Character c1 = font.genChar('A');
-    Character c2 = font.genChar('A');
-    REC_NOT_NULL(c1.texture);
-    REC_NOT_NULL(c2.texture);
-    REC_EQL(c1.texture, c2.texture);
+    GLFWwindow *window = initTestFontGL();
+    {
+        Font font("./test/FreeSans.ttf");
+        Character c1 = font.genChar('A');
+        Character c2 = font.genChar('A');
+        REC_NOT_NULL(c1.texture);
+        REC_NOT_NULL(c2.texture);
+        REC_EQL(c1.texture, c2.texture);
+    }
+    uninitTestFontGL(window);
 }
 #endif // TESTMODE

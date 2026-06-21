@@ -49,7 +49,10 @@ void Windows::keyboardInputCallback(int key, int scancode, int action, int mods)
 Windows::Windows(const std::string &title, const Parameters &params)
     : windowSize(params.windowWidth, params.windowHeight), frameTimeLimit(1.0 / params.frameRateLimit), lastFrameTime(0), currentFrameTime(0)
 {
-    glfwInit();
+    if(!glfwInit())
+    {
+        throw std::runtime_error("Failed to initialize GLFW");
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, params.glVersionMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, params.glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

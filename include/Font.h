@@ -2,8 +2,7 @@
 #define FONT_H
 
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include <freetype/freetype.h>
 
 #include <filesystem>
 #include <stdexcept>
@@ -11,6 +10,7 @@
 #include <map>
 #include "Texture.h"
 #include "Test.hpp"
+
 #ifdef TESTMODE
 #include <GLFW/glfw3.h>
 #endif

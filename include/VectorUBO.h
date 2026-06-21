@@ -6,6 +6,9 @@
 #include "Test.hpp"
 #include <type_traits>
 #include <glm/glm.hpp>
+#ifdef TESTMODE
+#include <GLFW/glfw3.h>
+#endif
 /// @brief A wrapper around a UBO that manages a UBO for sending the vector data to the GPU. a alignment of 16 bytes is assumed for the vector elements.
 /// @tparam T The type of the elements in the vector. Must be trivially copyable and have a size that is a multiple of 16 bytes.
 template <typename T, typename TS = size_t>

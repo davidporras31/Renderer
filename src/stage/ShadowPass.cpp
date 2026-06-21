@@ -41,5 +41,5 @@ void ShadowPass::draw(DrawCall *drawCall, Camera *lightCamera)
     depthShader->setMat4("view", lightCamera->getTransform());
     depthShader->setMat4("model", drawCall->drawable->getTransform());
 
-    //drawCall->drawable->draw(depthShader);
+    drawCall->drawable->draw(depthShader);
 }
