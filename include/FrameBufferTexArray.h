@@ -27,7 +27,7 @@ public:
 
         void resize(const glm::ivec3& newSize);
         glm::ivec3 getSize() const;
-        TextureArray* getColorTexture() { return &textureArray; }
+        TextureArray* getTextureArray() { return &textureArray; }
 };
 
 #endif // FRAMEBUFFERTEXARRAY_H

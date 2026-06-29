@@ -17,7 +17,6 @@
 /// The renderer is responsible for initializing the rendering stages and frame buffers, and for executing the rendering loop.
 class Renderer {
 private:
-    static unsigned int getChanelSize(GLuint format);
     Vector<RendererStage*,unsigned short> stages;
     Vector<std::pair<FrameBuffer*,std::string>,unsigned short> frameBuffers;
 public:

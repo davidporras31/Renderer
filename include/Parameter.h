@@ -6,7 +6,7 @@
 // opengl parameters
 RENDERER_PARAMETERS(bool, glDebugLog, true)
 RENDERER_PARAMETERS(int, glVersionMajor, 4)
-RENDERER_PARAMETERS(int, glVersionMinor, 3)
+RENDERER_PARAMETERS(int, glVersionMinor, 5)
 // window parameters
 RENDERER_PARAMETERS(unsigned int, windowWidth, 800)
 RENDERER_PARAMETERS(unsigned int, windowHeight, 600)

@@ -13,7 +13,8 @@ public:
     Texture();
     ~Texture();
 
-    static GLint getFromatFromChannels(int chanels);
+    static GLint getFromatFromChannels(int channels);
+    static GLint getChannelsFromFormat(GLint format);
 
     void use(const size_t unit = 0) const;
     void load(const char* path, bool mipmap = true);

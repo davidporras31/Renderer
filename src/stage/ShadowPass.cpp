@@ -3,7 +3,6 @@
 
 ShadowPass::ShadowPass()
 {
-    
 }
 
 ShadowPass::~ShadowPass()
@@ -12,24 +11,28 @@ ShadowPass::~ShadowPass()
     delete shadowMapFBO;
 }
 
-Camera * ShadowPass::generateLightCamera(size_t lightIndex)
+Camera *ShadowPass::generateLightCamera(size_t lightIndex)
 {
     // Get the light's position and direction
-    glm::vec3 lightPosition = forwardGeometry->getLightDataArray()[lightIndex].position;
-    glm::vec3 lightDirection = forwardGeometry->getLightDataArray()[lightIndex].direction;
+    LightData *lightData = &forwardGeometry->getLightDataArray()[lightIndex];
+    LightType type = (LightType)lightData->position.w;
+    glm::vec3 lightPosition = lightData->position;
+    glm::vec3 lightDirection = lightData->direction;
 
     // Create a new camera for the light
     Camera *lightCamera = nullptr;
-    if (forwardGeometry->getLightDataArray()[lightIndex].data1.w == 0.0f) // Directional light
+    switch (type)
     {
-        lightCamera = new OrthographicCamera(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f);
-    }
-    //TODO: Add support for other light types (point lights, spotlights)
-    else
-    {
-        lightCamera = new PerspectiveCamera(45.0f, 1.0f, 0.1f, 100.0f);
-    }
+    case LightType::Spot:
+        lightCamera = new PerspectiveCamera(lightData->data1.y, 1.0f, 0.1f, lightData->data1.x);
+        lightCamera->setPosition(lightPosition);
+        lightCamera->lookAt(lightPosition + lightDirection);
+        break;
 
+    default:
+        lightCamera = new PerspectiveCamera(45.0f, 1.0f, 0.1f, 100.0f);
+        break;
+    }
 
     return lightCamera;
 }

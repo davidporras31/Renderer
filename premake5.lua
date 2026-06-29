@@ -1,7 +1,7 @@
 workspace "Renderer"
     architecture "x86_64"
     startproject "core"
-    configurations { "Test", "Debug", "Release", "Dist" }
+    configurations { "Debug", "Test", "Release", "Dist" }
 project "core"
     kind "WindowedApp"
     language "C++"

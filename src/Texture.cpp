@@ -30,6 +30,25 @@ GLint Texture::getFromatFromChannels(int chanels)
         return 0;
     }
 }
+GLint Texture::getChannelsFromFormat(GLint format)
+{
+    switch (format)
+    {
+    case GL_RGBA:
+        return 4;
+    case GL_RGB:
+        return 3;
+    case GL_RG:
+        return 2;
+    case GL_ALPHA:
+        return 1;
+    case GL_DEPTH_COMPONENT:
+        return 1;
+
+    default:
+        return 0;
+    }
+}
 
 void Texture::use(const size_t unit) const
 {

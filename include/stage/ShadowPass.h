@@ -4,7 +4,6 @@
 
 #include "../RendererStage.h"
 #include "ForwardGeometry.h"
-#include "../TextureArray.h"
 #include "../FrameBufferTexArray.h"
 #include "../OrthographicCamera.h"
 #include "../PerspectiveCamera.h"
@@ -64,6 +63,7 @@ public:
     }
     Camera * generateLightCamera(size_t lightIndex);
     void draw(DrawCall *drawCall, Camera *lightCamera);
+    TextureArray * getShadowMapTextureArray() { return shadowMapFBO->getTextureArray(); }
 };
 
 #endif // SHADOWPASS_H

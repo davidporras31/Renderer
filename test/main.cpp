@@ -103,6 +103,8 @@ int main()
                                      {
         std::println("capture");
         renderer->captureScreenshot("./test.png", GL_RGBA);
+        TextureArray *shadowMap = ((ShadowPass *)renderer->getStage("ShadowPass"))->getShadowMapTextureArray();
+        shadowMap->saveToFile("./shadow_map.png", GL_DEPTH_COMPONENT, GL_FLOAT);
     }));
 
     windows.addKeyEvent(new KeyEvent(GLFW_KEY_E, std::function<void(int, int, void *)>(), [](int scancode, int mods, void *userData)
@@ -212,8 +214,8 @@ int main()
 
     std::vector<Light *> lights =
         {
-            &pointLight,
-            &dirLight,
+            //&pointLight,
+            //&dirLight,
             &spotLight
         };
 

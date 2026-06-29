@@ -3,22 +3,6 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb/stb_image_write.h>
 
-unsigned int Renderer::getChanelSize(GLuint format)
-{
-    switch (format)
-    {
-    case GL_RGBA:
-        return 4;
-    case GL_RGB:
-        return 3;
-    case GL_RG:
-        return 2;
-    case GL_ALPHA:
-        return 1;
-    default:
-        return 0;
-    }
-}
 
 Renderer::Renderer(GLADloadfunc load)
 {
@@ -154,7 +138,7 @@ void Renderer::captureScreenshot(const char *filename, GLuint format)
     int width = viewport[2];
     int height = viewport[3];
 
-    unsigned int format_size = getChanelSize(format);
+    unsigned int format_size = Texture::getChannelsFromFormat(format);
 
     unsigned char *pixels = new unsigned char[width * height * format_size];
 
