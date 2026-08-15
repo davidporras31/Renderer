@@ -52,6 +52,7 @@ void updateGeometry(std::vector<DrawCall> &render_state)
 
 int main()
 {
+    TEST_MAIN_STOP;
     std::println("startup");
 
     Parameters params = loadParametersFromFile("renderer.conf");
@@ -174,7 +175,8 @@ int main()
     std::vector<DrawCall> render_state;
 
     PerspectiveCamera camera(params.cameraFOV, static_cast<float>(params.windowWidth) / static_cast<float>(params.windowHeight), 0.5f, 100.0f);
-    camera.setPosition({0, 0, -2});
+    camera.setPosition({4,1,0});
+    camera.setRotation({0,-1,0});
     camControl = new CamControl(&camera);
     forwardGeometry->setCamera(&camera);
 
@@ -202,15 +204,16 @@ int main()
     pointLight.setRange(10.0f);
 
     DirectionalLight dirLight;
-    dirLight.setDirection({0, 1, 0});
-    dirLight.setColor(ConstColor::White*1.5f);
+    dirLight.setRotation({0, 1, 0});
+    dirLight.setColor(ConstColor::White*2.f);
 
     SpotLight spotLight;
-    spotLight.setPosition({4, 1, 0});
-    spotLight.setDirection({0, -1, 0});
-    spotLight.setColor(ConstColor::Blue);
+    spotLight.setParent(&camera);
+    spotLight.setPosition({0, 0, 0});
+    spotLight.setRotation({0, -1, 0});
+    spotLight.setColor(ConstColor::Blue*1.5f);
     spotLight.setRange(10.0f);
-    spotLight.setAngle(45.0f);
+    spotLight.setAngle(10.0f);
 
     std::vector<Light *> lights =
         {

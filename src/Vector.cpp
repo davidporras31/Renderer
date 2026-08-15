@@ -13,6 +13,40 @@ TEST("Vector", "Basic functionality")
         REC_EQL(vec[i], i);
     }
 }
+TEST("Vector", "copy constructor functionality")
+{
+    Vector<int> vec1;
+    for (int i = 0; i < 20; ++i)
+    {
+        vec1.pushBack(i);
+    }
+    Vector<int> vec2 = vec1; // Copy constructor
+    REC_EQL(vec2.getSize(), 20);
+    for (int i = 0; i < 20; ++i)
+    {
+        REC_EQL(vec2[i], i);
+    }
+
+    for (int i = 0; i < vec1.getSize(); ++i)
+    {
+        vec1[i] = i + 100; // Modify vec1
+    }
+    REC_EQL(vec1.getSize(), vec2.getSize());
+    for (int i = 0; i < vec2.getSize(); ++i)
+    {
+        REC_NEQ(vec1[i],vec2[i]);
+    }
+
+}
+TEST("Vector", "initializer_list constructor functionality")
+{
+    Vector<int> vec = {1, 2, 3, 4, 5};
+    REC_EQL(vec.getSize(), 5);
+    for (int i = 0; i < 5; ++i)
+    {
+        REC_EQL(vec[i], i + 1);
+    }
+}
 TEST("Vector", "popBack functionality")
 {
     Vector<int> vec;

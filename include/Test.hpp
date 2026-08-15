@@ -31,34 +31,43 @@
 #ifdef TESTMODE
 
 // Test macros
-
+/// @brief Macro to check if two values are equal. If they are not, it throws a TestFailure exception with details about the failure.
 #define REC_EQL(value, target) \
     if (value != target)       \
         throw Test::TestFailure(__FILE__, __LINE__, "==", #value, #target);
+/// @brief Macro to check if two values are not equal. If they are equal, it throws a TestFailure exception with details about the failure.
 #define REC_NEQ(value, target) \
     if (value == target)       \
         throw Test::TestFailure(__FILE__, __LINE__, "!=", #value, #target);
+/// @brief Macro to check if a value is true. If it is not, it throws a TestFailure exception with details about the failure.
 #define REC_TRUE(value) \
     if (!(value))       \
         throw Test::TestFailure(__FILE__, __LINE__, "==", #value, "true");
+/// @brief Macro to check if a value is false. If it is not, it throws a TestFailure exception with details about the failure.
 #define REC_FALSE(value) \
     if (value)           \
         throw Test::TestFailure(__FILE__, __LINE__, "==", #value, "false");
+/// @brief Macro to check if a value is null. If it is not, it throws a TestFailure exception with details about the failure.
 #define REC_NULL(value)   \
     if (value != nullptr) \
         throw Test::TestFailure(__FILE__, __LINE__, "==", #value, "nullptr");
+/// @brief Macro to check if a value is not null. If it is, it throws a TestFailure exception with details about the failure.
 #define REC_NOT_NULL(value) \
     if (value == nullptr)   \
         throw Test::TestFailure(__FILE__, __LINE__, "!=", #value, "nullptr");
+/// @brief Macro to check if a value is less than or equal to a target. If it is not, it throws a TestFailure exception with details about the failure.
 #define REC_LEQL(value, target) \
     if (value > target)         \
         throw Test::TestFailure(__FILE__, __LINE__, "<=", #value, #target);
+/// @brief Macro to check if a value is greater than or equal to a target. If it is not, it throws a TestFailure exception with details about the failure.
 #define REC_GEQL(value, target) \
     if (value < target)         \
         throw Test::TestFailure(__FILE__, __LINE__, ">=", #value, #target);
+/// @brief Macro to check if a value is less than a target. If it is not, it throws a TestFailure exception with details about the failure.
 #define REC_LSS(value, target) \
     if (value >= target)       \
         throw Test::TestFailure(__FILE__, __LINE__, "<", #value, #target);
+/// @brief Macro to check if a value is greater than a target. If it is not, it throws a TestFailure exception with details about the failure.
 #define REC_GTR(value, target) \
     if (value <= target)       \
         throw Test::TestFailure(__FILE__, __LINE__, ">", #value, #target);
@@ -88,6 +97,8 @@
     }                                                                                        \
     static int var_name __attribute((unused)) = (CONCATENATE(calling_, function_name)(), 0); \
     static void function_name()
+/// @brief Macro to stop the execution of the main function.
+#define TEST_MAIN_STOP return 0
 #else // TESTMODE
 #define REC_EQL(value, target)
 #define REC_NEQ(value, target)
@@ -100,6 +111,7 @@
 #define REC_LSS(value, target)
 #define REC_GTR(value, target)
 #define TEST(test_name, test_description) static void inline UNIQUE_IDENTIFIER(_unused_)()
+#define TEST_MAIN_STOP
 
 #endif // TESTMODE
 

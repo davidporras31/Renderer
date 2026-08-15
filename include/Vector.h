@@ -31,6 +31,8 @@ private:
 
 public:
     Vector();
+    Vector(const Vector &other);
+    Vector(std::initializer_list<T> init);
     ~Vector();
 
     /// @brief Adds an element to the end of the vector.
@@ -106,6 +108,20 @@ template <typename T, typename S>
 inline Vector<T, S>::Vector()
     : data(new T[VECTOR_BASE_CAPACITY]), capacity(VECTOR_BASE_CAPACITY), size(0)
 {
+}
+
+template <typename T, typename S>
+inline Vector<T, S>::Vector(const Vector &other)
+    : data(new T[other.capacity]), capacity(other.capacity), size(other.size)
+{
+    std::copy(other.data, other.data + other.size, data);
+}
+
+template <typename T, typename S>
+inline Vector<T, S>::Vector(std::initializer_list<T> init)
+    : data(new T[init.size()]), capacity(init.size()), size(init.size())
+{
+    std::copy(init.begin(), init.end(), data);
 }
 
 template <typename T, typename S>
