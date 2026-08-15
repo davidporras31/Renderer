@@ -168,14 +168,19 @@ int main()
 
     Model sponzaModel;
     sponzaModel.open("test/sponza/sponza.obj");
-    sponzaModel.setPosition({0, -1, 0});
+    sponzaModel.setPosition({0, -4, 0});
     sponzaModel.setScale({0.01f, 0.01f, 0.01f});
     sponzaModel.setRotation({0, 0, 0});
+
+    Square square;
+    square.setPosition({0, 0, 0});
+    square.setScale({1, 1, 1});
+    square.setRotation({0, -1, 0});
 
     std::vector<DrawCall> render_state;
 
     PerspectiveCamera camera(params.cameraFOV, static_cast<float>(params.windowWidth) / static_cast<float>(params.windowHeight), 0.5f, 100.0f);
-    camera.setPosition({4,1,0});
+    camera.setPosition({0,1,0});
     camera.setRotation({0,-1,0});
     camControl = new CamControl(&camera);
     forwardGeometry->setCamera(&camera);
@@ -189,6 +194,11 @@ int main()
     material.metallic = 0.0f;
     material.roughness = 1.0f;
     render_state.push_back(DrawCall(&sponzaModel));
+
+    // TODO: make Material able to use texture arrays
+    Material squareMaterial = Material();
+    //squareMaterial.albedo.emplace<Texture>().load("test/square.png");                                         
+    render_state.push_back(DrawCall(&square));
 
     // assign the material to each draw call
     for (auto &&i : render_state)
@@ -215,10 +225,11 @@ int main()
     spotLight.setRange(10.0f);
     spotLight.setAngle(10.0f);
 
+
     std::vector<Light *> lights =
         {
-            //&pointLight,
-            //&dirLight,
+            &pointLight,
+            &dirLight,
             &spotLight
         };
 
@@ -239,6 +250,7 @@ int main()
             char title[256];
             snprintf(title, 256, "Mon Jeu [%.1f FPS]", fps);
             windows.setTitle(title);
+            std::println("global pos: {},{},{}", spotLight.getDebugProxies()->getGlobalRotation().x, spotLight.getDebugProxies()->getGlobalRotation().y, spotLight.getDebugProxies()->getGlobalRotation().z);
 
             nbFrames = 0;
             lastTime = currentTime;

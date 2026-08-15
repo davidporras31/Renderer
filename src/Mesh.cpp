@@ -67,6 +67,36 @@ Mesh::Mesh(aiMesh *mesh, glm::vec3 *maxPos)
     size = indices.getSize();
 }
 
+Mesh::Mesh(Vector<float> vertices, Vector<unsigned int> indices)
+{
+    if (!vertices.getSize() || !indices.getSize())
+    {
+        throw std::invalid_argument("Invalid mesh data");
+    }
+    
+    materialIndex = 0; // Default material index
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.getSize() * sizeof(Vertex), (void *)&vertices[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.getSize() * sizeof(unsigned int), (void *)&indices[0], GL_STATIC_DRAW);
+    // position attribute
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)0);
+    // normal attribute
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, Normal));
+    // texture coord attribute
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void *)offsetof(Vertex, TexCoords));
+
+    size = indices.getSize();
+}
 Mesh::~Mesh()
 {
     glDeleteVertexArrays(1, &VAO);

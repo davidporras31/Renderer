@@ -50,10 +50,10 @@ public:
         }
         if (getDebugLightMode())
         {
-            Vector<Cube> const &lightProxies = getLightDebugProxies();
+            auto lightProxies = getLightDebugProxies();
             for (size_t i = 0; i < lightProxies.getSize(); ++i)
             {
-                DrawCall *lightDrawCall = new DrawCall(&lightProxies[i]); // TODO memory leak
+                DrawCall *lightDrawCall = new DrawCall(lightProxies[i]); // TODO memory leak
                 debugRender->pushDrawCall(lightDrawCall);
             }
         }

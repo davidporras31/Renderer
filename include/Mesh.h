@@ -20,6 +20,8 @@ private:
 public:
     Mesh() = default;
     Mesh(aiMesh* mesh, glm::vec3 *maxPos);
+    Mesh(Vector<float> vertices, Vector<unsigned int> indices);
+
     virtual ~Mesh();
     void draw(ShaderProgram *shader) override;
 

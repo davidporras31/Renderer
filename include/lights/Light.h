@@ -4,14 +4,8 @@
 
 #include <glm/glm.hpp>
 #include "../Color.h"
-
-struct alignas(16) LightData // Ensure 16-byte alignment for GPU compatibility
-{
-    glm::vec4 position = glm::vec4(0.0f);        // w component can be used for different purposes (e.g., type of light)
-    glm::vec4 direction = glm::vec4(0.0f);       // w component is unused
-    Color color = Color(1.0f, 1.0f, 1.0f, 1.0f); // RGBA color
-    glm::vec4 data1 = glm::vec4(1.0f);           // Additional data (e.g., intensity, range)
-};
+#include "../Transformable.h"
+#include "DebugProxy.h"
 
 enum class LightType
 {
@@ -21,26 +15,44 @@ enum class LightType
     Area
 };
 
-class Light
+class Light : public Transformable
 {
 private:
-    LightData lightData;
-
+    LightType type;
+    bool dirty;
+    Color color;
+    glm::vec4 data;
+    Drawable* debugProxies;
 public:
     Light(LightType type);
     ~Light();
 
+    LightType getType() const { return type; }
+
     virtual bool afectsDrawable(const glm::vec3 &pos, const float radius) const = 0;
 
-    void setPosition(const glm::vec3 &pos);
-    glm::vec3 getPosition() const;
-    void setDirection(const glm::vec3 &dir);
-    glm::vec3 getDirection() const;
     void setColor(const Color &col);
     Color getColor() const;
 
-    LightData &getLightData() { return lightData; }
-    const LightData &getLightData() const { return lightData; }
+    glm::vec4 &getData() { return data; }
+    const glm::vec4 &getData() const { return data; }
+
+    Drawable* getDebugProxies() const { return debugProxies; }
+};
+
+struct alignas(16) LightData // Ensure 16-byte alignment for GPU compatibility
+{
+    glm::vec4 position = glm::vec4(0.0f);        // w component can be used for different purposes (e.g., type of light)
+    glm::vec4 direction = glm::vec4(0.0f);       // w component is unused
+    Color color = Color(1.0f, 1.0f, 1.0f, 1.0f); // RGBA color
+    glm::vec4 data1 = glm::vec4(1.0f);           // Additional data (e.g., intensity, range)
+ 
+    LightData() = default;
+    LightData(Light *light) : position(light->getGlobalPosition(), (float)light->getType()),
+                              direction(light->getGlobalRotation(), 0.f),
+                              color(light->getColor()),
+                              data1(light->getData())
+    {};
 };
 
 #endif // LIGHT_H

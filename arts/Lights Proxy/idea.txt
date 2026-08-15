@@ -1,0 +1,7 @@
+the first part are billboard
+the second part are 3d and base on light parameters
+icons:
+Directional - sun with arow
+Point       - lightbulbe with sphere
+Spot        - spot with cone
+Area        - square lightbulbe with square

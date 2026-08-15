@@ -14,16 +14,16 @@ AreaLight::~AreaLight()
 
 void AreaLight::setSize(const glm::vec3 &s)
 {
-    getLightData().data1 = glm::vec4(s, 0.0f);
+    this->getData() = glm::vec4(s, 0.0f);
 }
 
 glm::vec3 AreaLight::getSize() const
 {
-    return glm::vec3(getLightData().data1);
+    return glm::vec3(this->getData());
 }
 
 bool AreaLight::afectsDrawable(const glm::vec3 &pos, const float radius) const
 {
-    glm::vec3 radpoint = {getLightData().data1.x / 2, getLightData().data1.y / 2, getLightData().data1.z / 2};
+    glm::vec3 radpoint = {this->getData().x / 2, this->getData().y / 2, this->getData().z / 2};
     return glm::distance(this->getPosition() + radpoint, pos) <= glm::distance({0, 0, 0}, radpoint) + radius;
 }

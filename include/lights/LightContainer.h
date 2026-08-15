@@ -15,7 +15,7 @@ private:
     VectorUBO<LightData> lightDataArray;
 
     bool debugMode = false;
-    Vector<Cube> lightDebugProxies;
+    Vector<Drawable*> lightDebugProxies;
 public:
     LightContainer();
     ~LightContainer();
@@ -33,7 +33,7 @@ public:
 
     void setDebugLightMode(bool debugMode) { this->debugMode = debugMode; }
     bool getDebugLightMode() const { return debugMode; }
-    const Vector<Cube> &getLightDebugProxies() const { return lightDebugProxies; }
+    const Vector<Drawable*> &getLightDebugProxies() const { return lightDebugProxies; }
 };
 
 #endif // LIGHTCONTAINER_H

@@ -13,14 +13,14 @@ PointLight::~PointLight() {
 
 float PointLight::getRange() const
 {
-    return getLightData().data1.x;
+    return this->getData().x;
 }
 void PointLight::setRange(float r)
 {
-    getLightData().data1.x = r;
+    this->getData().x = r;
 }
 
 bool PointLight::afectsDrawable(const glm::vec3 &pos, const float radius) const
 {
-    return glm::distance(this->getPosition(), pos) <= getLightData().data1.x + radius;
+    return glm::distance(this->getPosition(), pos) <= this->getData().x + radius;
 }

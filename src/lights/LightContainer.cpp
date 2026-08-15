@@ -14,24 +14,23 @@ LightContainer::~LightContainer()
 
 void LightContainer::addLight(Light* light)
 {
-    lightDataArray.pushBack(light->getLightData());
+    lightDataArray.emplaceBack(light);
     if (debugMode)
     {
-        lightDebugProxies.emplaceBack();
-        lightDebugProxies.last().setPosition(glm::vec3(light->getLightData().position));
-        switch (static_cast<LightType>(light->getLightData().position.w))
+        lightDebugProxies.emplaceBack(light->getDebugProxies());
+        switch (light->getType())
         {
             case LightType::Directional:
-                lightDebugProxies.last().setScale(glm::vec3(1.0f));
+                lightDebugProxies.last()->setScale(glm::vec3(1.0f));
                 break;
             case LightType::Point:
-                lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
+                lightDebugProxies.last()->setScale(glm::vec3(1.0f));
                 break;
             case LightType::Spot:
-                lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
+                lightDebugProxies.last()->setScale(glm::vec3(1.0f));
                 break;
             case LightType::Area:
-                lightDebugProxies.last().setScale(glm::vec3(light->getLightData().data1.x));
+                lightDebugProxies.last()->setScale(glm::vec3(1.0f));
                 break;
         }
     }
