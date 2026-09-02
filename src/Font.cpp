@@ -45,7 +45,7 @@ Character Font::genChar(const char c)
             width);
     }
 
-    Texture *texture = new Texture();
+    Texture2D *texture = new Texture2D();
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     texture->loadFromMemory(GL_RED, width, height, flipped_buffer, true, true);
     delete[] flipped_buffer;

@@ -144,7 +144,7 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
     }
     else
     {
-        const Texture &tex = std::get<Texture>(material.albedo);
+        const Texture &tex = std::get<Texture2D>(material.albedo);
         tex.use(0);
         setInt(name + ".albedoMap", 0);
         setVec3(name + ".albedo", glm::vec3(-1.0f)); // Indicate that albedo is from texture
@@ -155,7 +155,7 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
     }
     else
     {
-        const Texture &tex = std::get<Texture>(material.metallic);
+        const Texture &tex = std::get<Texture2D>(material.metallic);
         tex.use(1);
         setInt(name + ".metallicMap", 1);
         setVec3(name + ".metallic", glm::vec3(-1.0f)); // Indicate that metallic is from texture
@@ -166,7 +166,7 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
     }
     else
     {
-        const Texture &tex = std::get<Texture>(material.roughness);
+        const Texture &tex = std::get<Texture2D>(material.roughness);
         tex.use(2);
         setInt(name + ".roughnessMap", 2);
         setVec3(name + ".roughness", glm::vec3(-1.0f)); // Indicate that roughness is from texture
@@ -177,7 +177,7 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
     }
     else
     {
-        const Texture &tex = std::get<Texture>(material.ao);
+        const Texture &tex = std::get<Texture2D>(material.ao);
         tex.use(3);
         setInt(name + ".aoMap", 3);
         setVec3(name + ".ao", glm::vec3(-1.0f)); // Indicate that ao is from texture
@@ -188,7 +188,7 @@ void ShaderBase::setMaterial(const std::string &name, const Material &material)
     }
     else
     {
-        const Texture &tex = std::get<Texture>(material.emissive);
+        const Texture &tex = std::get<Texture2D>(material.emissive);
         tex.use(4);
         setInt(name + ".emissiveMap", 4);
         setVec3(name + ".emissive", glm::vec3(-1.0f)); // Indicate that emissive is from texture

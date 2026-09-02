@@ -1,31 +1,21 @@
 
 #include "../include/TextureArray.h"
 
-TextureArray::TextureArray()
-{
-    glGenTextures(1, &textureID);
-}
-
-TextureArray::~TextureArray()
-{
-    glDeleteTextures(1, &textureID);
-}
-
-void TextureArray::use(GLenum textureUnit)
+void TextureArray::use(GLenum textureUnit) const
 {
     glActiveTexture(GL_TEXTURE0 + textureUnit);
-    glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, ID);
 }
 
 void TextureArray::makeEmpty(GLint internalFormat, glm::ivec3 size)
 {
-    glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, ID);
     glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, internalFormat, size.x, size.y, size.z, 0, internalFormat, GL_UNSIGNED_BYTE, nullptr);
 }
 
 void TextureArray::saveToFile(const std::string &filename, GLenum format, GLenum type)
 {
-    glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, ID);
     glm::ivec3 size;
     glGetTexLevelParameteriv(GL_TEXTURE_2D_ARRAY, 0, GL_TEXTURE_WIDTH, &size.x);
     glGetTexLevelParameteriv(GL_TEXTURE_2D_ARRAY, 0, GL_TEXTURE_HEIGHT, &size.y);
@@ -39,13 +29,8 @@ void TextureArray::saveToFile(const std::string &filename, GLenum format, GLenum
 
 void TextureArray::resize(glm::ivec3 size)
 {
-    glBindTexture(GL_TEXTURE_2D_ARRAY, textureID);
+    glBindTexture(GL_TEXTURE_2D_ARRAY, ID);
     GLint format;
     glGetTexLevelParameteriv(GL_TEXTURE_2D_ARRAY, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
     glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, size.x, size.y, size.z, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-}
-
-GLuint TextureArray::getID() const
-{
-    return textureID;
 }

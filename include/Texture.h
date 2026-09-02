@@ -2,12 +2,11 @@
 #define TEXTURE_H
 
 #include <glad/gl.h>
-#include <glm/glm.hpp>
-#include <stb/stb_image.h>
-#include <stdexcept>
+#include <glm/vec3.hpp>
+
 class Texture
 {
-private:
+protected:
     GLuint ID;
 public:
     Texture();
@@ -16,10 +15,8 @@ public:
     static GLint getFromatFromChannels(int channels);
     static GLint getChannelsFromFormat(GLint format);
 
-    void use(const size_t unit = 0) const;
-    void load(const char* path, bool mipmap = true);
-    void loadFromMemory(GLint format,int width,int height,unsigned char * buffer, bool mipmap = true, bool clamp = false);
-    void resize(glm::ivec2 size);
+    virtual void use(GLenum textureUnit = 0) const = 0;
+    virtual void resize(glm::ivec3 size) = 0;
     GLuint getID() const;
 };
 

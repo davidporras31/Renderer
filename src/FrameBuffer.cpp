@@ -9,7 +9,7 @@ FrameBuffer::FrameBuffer(const glm::vec2& scale, const GLint attachment)
     // Create a texture to attach to the framebuffer
 
     texture.use();
-    texture.resize(size);
+    texture.resize({size,0});
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, GL_TEXTURE_2D, texture.getID(), 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -51,7 +51,7 @@ void FrameBuffer::resize(const glm::ivec2& newSize)
         bind();
         glViewport(0, 0, size.x, size.y);
         texture.use();
-        texture.resize(size);
+        texture.resize({size,0});
     }
 }
 

@@ -38,10 +38,10 @@ void Model::loadMaterial(aiMaterial *aiMat)
     }
     if (aiMat->GetTexture(aiTextureType_BASE_COLOR, 0, &texPath) == AI_SUCCESS)
     {
-        material.albedo.emplace<Texture>().load(texPath.C_Str());
+        material.albedo.emplace<Texture2D>().load(texPath.C_Str());
     }else if (aiMat->GetTexture(aiTextureType_DIFFUSE, 0, &texPath) == AI_SUCCESS)
     {
-        material.albedo.emplace<Texture>().load(texPath.C_Str());
+        material.albedo.emplace<Texture2D>().load(texPath.C_Str());
     }
 
     if (aiMat->Get(AI_MATKEY_METALLIC_FACTOR, value) == AI_SUCCESS)
@@ -50,7 +50,7 @@ void Model::loadMaterial(aiMaterial *aiMat)
     }
     if (aiMat->GetTexture(aiTextureType_METALNESS, 0, &texPath) == AI_SUCCESS)
     {
-        material.metallic.emplace<Texture>().load(texPath.C_Str());
+        material.metallic.emplace<Texture2D>().load(texPath.C_Str());
     }
 
     if (aiMat->Get(AI_MATKEY_ROUGHNESS_FACTOR, value) == AI_SUCCESS)
@@ -59,7 +59,7 @@ void Model::loadMaterial(aiMaterial *aiMat)
     }
     if (aiMat->GetTexture(aiTextureType_DIFFUSE_ROUGHNESS, 0, &texPath) == AI_SUCCESS)
     {
-        material.roughness.emplace<Texture>().load(texPath.C_Str());
+        material.roughness.emplace<Texture2D>().load(texPath.C_Str());
     }
 
 #define AI_MATKEY_AMBIENT_OCCLUSION_FACTOR "$mat.ao_factor", 0, 0
@@ -70,7 +70,7 @@ void Model::loadMaterial(aiMaterial *aiMat)
 #undef AI_MATKEY_AMBIENT_OCCLUSION_FACTOR
     if (aiMat->GetTexture(aiTextureType_AMBIENT_OCCLUSION, 0, &texPath) == AI_SUCCESS)
     {
-        material.ao.emplace<Texture>().load(texPath.C_Str());
+        material.ao.emplace<Texture2D>().load(texPath.C_Str());
     }
 
     if (aiGetMaterialColor(aiMat, AI_MATKEY_COLOR_EMISSIVE, &color) == AI_SUCCESS)
@@ -79,7 +79,7 @@ void Model::loadMaterial(aiMaterial *aiMat)
     }
     if (aiMat->GetTexture(aiTextureType_EMISSIVE, 0, &texPath) == AI_SUCCESS)
     {
-        material.emissive.emplace<Texture>().load(texPath.C_Str());
+        material.emissive.emplace<Texture2D>().load(texPath.C_Str());
     }
 
     if (aiMat->GetTexture(aiTextureType_NORMALS, 0, &texPath) == AI_SUCCESS)

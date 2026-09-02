@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glad/gl.h>
 #include <stdexcept>
-#include "Texture.h"
+#include "Texture2D.h"
 
 /// @brief A wrapper around an OpenGL framebuffer object (FBO) that manages a color texture attachment and allows for resizing.
 class FrameBuffer {
@@ -12,7 +12,7 @@ class FrameBuffer {
         glm::ivec2 size;
         glm::vec2 scale;
         GLuint FBO;
-        Texture texture;
+        Texture2D texture;
     public:
         FrameBuffer(const glm::vec2& scale = {1.0f, 1.0f}, const GLint attachment = GL_COLOR_ATTACHMENT0);
         ~FrameBuffer();

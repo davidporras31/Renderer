@@ -26,7 +26,7 @@ Camera *ShadowPass::generateLightCamera(size_t lightIndex)
     case LightType::Spot:
         lightCamera = new PerspectiveCamera(lightData->data1.y, 1.0f, 0.1f, lightData->data1.x);
         lightCamera->setPosition(lightPosition);
-        lightCamera->lookAt(lightPosition + lightDirection);
+        lightCamera->setRotation(lightDirection);
         break;
 
     default:

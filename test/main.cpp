@@ -190,7 +190,7 @@ int main()
     ShaderProgram textShaderProgram("text_shader.shader", &ShaderDefines);
     // create a default material
     Material material = Material();
-    material.albedo.emplace<Texture>().load("test/img.png");
+    material.albedo.emplace<Texture2D>().load("test/img.png");
     material.metallic = 0.0f;
     material.roughness = 1.0f;
     render_state.push_back(DrawCall(&sponzaModel));
@@ -250,7 +250,6 @@ int main()
             char title[256];
             snprintf(title, 256, "Mon Jeu [%.1f FPS]", fps);
             windows.setTitle(title);
-            std::println("global pos: {},{},{}", spotLight.getDebugProxies()->getGlobalRotation().x, spotLight.getDebugProxies()->getGlobalRotation().y, spotLight.getDebugProxies()->getGlobalRotation().z);
 
             nbFrames = 0;
             lastTime = currentTime;
