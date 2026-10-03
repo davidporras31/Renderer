@@ -24,6 +24,11 @@ project "core"
         "test/**.cpp",
         "lib/shader-precompiler/ShaderPrecompiler.cpp",
         "lib/glad/build/src/gl.c",
+        "lib/**.so"
+    }
+    removefiles
+    {
+        "lib/**_speedups.cpython-314-x86_64-linux-gnu.so"
     }
 
     defines
@@ -61,18 +66,15 @@ project "core"
         "resourcemanager",
         "glm",
     }
-    local so_files = os.matchfiles("lib/**.so")
 
     local cmds = {}
-    for _, file in ipairs(so_files) do
-        if path.getname(file) ~= "_speedups.cpython-314-x86_64-linux-gnu.so" then
-            table.insert(cmds, "$(SILENT) {COPY} -L " .. file .. " %{cfg.targetdir}; {ECHO} copy " .. path.getname(file))
-            end
-        end
-    table.insert(cmds, "$(SILENT) {COPY} -L test %{cfg.targetdir}; {ECHO} copy test")
-    table.insert(cmds, "$(SILENT) {COPY} -L shaders %{cfg.targetdir}; {ECHO} copy shaders")
+    table.insert(cmds, "$(SILENT) {COPY} -L test %{cfg.targetdir}; {ECHO} copy test folder")
+    table.insert(cmds, "$(SILENT) {COPY} -L shaders %{cfg.targetdir}; {ECHO} copy shaders folder")
 
     postbuildcommands(cmds)
+
+    filter "files:**.so"
+        buildaction "Copy"
 
     filter "system:windows"
     systemversion "latest"
